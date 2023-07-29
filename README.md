@@ -5,7 +5,7 @@
 [![Docs][docs-godoc-svg]][docs-godoc-url]
 [![License][license-svg]][license-url]
 
- [build-status-svg]: https://github.com/grokify/go-jiraxml/workflows/test/badge.svg
+ [build-status-svg]: https://github.com/grokify/go-jiraxml/workflows/build/badge.svg
  [build-status-url]: https://github.com/grokify/go-jiraxml/actions
  [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/go-jiraxml
  [goreport-url]: https://goreportcard.com/report/github.com/grokify/go-jiraxml
