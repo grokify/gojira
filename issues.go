@@ -37,7 +37,7 @@ func (ii Issues) Stats(workingHoursPerDay, workingDaysPerWeek float32) IssuesSta
 	if workingDaysPerWeek == 0 {
 		workingDaysPerWeek = WorkingDaysPerWeekDefault
 	}
-	whpworkingHoursPerDay64 := float64(workingHoursPerDay)
+	workingHoursPerDay64 := float64(workingHoursPerDay)
 	stats := IssuesStats{
 		WorkingHoursPerDay:     workingHoursPerDay,
 		WorkingDaysPerWeek:     workingDaysPerWeek,
@@ -66,13 +66,13 @@ func (ii Issues) Stats(workingHoursPerDay, workingDaysPerWeek float32) IssuesSta
 			stats.ClosedEstimateVsActual.ClosedCount++
 			if it.TimeOriginalEstimate.Seconds > 0 {
 				stats.ClosedEstimateVsActual.ClosedCountWithEstimate++
-				stats.ClosedEstimateVsActual.EstimateDays += it.TimeOriginalEstimate.Duration().Hours() / whpworkingHoursPerDay64
-				stats.ClosedEstimateVsActual.ActualDays += it.AggregateTimeSpent.Duration().Hours() / whpworkingHoursPerDay64
+				stats.ClosedEstimateVsActual.EstimateDays += it.TimeOriginalEstimate.Duration().Hours() / workingHoursPerDay64
+				stats.ClosedEstimateVsActual.ActualDays += it.AggregateTimeSpent.Duration().Hours() / workingHoursPerDay64
 			}
 		}
 	}
-	stats.TimeOriginalEstimateDays = stats.TimeOriginalEstimate.Hours() / whpworkingHoursPerDay64
-	stats.AggregateTimeSpentDays = stats.AggregateTimeSpent.Hours() / whpworkingHoursPerDay64
+	stats.TimeOriginalEstimateDays = stats.TimeOriginalEstimate.Hours() / workingHoursPerDay64
+	stats.AggregateTimeSpentDays = stats.AggregateTimeSpent.Hours() / workingHoursPerDay64
 	stats.ClosedEstimateVsActual.Inflate()
 	return stats
 }
