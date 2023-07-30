@@ -34,4 +34,17 @@ Ref: https://community.atlassian.com/t5/Jira-questions/change-quot-Working-hours
 
 ## Additional Discussion on Jira XML
 
+### General Discussion
+
+General discussion including using Jira XML to:
+
+1. export comments and issue link types
+1. create CSV for flexible reporting and import
+
 Ref: https://community.atlassian.com/t5/Jira-questions/JIRA-Issue-XML-Export-What-is-it-good-for/qaq-p/603308
+
+### Global Config
+
+Working Hours Per Day and Working Days Per Week are global values and cannot be set on a per-project basis.
+
+Ref: https://community.atlassian.com/t5/Jira-Software-questions/Time-Tracking-Hours-Is-it-still-a-global-change/qaq-p/1337399
