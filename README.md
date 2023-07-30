@@ -17,3 +17,13 @@
 JiraXML currently parses a Jira XML file consisting of multiple issues.
 
 In addition to parsing the Jira XML into a Go struct, various aggregate staticstics are calculated.
+
+## Note on Hours Per Day and Days Per Week
+
+This module supports custom `hoursPerDay` and `daysPerWeek` settings per Jira.
+
+This is described here and set in the UI via the screenshot below,
+
+https://community.atlassian.com/t5/Jira-Software-questions/What-it-JIRA-counting-as-a-quot-day-quot-in-Time-Tracking/qaq-p/1703409
+
+![](ss_jira_time-tracking.png)
