@@ -31,3 +31,7 @@ Also of note is that the hours per day can be set to a decimal value, such as `8
 Ref: https://community.atlassian.com/t5/Jira-questions/change-quot-Working-hours-per-day-quot-by-a-decimal-value/qaq-p/583095
 
 ![](ss_jira_time-tracking.png)
+
+## Additional Discussion on Jira XML
+
+Ref: https://community.atlassian.com/t5/Jira-questions/JIRA-Issue-XML-Export-What-is-it-good-for/qaq-p/603308
