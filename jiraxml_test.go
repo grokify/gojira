@@ -45,7 +45,7 @@ func TestReadFile(t *testing.T) {
 			t.Errorf("file (%s) BuildDate.Time() mismatch: want (%s), got (%s)", tt.filename, tt.buildDateRFC3339FullDate, dt.Format(timeutil.RFC3339FullDate))
 		}
 		// fmtutil.PrintJSON(j)
-		stats := j.Channel.Items.Stats(tt.hoursPerDay, tt.daysPerWeek)
+		stats := j.Channel.Issues.Stats(tt.hoursPerDay, tt.daysPerWeek)
 		if stats.ItemCount != tt.itemCount {
 			t.Errorf("jiraxml.ReadFile(\"%s\") mismatch: want (%d), got (%d)", tt.filename, tt.itemCount, stats.ItemCount)
 		}
@@ -54,7 +54,7 @@ func TestReadFile(t *testing.T) {
 			continue
 		}
 		// fmtutil.PrintJSON(j.Channel.Items[0])
-		item0 := j.Channel.Items[0]
+		item0 := j.Channel.Issues[0]
 		if item0.Key.DisplayName != tt.item0KeyDisplayName {
 			t.Errorf("item.Key.DisplayName mismatch: want (%s), got (%s)", tt.item0KeyDisplayName, item0.Key.DisplayName)
 		}
@@ -79,7 +79,7 @@ func TestReadFile(t *testing.T) {
 		if item0updated.Format(time.RFC3339) != tt.item0Updated {
 			t.Errorf("item.Key.DisplayName mismatch: want (%s), got (%s)", tt.item0Updated, item0updated.Format(time.RFC3339))
 		}
-		for _, itemx := range j.Channel.Items {
+		for _, itemx := range j.Channel.Issues {
 			testReadFileDuration(t, itemx.TimeEstimate, tt.hoursPerDay, tt.daysPerWeek)
 			testReadFileDuration(t, itemx.TimeOriginalEstimate, tt.hoursPerDay, tt.daysPerWeek)
 			testReadFileDuration(t, itemx.TimeSpent, tt.hoursPerDay, tt.daysPerWeek)

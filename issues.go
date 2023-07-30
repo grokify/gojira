@@ -6,10 +6,10 @@ import (
 	"github.com/grokify/mogo/type/stringsutil"
 )
 
-type Items []Item
+type Issues []Issue
 
-func (ii Items) FilterByStatus(statuses ...string) Items {
-	new := Items{}
+func (ii Issues) FilterByStatus(statuses ...string) Issues {
+	new := Issues{}
 	mStatuses := map[string]int{}
 	for _, s := range statuses {
 		mStatuses[s]++
@@ -22,7 +22,7 @@ func (ii Items) FilterByStatus(statuses ...string) Items {
 	return new
 }
 
-func (ii Items) Keys() []string {
+func (ii Issues) Keys() []string {
 	keys := []string{}
 	for _, ix := range ii {
 		keys = append(keys, ix.Key.DisplayName)
@@ -30,7 +30,7 @@ func (ii Items) Keys() []string {
 	return stringsutil.SliceCondenseSpace(keys, true, true)
 }
 
-func (ii Items) Stats(workingHoursPerDay, workingDaysPerWeek float32) ItemsStats {
+func (ii Issues) Stats(workingHoursPerDay, workingDaysPerWeek float32) IssuesStats {
 	if workingHoursPerDay == 0 {
 		workingHoursPerDay = WorkingHoursPerDayDefault
 	}
@@ -38,7 +38,7 @@ func (ii Items) Stats(workingHoursPerDay, workingDaysPerWeek float32) ItemsStats
 		workingDaysPerWeek = WorkingDaysPerWeekDefault
 	}
 	whpworkingHoursPerDay64 := float64(workingHoursPerDay)
-	stats := ItemsStats{
+	stats := IssuesStats{
 		WorkingHoursPerDay:     workingHoursPerDay,
 		WorkingDaysPerWeek:     workingDaysPerWeek,
 		ItemCount:              len(ii),
@@ -77,7 +77,7 @@ func (ii Items) Stats(workingHoursPerDay, workingDaysPerWeek float32) ItemsStats
 	return stats
 }
 
-type ItemsStats struct {
+type IssuesStats struct {
 	WorkingHoursPerDay       float32
 	WorkingDaysPerWeek       float32
 	ItemCount                int
