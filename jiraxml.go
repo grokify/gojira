@@ -81,12 +81,17 @@ func (i *Issue) TrimSpace() {
 	i.Link = strings.TrimSpace(i.Link)
 	i.Summary = strings.TrimSpace(i.Summary)
 	i.Title = strings.TrimSpace(i.Title)
+	i.AggregateTimeOriginalEstimate.TrimSpace()
+	i.AggregateTimeRemainingEstimate.TrimSpace()
+	i.AggregateTimeSpent.TrimSpace()
 	i.Assignee.TrimSpace()
 	i.Key.TrimSpace()
 	i.Project.TrimSpace()
 	i.Reporter.TrimSpace()
 	i.Resolution.TrimSpace()
 	i.TimeEstimate.TrimSpace()
+	i.TimeOriginalEstimate.TrimSpace()
+	i.TimeSpent.TrimSpace()
 	i.Type.TrimSpace()
 }
 
