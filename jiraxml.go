@@ -27,9 +27,9 @@ func (x *XML) TrimSpace() {
 	x.Channel.BuildInfo.BuildDate =
 		DMYDateString(
 			strings.TrimSpace(string(x.Channel.BuildInfo.BuildDate)))
-	for i, ix := range x.Channel.Items {
+	for i, ix := range x.Channel.Issues {
 		ix.TrimSpace()
-		x.Channel.Items[i] = ix
+		x.Channel.Issues[i] = ix
 	}
 }
 
@@ -39,7 +39,7 @@ type Channel struct {
 	Description string    `xml:"description"`
 	Language    string    `xml:"language"`
 	BuildInfo   BuildInfo `xml:"build-info"`
-	Items       Items     `xml:"item"`
+	Issues      Issues    `xml:"item"`
 }
 
 type BuildInfo struct {
@@ -48,14 +48,17 @@ type BuildInfo struct {
 	BuildDate   DMYDateString `xml:"build-date"`
 }
 
-type Item struct {
-	Type                           Type           `xml:"type"`
+type Issue struct {
+	Type                           Simple         `xml:"type"`
 	Title                          string         `xml:"title"`
 	Link                           string         `xml:"link"`
-	Key                            Key            `xml:"key"`
+	Key                            Simple         `xml:"key"`
 	Project                        Project        `xml:"project"`
+	Resolution                     Simple         `xml:"resolution"`
 	Summary                        string         `xml:"summary"`
 	Status                         Status         `xml:"status"`
+	Assignee                       User           `xml:"assignee"`
+	Reporter                       User           `xml:"reporter"`
 	FixVersion                     string         `xml:"fixVersion"`
 	TimeEstimate                   Duration       `xml:"timeestimate"`
 	TimeOriginalEstimate           Duration       `xml:"timeoriginalestimate"`
@@ -64,24 +67,27 @@ type Item struct {
 	AggregateTimeRemainingEstimate Duration       `xml:"aggregatetimeremainingestimate"`
 	AggregateTimeSpent             Duration       `xml:"aggregatetimespent"`
 	Labels                         []Label        `xml:"labels"`
-	Created                        RFC1123ZString `xml:"created"` // RFC1123Z
-	Updated                        RFC1123ZString `xml:"updated"` // RFC1123Z
+	Created                        RFC1123ZString `xml:"created"`  // RFC1123Z
+	Updated                        RFC1123ZString `xml:"updated"`  // RFC1123Z
+	Resolved                       RFC1123ZString `xml:"resolved"` // RFC1123Z
 	Votes                          int            `json:"votes"`
 	Watches                        int            `json:"watches"`
 }
 
 // TrimSpace removes leading and trailing space. It is useful when parsing XML that has been modified,
 // such as by VS Code extensions.
-func (i *Item) TrimSpace() {
-	i.Type.DisplayName = strings.TrimSpace(i.Type.DisplayName)
-	i.Title = strings.TrimSpace(i.Title)
-	i.Link = strings.TrimSpace(i.Link)
+func (i *Issue) TrimSpace() {
 	i.FixVersion = strings.TrimSpace(i.FixVersion)
-	i.Key.DisplayName = strings.TrimSpace(i.Key.DisplayName)
-	i.Project.DisplayName = strings.TrimSpace(i.Project.DisplayName)
-	i.Status.ID = strings.TrimSpace(i.Status.ID)
+	i.Link = strings.TrimSpace(i.Link)
 	i.Summary = strings.TrimSpace(i.Summary)
-	i.TimeEstimate.Display = strings.TrimSpace(i.TimeEstimate.Display)
+	i.Title = strings.TrimSpace(i.Title)
+	i.Assignee.TrimSpace()
+	i.Key.TrimSpace()
+	i.Project.TrimSpace()
+	i.Reporter.TrimSpace()
+	i.Resolution.TrimSpace()
+	i.TimeEstimate.TrimSpace()
+	i.Type.TrimSpace()
 }
 
 type RFC1123ZString string
@@ -95,9 +101,10 @@ const DMYDateFormat = "_2-01-2006"
 type DMYDateString string
 
 func (s DMYDateString) Time() (time.Time, error) {
-	return time.Parse(DMYDateFormat, string(s))
+	return time.Parse(DMYDateFormat, strings.TrimSpace(string(s)))
 }
 
+/*
 type Type struct {
 	DisplayName string `xml:",chardata"`
 	ID          int    `xml:"id,attr"`
@@ -107,6 +114,7 @@ type Key struct {
 	DisplayName string `xml:",chardata"`
 	ID          int    `xml:"id,attr"`
 }
+*/
 
 type Label struct {
 	Label string `xml:"label"`
@@ -114,14 +122,36 @@ type Label struct {
 
 type Project struct {
 	DisplayName string `xml:",chardata"`
-	ID          string `xml:"id,attr"`
+	ID          int    `xml:"id,attr"`
 	Key         string `xml:"key,attr"`
 }
 
+func (p *Project) TrimSpace() {
+	p.DisplayName = strings.TrimSpace(p.DisplayName)
+	p.Key = strings.TrimSpace(p.Key)
+}
+
+type Simple struct {
+	ID          int    `xml:"id,attr"`
+	DisplayName string `xml:",chardata"`
+}
+
+func (s *Simple) TrimSpace() {
+	s.DisplayName = strings.TrimSpace(s.DisplayName)
+}
+
 type Status struct {
-	ID          string `xml:"id,attr"`
+	ID          int    `xml:"id,attr"`
 	DisplayName string `xml:",chardata"`
 	Description string `xml:"description,attr"`
+	IconURL     string `xml:"iconUrl"`
+}
+
+type StatusCategory struct {
+	ID          int    `xml:"id,attr"`
+	DisplayName string `xml:",chardata"`
+	Key         string `xml:"key,attr"`
+	ColorName   string `xml:"colorName,attr"`
 }
 
 type Duration struct {
@@ -129,6 +159,20 @@ type Duration struct {
 	Seconds int64  `xml:"seconds,attr"`
 }
 
-func (d Duration) Duration() time.Duration {
+func (d *Duration) Duration() time.Duration {
 	return time.Duration(d.Seconds) * time.Second
+}
+
+func (d *Duration) TrimSpace() {
+	d.Display = strings.TrimSpace(d.Display)
+}
+
+type User struct {
+	Display  string `xml:",chardata"`
+	Username string `xml:"username,attr"`
+}
+
+func (u *User) TrimSpace() {
+	u.Display = strings.TrimSpace(u.Display)
+	u.Username = strings.TrimSpace(u.Username)
 }
