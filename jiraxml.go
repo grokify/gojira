@@ -6,12 +6,12 @@ import (
 	"github.com/grokify/mogo/encoding/xmlutil"
 )
 
-type JiraXML struct {
+type XML struct {
 	Channel Channel `xml:"channel"`
 }
 
-func ReadFile(name string) (JiraXML, error) {
-	x := JiraXML{}
+func ReadFile(name string) (XML, error) {
+	x := XML{}
 	err := xmlutil.UnmarshalFile(name, &x)
 	return x, err
 }
@@ -31,8 +31,8 @@ type Item struct {
 	Summary              string         `xml:"summary"`
 	Status               Status         `xml:"status"`
 	FixVersion           string         `xml:"fixVersion"`
-	TimeOriginalEstimate JiraDuration   `xml:"timeoriginalestimate"`
-	AggregateTimeSpent   JiraDuration   `xml:"aggregatetimespent"`
+	TimeOriginalEstimate Duration       `xml:"timeoriginalestimate"`
+	AggregateTimeSpent   Duration       `xml:"aggregatetimespent"`
 	Labels               []Label        `xml:"labels"`
 	Created              RFC1123ZString `xml:"created"` // RFC1123Z
 	Updated              RFC1123ZString `xml:"updated"` // RFC1123Z
@@ -70,11 +70,11 @@ type Status struct {
 	Description string `xml:"description,attr"`
 }
 
-type JiraDuration struct {
+type Duration struct {
 	Display string `xml:",chardata"`
 	Seconds int    `xml:"seconds,attr"`
 }
 
-func (jd JiraDuration) Duration() time.Duration {
-	return time.Duration(int64(jd.Seconds * int(time.Second)))
+func (d Duration) Duration() time.Duration {
+	return time.Duration(int64(d.Seconds * int(time.Second)))
 }
