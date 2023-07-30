@@ -30,8 +30,17 @@ func (ii Items) Keys() []string {
 	return stringsutil.SliceCondenseSpace(keys, true, true)
 }
 
-func (ii Items) Stats() ItemsStats {
+func (ii Items) Stats(workingHoursPerDay, workingDaysPerWeek float32) ItemsStats {
+	if workingHoursPerDay == 0 {
+		workingHoursPerDay = WorkingHoursPerDayDefault
+	}
+	if workingDaysPerWeek == 0 {
+		workingDaysPerWeek = WorkingDaysPerWeekDefault
+	}
+	whpworkingHoursPerDay64 := float64(workingHoursPerDay)
 	stats := ItemsStats{
+		WorkingHoursPerDay:     workingHoursPerDay,
+		WorkingDaysPerWeek:     workingDaysPerWeek,
 		ItemCount:              len(ii),
 		ItemCountByStatus:      map[string]int{},
 		ItemCountByType:        map[string]int{},
@@ -57,18 +66,20 @@ func (ii Items) Stats() ItemsStats {
 			stats.ClosedEstimateVsActual.ClosedCount++
 			if it.TimeOriginalEstimate.Seconds > 0 {
 				stats.ClosedEstimateVsActual.ClosedCountWithEstimate++
-				stats.ClosedEstimateVsActual.EstimateDays += it.TimeOriginalEstimate.Duration().Hours() / 24
-				stats.ClosedEstimateVsActual.ActualDays += it.AggregateTimeSpent.Duration().Hours() / 24
+				stats.ClosedEstimateVsActual.EstimateDays += it.TimeOriginalEstimate.Duration().Hours() / whpworkingHoursPerDay64
+				stats.ClosedEstimateVsActual.ActualDays += it.AggregateTimeSpent.Duration().Hours() / whpworkingHoursPerDay64
 			}
 		}
 	}
-	stats.TimeOriginalEstimateDays = stats.TimeOriginalEstimate.Hours() / 24
-	stats.AggregateTimeSpentDays = stats.AggregateTimeSpent.Hours() / 24
+	stats.TimeOriginalEstimateDays = stats.TimeOriginalEstimate.Hours() / whpworkingHoursPerDay64
+	stats.AggregateTimeSpentDays = stats.AggregateTimeSpent.Hours() / whpworkingHoursPerDay64
 	stats.ClosedEstimateVsActual.Inflate()
 	return stats
 }
 
 type ItemsStats struct {
+	WorkingHoursPerDay       float32
+	WorkingDaysPerWeek       float32
 	ItemCount                int
 	ItemCountByStatus        map[string]int
 	ItemCountByType          map[string]int

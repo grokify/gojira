@@ -2,7 +2,7 @@ module github.com/grokify/go-jiraxml
 
 go 1.19
 
-require github.com/grokify/mogo v0.51.0
+require github.com/grokify/mogo v0.52.0
 
 require (
 	github.com/buger/jsonparser v1.1.1 // indirect
@@ -14,3 +14,5 @@ require (
 	golang.org/x/text v0.11.0 // indirect
 	gopkg.in/oleiade/reflections.v1 v1.0.0 // indirect
 )
+
+// replace github.com/grokify/mogo => ../mogo
