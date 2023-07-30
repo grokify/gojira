@@ -22,9 +22,13 @@ var readFileTests = []struct {
 	daysPerWeek              float32
 }{
 	{
-		"testdata/example_jira_mongodb.xml", "2022-07-20",
+		"testdata/example_jira_mongodb_new-issues.xml", "2022-07-20",
 		20, 3, 6, "SERVER-79445", "[SERVER-79445] Consider upgrading PCRE2",
 		"2023-07-28T00:11:05Z", "2023-07-28T01:00:50Z", 8, 5},
+	{
+		"testdata/example_jira_mongodb_resolved-recently.xml", "2022-07-20",
+		20, 3, 6, "SERVER-79005", "[SERVER-79005] [SBE] Call registerSlot() lazily for certain variables",
+		"2023-07-15T20:07:23Z", "2023-07-30T13:28:35Z", 8, 5},
 }
 
 func TestReadFile(t *testing.T) {

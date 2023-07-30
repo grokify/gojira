@@ -1,6 +1,7 @@
 package jiraxml
 
 import (
+	"strings"
 	"time"
 
 	"github.com/grokify/mogo/encoding/xmlutil"
@@ -13,7 +14,23 @@ type XML struct {
 func ReadFile(name string) (XML, error) {
 	x := XML{}
 	err := xmlutil.UnmarshalFile(name, &x)
+	if err != nil {
+		return x, err
+	}
+	x.TrimSpace()
 	return x, err
+}
+
+// TrimSpace removes leading and trailing space. It is useful when parsing XML that has been modified,
+// such as by VS Code extensions.
+func (x *XML) TrimSpace() {
+	x.Channel.BuildInfo.BuildDate =
+		DMYDateString(
+			strings.TrimSpace(string(x.Channel.BuildInfo.BuildDate)))
+	for i, ix := range x.Channel.Items {
+		ix.TrimSpace()
+		x.Channel.Items[i] = ix
+	}
 }
 
 type Channel struct {
@@ -49,12 +66,28 @@ type Item struct {
 	Labels                         []Label        `xml:"labels"`
 	Created                        RFC1123ZString `xml:"created"` // RFC1123Z
 	Updated                        RFC1123ZString `xml:"updated"` // RFC1123Z
+	Votes                          int            `json:"votes"`
+	Watches                        int            `json:"watches"`
+}
+
+// TrimSpace removes leading and trailing space. It is useful when parsing XML that has been modified,
+// such as by VS Code extensions.
+func (i *Item) TrimSpace() {
+	i.Type.DisplayName = strings.TrimSpace(i.Type.DisplayName)
+	i.Title = strings.TrimSpace(i.Title)
+	i.Link = strings.TrimSpace(i.Link)
+	i.FixVersion = strings.TrimSpace(i.FixVersion)
+	i.Key.DisplayName = strings.TrimSpace(i.Key.DisplayName)
+	i.Project.DisplayName = strings.TrimSpace(i.Project.DisplayName)
+	i.Status.ID = strings.TrimSpace(i.Status.ID)
+	i.Summary = strings.TrimSpace(i.Summary)
+	i.TimeEstimate.Display = strings.TrimSpace(i.TimeEstimate.Display)
 }
 
 type RFC1123ZString string
 
 func (s RFC1123ZString) Time() (time.Time, error) {
-	return time.Parse(time.RFC1123Z, string(s))
+	return time.Parse(time.RFC1123Z, strings.TrimSpace(string(s)))
 }
 
 const DMYDateFormat = "_2-01-2006"
