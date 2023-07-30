@@ -24,6 +24,10 @@ This module supports custom `hoursPerDay` and `daysPerWeek` settings per Jira.
 
 This is described here and set in the UI via the screenshot below,
 
-https://community.atlassian.com/t5/Jira-Software-questions/What-it-JIRA-counting-as-a-quot-day-quot-in-Time-Tracking/qaq-p/1703409
+Ref: https://community.atlassian.com/t5/Jira-Software-questions/What-it-JIRA-counting-as-a-quot-day-quot-in-Time-Tracking/qaq-p/1703409
+
+Also of note is that the hours per day can be set to a decimal value, such as `8.5`, but the UI may not show it:
+
+Ref: https://community.atlassian.com/t5/Jira-questions/change-quot-Working-hours-per-day-quot-by-a-decimal-value/qaq-p/583095
 
 ![](ss_jira_time-tracking.png)
