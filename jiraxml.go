@@ -107,7 +107,6 @@ func (s RFC1123ZString) Time() (time.Time, error) {
 
 func RFC1123ZStringJiraTime(t jira.Time) RFC1123ZString {
 	return RFC1123ZString(time.Time(t).Format(time.RFC1123Z))
-
 }
 
 const DMYDateFormat = "_2-01-2006"
