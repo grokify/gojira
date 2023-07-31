@@ -4,6 +4,7 @@ import (
 	"strings"
 	"time"
 
+	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/mogo/encoding/xmlutil"
 )
 
@@ -51,6 +52,7 @@ type BuildInfo struct {
 type Issue struct {
 	Type                           Simple         `xml:"type"`
 	Title                          string         `xml:"title"`
+	Description                    string         `xml:"description"`
 	Link                           string         `xml:"link"`
 	Key                            Simple         `xml:"key"`
 	Project                        Project        `xml:"project"`
@@ -63,6 +65,7 @@ type Issue struct {
 	TimeEstimate                   Duration       `xml:"timeestimate"`
 	TimeOriginalEstimate           Duration       `xml:"timeoriginalestimate"`
 	TimeSpent                      Duration       `xml:"timespent"`
+	AggregateTimeEstimate          Duration       `xml:"aggregatetimeestimate"`
 	AggregateTimeOriginalEstimate  Duration       `xml:"aggregatetimeoriginalestimate"`
 	AggregateTimeRemainingEstimate Duration       `xml:"aggregatetimeremainingestimate"`
 	AggregateTimeSpent             Duration       `xml:"aggregatetimespent"`
@@ -77,6 +80,7 @@ type Issue struct {
 // TrimSpace removes leading and trailing space. It is useful when parsing XML that has been modified,
 // such as by VS Code extensions.
 func (i *Issue) TrimSpace() {
+	i.Description = strings.TrimSpace(i.Description)
 	i.FixVersion = strings.TrimSpace(i.FixVersion)
 	i.Link = strings.TrimSpace(i.Link)
 	i.Summary = strings.TrimSpace(i.Summary)
@@ -99,6 +103,11 @@ type RFC1123ZString string
 
 func (s RFC1123ZString) Time() (time.Time, error) {
 	return time.Parse(time.RFC1123Z, strings.TrimSpace(string(s)))
+}
+
+func RFC1123ZStringJiraTime(t jira.Time) RFC1123ZString {
+	return RFC1123ZString(time.Time(t).Format(time.RFC1123Z))
+
 }
 
 const DMYDateFormat = "_2-01-2006"

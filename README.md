@@ -18,6 +18,15 @@ JiraXML currently parses a Jira XML file consisting of multiple issues.
 
 In addition to parsing the Jira XML into a Go struct, various aggregate staticstics are calculated.
 
+The ability to generate a `jiraxml.Issue` struct from a JSON API struct defined by [`github.com/andygrunwald/go-jira`](https://github.com/andygrunwald/go-jira) is also under development.
+
+## URL Formats
+
+Accessing a list of issues by JQL is avialable via the UI and API:
+
+* UI: `https://{jira_host}/issues/?jql=`
+* API: `https://{jira_host}/rest/api/2/search?jql=`
+
 ## Note on Hours Per Day and Days Per Week
 
 This module supports custom `hoursPerDay` and `daysPerWeek` settings per Jira.
