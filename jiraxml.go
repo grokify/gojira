@@ -77,6 +77,26 @@ type Issue struct {
 	Watches                        int            `json:"watches"`
 }
 
+/*
+func (i *Issue) TSROrderedMap() *orderedmap.OrderedMap {
+	om := orderedmap.New[string, string]()
+	om.Set("type", i.Type.DisplayName)
+	om.Set("status", i.Status.DisplayName)
+	om.Set("resolution", i.Resolution.DisplayName)
+	return om
+}
+
+func OrderMapEncode(om *orderedmap.OrderedMap) string {
+	pairs := []string{}
+	for pair := om.Oldest(); pair != nil; pair = pair.Next() {
+		v := url.Values{}
+		v.Add(pair.Key, pair.Value)
+		pairs = append(pairs, v.Encode())
+	}
+	return strings.Join(pairs, "&")
+}
+*/
+
 // TrimSpace removes leading and trailing space. It is useful when parsing XML that has been modified,
 // such as by VS Code extensions.
 func (i *Issue) TrimSpace() {
@@ -116,18 +136,6 @@ type DMYDateString string
 func (s DMYDateString) Time() (time.Time, error) {
 	return time.Parse(DMYDateFormat, strings.TrimSpace(string(s)))
 }
-
-/*
-type Type struct {
-	DisplayName string `xml:",chardata"`
-	ID          int    `xml:"id,attr"`
-}
-
-type Key struct {
-	DisplayName string `xml:",chardata"`
-	ID          int    `xml:"id,attr"`
-}
-*/
 
 type Label struct {
 	Label string `xml:"label"`

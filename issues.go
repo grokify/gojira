@@ -1,8 +1,11 @@
 package jiraxml
 
 import (
+	"strings"
 	"time"
 
+	"github.com/grokify/gocharts/v2/data/histogram"
+	"github.com/grokify/gocharts/v2/data/table"
 	"github.com/grokify/mogo/type/stringsutil"
 )
 
@@ -108,4 +111,32 @@ func (eva *EstimateVsActual) Inflate() {
 	if eva.ActualDays > 0 {
 		eva.EstimateRatio = eva.ActualDays / eva.EstimateDays
 	}
+}
+
+// TSRHistogramSets returns a `*histogram.HistogramSets` for Type, Status and Resolution.
+func (ii Issues) TSRHistogramSets(name string) *histogram.HistogramSets {
+	if strings.TrimSpace(name) == "" {
+		name = "TSR"
+	}
+	hset := histogram.NewHistogramSets(name)
+	for _, iss := range ii {
+		hset.Add(
+			iss.Type.DisplayName,
+			iss.Status.DisplayName,
+			iss.Resolution.DisplayName,
+			1, true)
+	}
+	return hset
+}
+
+// TSRTable returns a `table.Table` for Type, Status and Resolution.
+func (ii Issues) TSRTable(name string) table.Table {
+	hset := ii.TSRHistogramSets(name)
+	return hset.Table("Jira Issues", "Type", "Status", "Resolution", "Count")
+}
+
+// TSRWriteCSV writes a CSV file for Type, Status and Resolution.
+func (ii Issues) TSRWriteCSV(filename string) error {
+	tbl := ii.TSRTable("")
+	return tbl.WriteCSV(filename)
 }
