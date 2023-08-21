@@ -25,6 +25,14 @@ func (ii Issues) FilterByStatus(statuses ...string) Issues {
 	return new
 }
 
+/*
+func (ii Issues) ValidateKeys() error {
+	for i, ix := range ii {
+
+	}
+}
+*/
+
 func (ii Issues) Keys() []string {
 	keys := []string{}
 	for _, ix := range ii {
