@@ -6,7 +6,7 @@ require (
 	github.com/andygrunwald/go-jira v1.16.0
 	github.com/fatih/color v1.15.0
 	github.com/grokify/goauth v0.19.0
-	github.com/grokify/gocharts/v2 v2.9.1
+	github.com/grokify/gocharts/v2 v2.10.0
 	github.com/grokify/mogo v0.53.0
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/olekukonko/tablewriter v0.0.5
@@ -54,4 +54,4 @@ require (
 
 // replace github.com/grokify/mogo => ../mogo
 
-replace github.com/grokify/gocharts/v2 => ../gocharts
+// replace github.com/grokify/gocharts/v2 => ../gocharts
