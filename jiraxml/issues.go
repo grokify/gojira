@@ -6,6 +6,7 @@ import (
 
 	"github.com/grokify/gocharts/v2/data/histogram"
 	"github.com/grokify/gocharts/v2/data/table"
+	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/type/stringsutil"
 )
 
@@ -43,10 +44,10 @@ func (ii Issues) Keys() []string {
 
 func (ii Issues) Stats(workingHoursPerDay, workingDaysPerWeek float32) IssuesStats {
 	if workingHoursPerDay == 0 {
-		workingHoursPerDay = WorkingHoursPerDayDefault
+		workingHoursPerDay = gojira.WorkingHoursPerDayDefault
 	}
 	if workingDaysPerWeek == 0 {
-		workingDaysPerWeek = WorkingDaysPerWeekDefault
+		workingDaysPerWeek = gojira.WorkingDaysPerWeekDefault
 	}
 	workingHoursPerDay64 := float64(workingHoursPerDay)
 	stats := IssuesStats{
@@ -73,7 +74,7 @@ func (ii Issues) Stats(workingHoursPerDay, workingDaysPerWeek float32) IssuesSta
 			esStats.WithoutEstimate++
 		}
 		stats.EstimateStatsByType[it.Type.DisplayName] = esStats
-		if it.Status.DisplayName == StatusClosed {
+		if it.Status.DisplayName == gojira.StatusClosed {
 			stats.ClosedEstimateVsActual.ClosedCount++
 			if it.TimeOriginalEstimate.Seconds > 0 {
 				stats.ClosedEstimateVsActual.ClosedCountWithEstimate++

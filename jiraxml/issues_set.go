@@ -8,6 +8,7 @@ import (
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/gocharts/v2/data/histogram"
 	"github.com/grokify/gocharts/v2/data/table"
+	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/net/urlutil"
 	"github.com/grokify/mogo/strconv/strconvutil"
 	"github.com/grokify/mogo/text/markdown"
@@ -15,13 +16,13 @@ import (
 )
 
 type IssuesSet struct {
-	Config    *Config
+	Config    *gojira.Config
 	IssuesMap map[string]Issue
 }
 
-func NewIssuesSet(cfg *Config) IssuesSet {
+func NewIssuesSet(cfg *gojira.Config) IssuesSet {
 	if cfg == nil {
-		cfg = NewConfigDefault()
+		cfg = gojira.NewConfigDefault()
 	}
 	return IssuesSet{
 		Config:    cfg,
@@ -74,7 +75,7 @@ func (is *IssuesSet) Table(baseURL string) table.Table {
 	baseURL = strings.TrimSpace(baseURL)
 
 	if is.Config == nil {
-		is.Config = NewConfigDefault()
+		is.Config = gojira.NewConfigDefault()
 	}
 	tbl := table.NewTable("issues")
 	tbl.Columns = []string{"Type", "Key", "Summary", "Status", "Resolution", "Aggregate Original Time Estimate Seconds", "Original Estimate Seconds", "Original Estimate Days", "Estimate Days", "Time Spent", "Time Remaining"}

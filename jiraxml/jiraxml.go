@@ -8,6 +8,7 @@ import (
 	"time"
 
 	jira "github.com/andygrunwald/go-jira"
+	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/encoding/xmlutil"
 )
 
@@ -229,7 +230,7 @@ func (d *Duration) Duration() time.Duration {
 
 func (d *Duration) Days(workingHoursPerDay float32) float32 {
 	if workingHoursPerDay == 0 {
-		workingHoursPerDay = WorkingDaysPerWeekDefault
+		workingHoursPerDay = gojira.WorkingDaysPerWeekDefault
 	}
 	return float32(d.Seconds) / 60 / 60 / workingHoursPerDay
 }

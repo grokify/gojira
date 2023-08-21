@@ -1,4 +1,4 @@
-package jiraxml
+package gojira
 
 import "time"
 
