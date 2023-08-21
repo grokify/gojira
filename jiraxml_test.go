@@ -9,40 +9,44 @@ import (
 )
 
 var readFileTests = []struct {
-	filename                 string
-	buildDateRFC3339FullDate string
-	itemCount                int
-	itemCountInProgress      int
-	itemCountNeedsTriage     int
-	item0KeyDisplayName      string
-	item0Title               string
-	item0Created             string
-	item0Updated             string
-	hoursPerDay              float32
-	daysPerWeek              float32
+	filename                    string
+	buildDateRFC3339FullDate    string
+	generateDateRFC3339DateTime string
+	itemCount                   int
+	itemCountInProgress         int
+	itemCountNeedsTriage        int
+	item0KeyDisplayName         string
+	item0Title                  string
+	item0Created                string
+	item0Updated                string
+	hoursPerDay                 float32
+	daysPerWeek                 float32
 }{
 	{
-		"testdata/example_jira_mongodb_new-issues.xml", "2022-07-20",
+		"testdata/example_jira_mongodb_new-issues.xml", "2022-07-20", "2023-07-28T01:07:16Z",
 		20, 3, 6, "SERVER-79445", "[SERVER-79445] Consider upgrading PCRE2",
 		"2023-07-28T00:11:05Z", "2023-07-28T01:00:50Z", 8, 5},
 	{
-		"testdata/example_jira_mongodb_resolved-recently.xml", "2022-07-20",
+		"testdata/example_jira_mongodb_resolved-recently.xml", "2022-07-20", "2023-07-30T15:16:35Z",
 		20, 3, 6, "SERVER-79005", "[SERVER-79005] [SBE] Call registerSlot() lazily for certain variables",
 		"2023-07-15T20:07:23Z", "2023-07-30T13:28:35Z", 8, 5},
 }
 
 func TestReadFile(t *testing.T) {
 	for _, tt := range readFileTests {
-		j, err := ReadFile(tt.filename)
+		j, dtGenerate, err := ReadFileWithDate(tt.filename)
 		if err != nil {
 			t.Errorf("jiraxml.ReadFile(\"%s\") error: (%s)", tt.filename, err.Error())
 		}
-		dt, err := j.Channel.BuildInfo.BuildDate.Time()
+		if dtGenerate.Format(time.RFC3339) != tt.generateDateRFC3339DateTime {
+			t.Errorf("file (%s) generateDate mismatch: want (%s), got (%s)", tt.filename, tt.generateDateRFC3339DateTime, dtGenerate.Format(time.RFC3339))
+		}
+		dtBuild, err := j.Channel.BuildInfo.BuildDate.Time()
 		if err != nil {
 			t.Errorf("BuildDate.Time() error: (%s)", err.Error())
 		}
-		if dt.Format(timeutil.RFC3339FullDate) != tt.buildDateRFC3339FullDate {
-			t.Errorf("file (%s) BuildDate.Time() mismatch: want (%s), got (%s)", tt.filename, tt.buildDateRFC3339FullDate, dt.Format(timeutil.RFC3339FullDate))
+		if dtBuild.Format(timeutil.RFC3339FullDate) != tt.buildDateRFC3339FullDate {
+			t.Errorf("file (%s) BuildDate.Time() mismatch: want (%s), got (%s)", tt.filename, tt.buildDateRFC3339FullDate, dtBuild.Format(timeutil.RFC3339FullDate))
 		}
 		// fmtutil.PrintJSON(j)
 		stats := j.Channel.Issues.Stats(tt.hoursPerDay, tt.daysPerWeek)
