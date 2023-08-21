@@ -14,11 +14,10 @@
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
  [license-url]: https://github.com/grokify/go-jiraxml/blob/master/LICENSE
 
-JiraXML currently parses a Jira XML file consisting of multiple issues.
+This module contains code to accss Jira, parsing both the JSON API via [`github.com/andygrunwald/go-jira`](https://github.com/andygrunwald/go-jira) in `jirarest` and code to parse a Jira XML file in `jiraxml`.
 
-In addition to parsing the Jira XML into a Go struct, various aggregate staticstics are calculated.
+Various aggregate staticstics and reports are calculated/generated.
 
-The ability to generate a `jiraxml.Issue` struct from a JSON API struct defined by [`github.com/andygrunwald/go-jira`](https://github.com/andygrunwald/go-jira) is also under development.
 
 ## URL Formats
 
@@ -26,6 +25,13 @@ Accessing a list of issues by JQL is avialable via the UI and API:
 
 * UI: `https://{jira_host}/issues/?jql=`
 * API: `https://{jira_host}/rest/api/2/search?jql=`
+
+### REST API Authentication: Basic Auth
+
+The API auth can be provided by Basic Auth using an personsal API Token.
+
+* Docs: https://developer.atlassian.com/cloud/jira/platform/basic-auth-for-rest-apis/
+* Token Page: https://id.atlassian.com/manage-profile/security/api-tokens
 
 ## Note on Hours Per Day and Days Per Week
 
@@ -57,3 +63,25 @@ Ref: https://community.atlassian.com/t5/Jira-questions/JIRA-Issue-XML-Export-Wha
 Working Hours Per Day and Working Days Per Week are global values and cannot be set on a per-project basis.
 
 Ref: https://community.atlassian.com/t5/Jira-Software-questions/Time-Tracking-Hours-Is-it-still-a-global-change/qaq-p/1337399
+
+# JQL Examples
+
+| Goal | Example |
+|------|---------|
+| Query by key | key = ABC-123 |
+| Query by parent | parent = ABC-123 |
+| Query by linked issue | issue in linkedIssues (ABC-123) |
+| Query by reporter | reporter = "foo@bar.com" |
+
+https://community.atlassian.com/t5/Jira-questions/How-to-search-all-linked-issues-with-issues-from-specific/qaq-p/1027269
+
+# Backlog
+
+Downloading the project backlog view appears to be challenging. Here is some info on attempts to do this.
+
+* [What is the equivalent JQL query for a scrum board backlog](https://community.atlassian.com/t5/Jira-Software-questions/What-is-the-equivalent-JQL-query-for-a-scrum-board-backlog/qaq-p/868136)
+* [How can I export the Backlog to csv or Excel or TXT?](https://community.atlassian.com/t5/Jira-Software-questions/How-can-I-export-the-Backlog-to-csv-or-Excel-or-TXT/qaq-p/1322548)
+
+Roughly:
+
+`project = <project_name> AND resolution = Unresolved AND status!=Closed AND (Sprint not in openSprints() OR Sprint is EMPTY) AND type not in (Epic, Sub-Task) ORDER BY Rank ASC`
