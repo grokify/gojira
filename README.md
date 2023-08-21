@@ -5,14 +5,14 @@
 [![Docs][docs-godoc-svg]][docs-godoc-url]
 [![License][license-svg]][license-url]
 
- [build-status-svg]: https://github.com/grokify/go-jiraxml/workflows/build/badge.svg
- [build-status-url]: https://github.com/grokify/go-jiraxml/actions
- [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/go-jiraxml
- [goreport-url]: https://goreportcard.com/report/github.com/grokify/go-jiraxml
- [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/grokify/go-jiraxml
- [docs-godoc-url]: https://pkg.go.dev/github.com/grokify/go-jiraxml
+ [build-status-svg]: https://github.com/grokify/gojira/workflows/build/badge.svg
+ [build-status-url]: https://github.com/grokify/gojira/actions
+ [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/gojira
+ [goreport-url]: https://goreportcard.com/report/github.com/grokify/gojira
+ [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/grokify/gojira
+ [docs-godoc-url]: https://pkg.go.dev/github.com/grokify/gojira
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
- [license-url]: https://github.com/grokify/go-jiraxml/blob/master/LICENSE
+ [license-url]: https://github.com/grokify/gojira/blob/master/LICENSE
 
 This module contains code to access Jira, parsing both the JSON API via [`github.com/andygrunwald/go-jira`](https://github.com/andygrunwald/go-jira) in `jirarest` and code to parse a Jira XML file in `jiraxml`.
 
