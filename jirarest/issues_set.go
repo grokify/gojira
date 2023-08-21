@@ -157,7 +157,7 @@ func (is *IssuesSet) TimeStats() TimeStats {
 		if iss.Fields == nil {
 			continue
 		}
-		timeRemainingOriginal, timeRemaining := TimeRemaining(iss.Fields.Status.Name, iss.Fields.TimeOriginalEstimate, iss.Fields.TimeEstimate, iss.Fields.TimeSpent)
+		timeRemainingOriginal, timeRemaining := gojira.TimeRemaining(iss.Fields.Status.Name, iss.Fields.TimeOriginalEstimate, iss.Fields.TimeEstimate, iss.Fields.TimeSpent)
 		ts.TimeSpent += iss.Fields.TimeSpent
 		ts.TimeEstimate += iss.Fields.TimeEstimate
 		ts.TimeOriginalEstimate += iss.Fields.TimeOriginalEstimate

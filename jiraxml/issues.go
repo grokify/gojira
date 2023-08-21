@@ -2,7 +2,6 @@ package jiraxml
 
 import (
 	"strings"
-	"time"
 
 	"github.com/grokify/gocharts/v2/data/histogram"
 	"github.com/grokify/gocharts/v2/data/table"
@@ -42,7 +41,7 @@ func (ii Issues) Keys() []string {
 	return stringsutil.SliceCondenseSpace(keys, true, true)
 }
 
-func (ii Issues) Stats(workingHoursPerDay, workingDaysPerWeek float32) IssuesStats {
+func (ii Issues) Stats(workingHoursPerDay, workingDaysPerWeek float32) gojira.IssuesStats {
 	if workingHoursPerDay == 0 {
 		workingHoursPerDay = gojira.WorkingHoursPerDayDefault
 	}
@@ -50,14 +49,14 @@ func (ii Issues) Stats(workingHoursPerDay, workingDaysPerWeek float32) IssuesSta
 		workingDaysPerWeek = gojira.WorkingDaysPerWeekDefault
 	}
 	workingHoursPerDay64 := float64(workingHoursPerDay)
-	stats := IssuesStats{
+	stats := gojira.IssuesStats{
 		WorkingHoursPerDay:     workingHoursPerDay,
 		WorkingDaysPerWeek:     workingDaysPerWeek,
 		ItemCount:              len(ii),
 		ItemCountByStatus:      map[string]int{},
 		ItemCountByType:        map[string]int{},
-		EstimateStatsByType:    map[string]EstimateStats{},
-		ClosedEstimateVsActual: EstimateVsActual{},
+		EstimateStatsByType:    map[string]gojira.EstimateStats{},
+		ClosedEstimateVsActual: gojira.EstimateVsActual{},
 	}
 	for _, it := range ii {
 		stats.TimeOriginalEstimate += it.TimeOriginalEstimate.Duration()
@@ -66,7 +65,7 @@ func (ii Issues) Stats(workingHoursPerDay, workingDaysPerWeek float32) IssuesSta
 		stats.ItemCountByType[it.Type.DisplayName]++
 		esStats, ok := stats.EstimateStatsByType[it.Type.DisplayName]
 		if !ok {
-			esStats = EstimateStats{}
+			esStats = gojira.EstimateStats{}
 		}
 		if it.TimeOriginalEstimate.Seconds > 0 {
 			esStats.WithEstimate++
@@ -89,6 +88,7 @@ func (ii Issues) Stats(workingHoursPerDay, workingDaysPerWeek float32) IssuesSta
 	return stats
 }
 
+/*
 type IssuesStats struct {
 	WorkingHoursPerDay       float32
 	WorkingDaysPerWeek       float32
@@ -121,6 +121,7 @@ func (eva *EstimateVsActual) Inflate() {
 		eva.EstimateRatio = eva.ActualDays / eva.EstimateDays
 	}
 }
+*/
 
 // TSRHistogramSets returns a `*histogram.HistogramSets` for Type, Status and Resolution.
 func (ii Issues) TSRHistogramSets(name string) *histogram.HistogramSets {
