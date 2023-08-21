@@ -90,6 +90,6 @@ func GetIssuesSetForKeys(client *jira.Client, keys []string) (IssuesSet, error) 
 		return is, nil
 	}
 
-	is.Add(ii...)
-	return is, nil
+	err = is.Add(ii...)
+	return is, err
 }

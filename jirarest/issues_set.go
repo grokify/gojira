@@ -11,7 +11,6 @@ import (
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/gocharts/v2/data/histogram"
 	"github.com/grokify/gocharts/v2/data/table"
-	"github.com/grokify/mogo/fmt/fmtutil"
 	"github.com/grokify/mogo/net/urlutil"
 	"github.com/grokify/mogo/strconv/strconvutil"
 	"github.com/grokify/mogo/text/markdown"
@@ -119,7 +118,10 @@ func (is *IssuesSet) InflateEpics(jclient *jira.Client, customFieldIDEpicLink st
 		}
 	}
 	epicsSet := NewEpicsSet()
-	epicsSet.GetKeys(jclient, newEpicKeys)
+	err := epicsSet.GetKeys(jclient, newEpicKeys)
+	if err != nil {
+		return err
+	}
 
 	for k, iss := range is.IssuesMap {
 		issEpicKey := strings.TrimSpace(IssueFieldsCustomFieldString(iss.Fields, customFieldIDEpicLink))
@@ -182,7 +184,6 @@ func (tss TimeStatsSets) AddIssue(iss jira.Issue) {
 	if iss.Fields == nil {
 		return
 	}
-
 }
 
 type TimeStatsSet struct {
@@ -290,7 +291,6 @@ func (is *IssuesSet) Table(baseURL string, customCols *CustomTableCols) (table.T
 			if name != "" {
 				tbl.Columns = append(tbl.Columns, name)
 			} else {
-
 				tbl.Columns = append(tbl.Columns, fmt.Sprintf("Column %d", j+1))
 			}
 		}
@@ -309,12 +309,6 @@ func (is *IssuesSet) Table(baseURL string, customCols *CustomTableCols) (table.T
 				epicKeyURL := BuildJiraIssueURL(baseURL, ifs.EpicKey())
 				epicKeyDisplay = markdown.Linkify(epicKeyURL, ifs.EpicKey())
 			}
-		}
-
-		if 1 == 0 && key == "RQ-14159" {
-			fmtutil.PrintJSON(iss.Fields.Epic)
-			fmtutil.PrintJSON(iss)
-			panic("Z")
 		}
 
 		timeRemainingSecs := iss.Fields.TimeEstimate - iss.Fields.TimeSpent

@@ -37,8 +37,8 @@ type CustomField struct {
 
 type CustomFieldSchema struct {
 	Type     string `json:"type"`
-	Custom   string `json:'custom"`
-	CustomID int    `json:'customId"`
+	Custom   string `json:"custom"`
+	CustomID int    `json:"customId"`
 }
 
 func GetCustomFields(client *http.Client, serverURL string) (CustomFields, error) {
@@ -163,7 +163,7 @@ func IssueFieldsCustomFieldString(fields *jira.IssueFields, id string) string {
 	return strings.TrimSpace(val)
 }
 
-// GetCustomValueString attemps to return a string if either the custom value is a simple string
+// GetCustomValueString attempts to return a string if either the custom value is a simple string
 // or is an `IssueCustomField`, in which case it returns the `value` property.
 func GetCustomValueString(iss jira.Issue, customFieldKey string) (string, error) {
 	if iss.Fields == nil {
