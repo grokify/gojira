@@ -1,4 +1,4 @@
-module github.com/grokify/go-jiraxml
+module github.com/grokify/gojira
 
 go 1.19
 
