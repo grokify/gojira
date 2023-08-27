@@ -17,42 +17,16 @@ import (
 	"github.com/grokify/mogo/type/slicesutil"
 )
 
-/*
-const (
-	WorkingHoursPerDayDefault float32 = 8.0
-	WorkingDaysPerWeekDefault float32 = 5.0
-)
-
-type Config struct {
-	WorkingHoursPerDay float32
-	WorkingDaysPerWeek float32
-}
-
-func (c *Config) SecondsToDays(sec int) float32 {
-	return float32(sec) / 60 / 60 / c.WorkingHoursPerDay
-}
-
-func (c *Config) SecondsToDaysString(sec int) string {
-	return strconvutil.FormatFloat64Simple(float64(c.SecondsToDays(sec)))
-}
-
-func NewConfigDefault() *Config {
-	return &Config{
-		WorkingHoursPerDay: WorkingHoursPerDayDefault,
-		WorkingDaysPerWeek: WorkingDaysPerWeekDefault}
-}
-*/
-
 type IssuesSet struct {
 	Config    *gojira.Config
 	IssuesMap map[string]jira.Issue
 }
 
-func NewIssuesSet(cfg *gojira.Config) IssuesSet {
+func NewIssuesSet(cfg *gojira.Config) *IssuesSet {
 	if cfg == nil {
 		cfg = gojira.NewConfigDefault()
 	}
-	return IssuesSet{
+	return &IssuesSet{
 		Config:    cfg,
 		IssuesMap: map[string]jira.Issue{},
 	}
@@ -70,6 +44,35 @@ func (is *IssuesSet) Add(issues ...jira.Issue) error {
 		}
 	}
 	return nil
+}
+
+func (is *IssuesSet) FilterByStatus(inclStatuses, exclStatuses []string) *IssuesSet {
+	filteredIssuesSet := NewIssuesSet(is.Config)
+	inclStatusesMap := map[string]int{}
+	for _, s := range inclStatuses {
+		inclStatusesMap[s]++
+	}
+	exclStatusesMap := map[string]int{}
+	for _, s := range exclStatuses {
+		exclStatusesMap[s]++
+	}
+	for _, iss := range is.IssuesMap {
+		if iss.Fields == nil {
+			continue
+		}
+		ifs := IssueFieldsSimple{Fields: iss.Fields}
+		statusName := ifs.StatusName()
+		_, inclStatusOk := inclStatusesMap[statusName]
+		_, exclStatusOk := exclStatusesMap[statusName]
+		if len(inclStatusesMap) > 0 && !inclStatusOk {
+			continue
+		}
+		if len(exclStatuses) > 0 && exclStatusOk {
+			continue
+		}
+		filteredIssuesSet.Add(iss)
+	}
+	return filteredIssuesSet
 }
 
 func (is *IssuesSet) EpicKeys(customFieldID string) []string {
@@ -148,28 +151,6 @@ func (is *IssuesSet) Issues() Issues {
 	return ii
 }
 
-func (is *IssuesSet) TimeStats() gojira.TimeStats {
-	ts := gojira.TimeStats{
-		WorkingDaysPerWeek: is.Config.WorkingDaysPerWeek,
-		WorkingHoursPerDay: is.Config.WorkingHoursPerDay,
-	}
-	for _, iss := range is.IssuesMap {
-		if iss.Fields == nil {
-			continue
-		}
-		timeRemainingOriginal, timeRemaining := gojira.TimeRemaining(iss.Fields.Status.Name, iss.Fields.TimeOriginalEstimate, iss.Fields.TimeEstimate, iss.Fields.TimeSpent)
-		ts.TimeSpent += iss.Fields.TimeSpent
-		ts.TimeEstimate += iss.Fields.TimeEstimate
-		ts.TimeOriginalEstimate += iss.Fields.TimeOriginalEstimate
-		ts.AggregateTimeOriginalEstimate += iss.Fields.AggregateTimeOriginalEstimate
-		ts.AggregateTimeSpent += iss.Fields.AggregateTimeSpent
-		ts.AggregateTimeEstimate += iss.Fields.AggregateTimeEstimate
-		ts.TimeRemaining += timeRemaining
-		ts.TimeRemainingOriginal += timeRemainingOriginal
-	}
-	return ts
-}
-
 func (is *IssuesSet) WriteJSONFile(filename string) error {
 	b, err := json.Marshal(is)
 	if err != nil {
@@ -178,7 +159,7 @@ func (is *IssuesSet) WriteJSONFile(filename string) error {
 	return os.WriteFile(filename, b, 0600)
 }
 
-func (is *IssuesSet) HistogramSets(baseURL string) *histogram.HistogramSets {
+func (is *IssuesSet) HistogramSets() *histogram.HistogramSets {
 	hsets := histogram.NewHistogramSets("issues")
 
 	for _, iss := range is.IssuesMap {
@@ -231,8 +212,8 @@ func BuildJiraIssueURL(baseURL, issueKey string) string {
 	return urlutil.JoinAbsolute(baseURL, "/browse/", issueKey)
 }
 
-func (is *IssuesSet) Table(baseURL string, customCols *CustomTableCols) (table.Table, error) {
-	baseURL = strings.TrimSpace(baseURL)
+func (is *IssuesSet) Table(customCols *CustomTableCols) (table.Table, error) {
+	baseURL := strings.TrimSpace(is.Config.BaseURL)
 
 	if is.Config == nil {
 		is.Config = gojira.NewConfigDefault()
@@ -321,46 +302,4 @@ func (is *IssuesSet) Table(baseURL string, customCols *CustomTableCols) (table.T
 		tbl.Rows = append(tbl.Rows, row)
 	}
 	return tbl, nil
-}
-
-type IssueFieldsSimple struct {
-	Fields *jira.IssueFields
-}
-
-func (ifs IssueFieldsSimple) EpicKey() string {
-	if ifs.Fields == nil || ifs.Fields.Epic == nil {
-		return ""
-	} else {
-		return ifs.Fields.Epic.Key
-	}
-}
-
-func (ifs IssueFieldsSimple) EpicName() string {
-	if ifs.Fields == nil || ifs.Fields.Epic == nil {
-		return ""
-	} else {
-		if ifs.Fields.Epic.Name != "" {
-			return ifs.Fields.Epic.Name
-		}
-		if ifs.Fields.Epic.Summary != "" {
-			return ifs.Fields.Epic.Summary
-		}
-		return " "
-	}
-}
-
-func (ifs IssueFieldsSimple) ResolutionName() string {
-	if ifs.Fields == nil || ifs.Fields.Resolution == nil {
-		return ""
-	} else {
-		return ifs.Fields.Resolution.Name
-	}
-}
-
-func (ifs IssueFieldsSimple) StatusName() string {
-	if ifs.Fields == nil || ifs.Fields.Status == nil {
-		return ""
-	} else {
-		return ifs.Fields.Status.Name
-	}
 }
