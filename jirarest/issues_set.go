@@ -46,7 +46,7 @@ func (is *IssuesSet) Add(issues ...jira.Issue) error {
 	return nil
 }
 
-func (is *IssuesSet) FilterByStatus(inclStatuses, exclStatuses []string) *IssuesSet {
+func (is *IssuesSet) FilterByStatus(inclStatuses, exclStatuses []string) (*IssuesSet, error) {
 	filteredIssuesSet := NewIssuesSet(is.Config)
 	inclStatusesMap := map[string]int{}
 	for _, s := range inclStatuses {
@@ -70,9 +70,12 @@ func (is *IssuesSet) FilterByStatus(inclStatuses, exclStatuses []string) *Issues
 		if len(exclStatuses) > 0 && exclStatusOk {
 			continue
 		}
-		filteredIssuesSet.Add(iss)
+		err := filteredIssuesSet.Add(iss)
+		if err != nil {
+			return nil, err
+		}
 	}
-	return filteredIssuesSet
+	return filteredIssuesSet, nil
 }
 
 func (is *IssuesSet) EpicKeys(customFieldID string) []string {
