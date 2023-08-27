@@ -6,6 +6,7 @@ import (
 
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/goauth"
+	"github.com/grokify/gojira"
 )
 
 func UserPassCredsBasic(filename, credsKey string) (*goauth.CredentialsBasicAuth, error) {
@@ -19,7 +20,7 @@ func UserPassCredsBasic(filename, credsKey string) (*goauth.CredentialsBasicAuth
 		return nil, err
 	}
 
-	return &creds.Basic, nil
+	return creds.Basic, nil
 }
 
 func ClientsBasicAuthFile(filename, credsKey string) (*http.Client, *jira.Client, string, error) {
@@ -79,7 +80,17 @@ func SearchIssues(client *jira.Client, jql string) (Issues, error) {
 	return issues, err
 }
 
-func GetIssuesSetForKeys(client *jira.Client, keys []string) (IssuesSet, error) {
+func SearchIssuesSetForJQL(client *jira.Client, jql string, cfg *gojira.Config) (*IssuesSet, error) {
+	ii, err := SearchIssues(client, jql)
+	if err != nil {
+		return nil, err
+	}
+	is := NewIssuesSet(cfg)
+	err = is.Add(ii...)
+	return is, err
+}
+
+func GetIssuesSetForKeys(client *jira.Client, keys []string) (*IssuesSet, error) {
 	is := NewIssuesSet(nil)
 	jql := KeysJQL(keys)
 	if jql == "" {
