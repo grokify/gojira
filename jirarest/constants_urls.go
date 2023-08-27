@@ -6,6 +6,18 @@ const (
 	StatusDone         = "Done"
 	StatusOpen         = "Open"
 	StatusCustomClosed = "Closed"
+
+	MaxResults    = uint(1000)
+	MetaParamRank = "_rank"
+
+	TimeTimeSpent                     = "Time Spent"
+	TimeTimeEstimate                  = "Time Estimate"
+	TimeTimeOriginalEstimate          = "Time Original Estimate"
+	TimeAggregateTimeOriginalEstimate = "Aggregate Time Original Estimate"
+	TimeAggregateTimeSpent            = "Aggregate Time Spent"
+	TimeAggregateTimeEstimate         = "Aggregate Time Estimate"
+	TimeTimeRemaining                 = "Time Remaining"
+	TimeTimeRemainingOriginal         = "Time Remaining Original"
 )
 
 type Status struct {
