@@ -22,6 +22,8 @@ const (
 	CustomFieldNameEpicLink = "Epic Link"
 )
 
+type CustomFields []CustomField
+
 type CustomField struct {
 	ID               string            `json:"id"` // "customfield_12345"
 	Key              string            `json:"key"`
@@ -59,6 +61,10 @@ func GetCustomFields(client *http.Client, serverURL string) (CustomFields, error
 }
 
 func GetCustomFieldEpicLink(client *http.Client, serverURL string) (CustomField, error) {
+	return GetCustomField(client, serverURL, CustomFieldNameEpicLink)
+}
+
+func GetCustomField(client *http.Client, serverURL, customFieldName string) (CustomField, error) {
 	if client == nil {
 		client = &http.Client{}
 	}
@@ -66,14 +72,12 @@ func GetCustomFieldEpicLink(client *http.Client, serverURL string) (CustomField,
 	if err != nil {
 		return CustomField{}, err
 	}
-	cfsName := cfs.FilterByNames(CustomFieldNameEpicLink)
+	cfsName := cfs.FilterByNames(customFieldName)
 	if len(cfsName) != 1 {
 		return CustomField{}, errors.New("epic link custom field not found")
 	}
 	return cfsName[0], nil
 }
-
-type CustomFields []CustomField
 
 func (cfs CustomFields) SortByName(asc bool) CustomFields {
 	if asc {
