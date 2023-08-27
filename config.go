@@ -7,6 +7,7 @@ import (
 )
 
 type Config struct {
+	BaseURL            string
 	WorkingHoursPerDay float32
 	WorkingDaysPerWeek float32
 }
