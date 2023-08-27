@@ -7,8 +7,10 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 
-	jira "github.com/andygrunwald/go-jira"
+	"github.com/grokify/gojira"
+	"github.com/grokify/mogo/net/http/httpsimple"
 )
 
 // project = foundation AND resolution = Unresolved AND status!=Closed AND (Sprint not in openSprints() OR Sprint is EMPTY) AND type not in (Epic, Sub-Task) ORDER BY Rank ASC
@@ -39,32 +41,89 @@ func Prepend[S ~[]E, E any](s []E        , e E) []E   {
 	return append     {[]E{e }  ,   s...  }
 }*/
 
+const (
+	ParamFields        = "fields"
+	ParamJQL           = "jql"
+	ParamMaxResults    = "maxResults"
+	ParamStartAt       = "startAt"
+	ParamValidateQuery = "validateQuery"
+)
+
+type BoardBacklogParams struct {
+	StartAt       uint   `url:"startAt"`
+	MaxResults    uint   `url:"maxResults"`
+	JQL           string `url:"jql"`
+	ValidateQuery bool   `url:"validateQuery"`
+	Fields        string `url:"fields"`
+	Expand        string `url:"expand"`
+}
+
+func (p BoardBacklogParams) URLValues() url.Values {
+	u := url.Values{}
+	if p.StartAt > 0 {
+		u.Add(ParamStartAt, strconv.Itoa(int(p.StartAt)))
+	}
+	if p.MaxResults > 0 {
+		u.Add(ParamMaxResults, strconv.Itoa(int(p.MaxResults)))
+	}
+	jql := strings.TrimSpace(p.JQL)
+	if jql != "" {
+		u.Add(ParamJQL, jql)
+		if p.ValidateQuery {
+			u.Add(ParamValidateQuery, "true")
+		} else {
+			u.Add(ParamValidateQuery, "false) ")
+		}
+	}
+	fields := strings.TrimSpace(p.Fields)
+	if fields != "" {
+		u.Add(ParamFields, fields)
+	}
+	return u
+}
+
 // BacklogAPIURL returns a backlog issues API URL described at https://docs.atlassian.com/jira-software/REST/7.3.1/ .
-func BacklogAPIURL(baseURL string, boardID, startAt, maxResults uint) string {
+// The description is here: Returns all issues from the board's backlog, for the given board Id. This only includes issues that the user has permission to view. The backlog contains incomplete issues that are not assigned to any future or active sprint. Note, if the user does not have permission to view the board, no issues will be returned at all. Issues returned from this resource include Agile fields, like sprint, closedSprints, flagged, and epic. By default, the returned issues are ordered by rank.
+// Reference: https://docs.atlassian.com/jira-software/REST/7.3.1/#agile/1.0/board-getIssuesForBacklog
+func BacklogAPIURL(baseURL string, boardID uint, qry *BoardBacklogParams) string {
 	apiURL := baseURL + fmt.Sprintf(`/rest/agile/1.0/board/%d/backlog`, boardID)
-	v := url.Values{}
-	if startAt != 0 {
-		v["startAt"] = []string{strconv.Itoa(int(startAt))}
-	}
-	if maxResults != 0 {
-		v["maxResults"] = []string{strconv.Itoa(int(maxResults))}
-	}
-	qry := v.Encode()
-	if len(qry) > 0 {
-		apiURL += "?" + qry
+	if qry != nil {
+		v := qry.URLValues()
+		q := strings.TrimSpace(v.Encode())
+		if q != "" {
+			apiURL += "?" + q
+		}
 	}
 	return apiURL
 }
 
-func GetBacklogIssuesResponse(client *http.Client, baseURL string, boardID, startAt, maxResults uint) (*IssuesResponse, []byte, error) {
-	if client == nil {
+type BacklogService struct {
+	config  gojira.Config
+	sclient httpsimple.SimpleClient
+	// client    *http.Client
+	// serverURL string
+}
+
+func NewBacklogService(client *http.Client, cfg *gojira.Config) *BacklogService {
+	return &BacklogService{
+		config: *cfg,
+		sclient: httpsimple.SimpleClient{
+			HTTPClient: client,
+			BaseURL:    cfg.BaseURL}}
+}
+
+func (s *BacklogService) GetBacklogIssuesResponse(boardID uint, qry *BoardBacklogParams) (*IssuesResponse, []byte, error) {
+	if s.sclient.HTTPClient == nil {
 		return nil, []byte{}, errors.New("client not set")
 	}
-	apiURL := BacklogAPIURL(baseURL, boardID, startAt, maxResults)
-	fmt.Printf("API URL: (%s)\n", apiURL)
-	resp, err := client.Get(apiURL)
+	sreq := httpsimple.SimpleRequest{
+		Method: http.MethodGet,
+		URL:    BacklogAPIURL("", boardID, nil),
+		Query:  qry.URLValues(),
+	}
+	resp, err := s.sclient.Do(sreq)
 	if err != nil {
-		return nil, []byte{}, errors.New("client not set")
+		return nil, []byte{}, err
 	} else if resp.StatusCode >= 300 {
 		return nil, []byte{}, fmt.Errorf("statusCode (%d)", resp.StatusCode)
 	}
@@ -76,14 +135,18 @@ func GetBacklogIssuesResponse(client *http.Client, baseURL string, boardID, star
 	return ir, b, err
 }
 
-func GetBacklogIssuesAll(client *http.Client, baseURL string, boardID uint) (*IssuesResponse, [][]byte, error) {
+func (s *BacklogService) GetBacklogIssuesAll(boardID uint, jql string) (*IssuesResponse, [][]byte, error) {
 	iragg := &IssuesResponse{}
 	bb := [][]byte{}
-	issues := []jira.Issue{}
-	startAt := uint(0)
-	maxResults := uint(1000)
+	issues := Issues{}
+
+	opts := &BoardBacklogParams{
+		StartAt:    uint(0),
+		MaxResults: MaxResults,
+		JQL:        jql,
+	}
 	for {
-		ir, b, err := GetBacklogIssuesResponse(client, baseURL, boardID, startAt, maxResults)
+		ir, b, err := s.GetBacklogIssuesResponse(boardID, opts)
 		if err != nil {
 			return iragg, bb, err
 		} else {
@@ -96,13 +159,22 @@ func GetBacklogIssuesAll(client *http.Client, baseURL string, boardID uint) (*Is
 		} else {
 			break
 		}
-		fmt.Printf("TOTAL (%d)\n", ir.Total)
-		if startAt+maxResults > uint(ir.Total) {
+		if opts.StartAt+opts.MaxResults > uint(ir.Total) {
 			break
 		} else {
-			startAt += maxResults
+			opts.StartAt += opts.MaxResults
 		}
 	}
-	iragg.Issues = issues
+	iragg.Issues = issues.AddRank()
 	return iragg, bb, nil
+}
+
+func (s *BacklogService) GetBacklogIssuesSetAll(boardID uint, jql string) (*IssuesSet, [][]byte, error) {
+	iir, b, err := s.GetBacklogIssuesAll(boardID, jql)
+	if err != nil {
+		return nil, b, err
+	}
+	is := NewIssuesSet(&s.config)
+	is.Add(iir.Issues...)
+	return is, b, err
 }
