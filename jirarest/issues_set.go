@@ -12,6 +12,7 @@ import (
 	"github.com/grokify/gocharts/v2/data/histogram"
 	"github.com/grokify/gocharts/v2/data/table"
 	"github.com/grokify/gojira"
+	"github.com/grokify/mogo/encoding/jsonutil"
 	"github.com/grokify/mogo/net/urlutil"
 	"github.com/grokify/mogo/text/markdown"
 	"github.com/grokify/mogo/type/slicesutil"
@@ -305,4 +306,12 @@ func (is *IssuesSet) Table(customCols *CustomTableCols) (table.Table, error) {
 		tbl.Rows = append(tbl.Rows, row)
 	}
 	return tbl, nil
+}
+
+func (is *IssuesSet) WriteFileJSON(name, prefix, indent string) error {
+	j, err := jsonutil.MarshalSimple(is, prefix, indent)
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(name, j, 0600)
 }
