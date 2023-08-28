@@ -91,8 +91,8 @@ github.com/grokify/goauth v0.20.0 h1:oap7QNuYYDHdyP766fD4hadA36Pb9vqzU9mQGxDLPe4
 github.com/grokify/goauth v0.20.0/go.mod h1:zL8sVMhZXhdRAaVo/Mpe6iVbttLnkF6z2DnU2yw5GAo=
 github.com/grokify/gocharts/v2 v2.11.0 h1:+N+e33IPYW5B980Vn5GMHSarB3uhet2PakldKtNfvYU=
 github.com/grokify/gocharts/v2 v2.11.0/go.mod h1:+3NOOOI5B3C1SHmZ0gP/W9bqqYarqALqy1/Az5eHqCM=
-github.com/grokify/mogo v0.54.0 h1:fKT5hNnPN5qRo0jE6QJf4L0vWV9hJxxVJNgC97PtVDI=
-github.com/grokify/mogo v0.54.0/go.mod h1:igRUlqAk0mRJxuPeLeTUhZ+FpUwAXsXutZ7nPKneUVA=
+github.com/grokify/mogo v0.54.1 h1:wbSPZDBLOGt5kDL1SrG+bvKgvK8iK9vV1DyMHQmLXTg=
+github.com/grokify/mogo v0.54.1/go.mod h1:igRUlqAk0mRJxuPeLeTUhZ+FpUwAXsXutZ7nPKneUVA=
 github.com/grpc-ecosystem/grpc-gateway v1.16.0/go.mod h1:BDjrQk3hbvj6Nolgz8mAMFbcEtjT1g+wF4CSlocrBnw=
 github.com/huandu/xstrings v1.4.0 h1:D17IlohoQq4UcpqD7fDk80P7l+lwAmlFaBHgOipl2FU=
 github.com/huandu/xstrings v1.4.0/go.mod h1:y5/lhBue+AyNmUVz9RLU9xbLR0o4KIIExikq4ovT0aE=
