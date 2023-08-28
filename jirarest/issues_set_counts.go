@@ -7,7 +7,7 @@ import (
 
 func (is *IssuesSet) Counts() map[string]map[string]uint {
 	mm := map[string]map[string]uint{
-		"byProject": is.CountsbByProject(),
+		"byProject": is.CountsByProject(),
 		"byStatus":  is.CountsByStatus(),
 		"byType":    is.CountsByType(),
 		"byTime":    is.CountsByTime(),
@@ -15,7 +15,7 @@ func (is *IssuesSet) Counts() map[string]map[string]uint {
 	return mm
 }
 
-func (is *IssuesSet) CountsbByProject() map[string]uint {
+func (is *IssuesSet) CountsByProject() map[string]uint {
 	m := map[string]uint{}
 	for _, iss := range is.IssuesMap {
 		if iss.Fields != nil {
@@ -29,8 +29,7 @@ func (is *IssuesSet) CountsByStatus() map[string]uint {
 	m := map[string]uint{}
 	for _, iss := range is.IssuesMap {
 		ifs := IssueFieldsSimple{Fields: iss.Fields}
-		statusName := ifs.StatusName()
-		m[statusName]++
+		m[ifs.StatusName()]++
 	}
 	return m
 }
