@@ -7,6 +7,7 @@ import (
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/goauth"
 	"github.com/grokify/gojira"
+	"github.com/grokify/mogo/errors/errorsutil"
 )
 
 func UserPassCredsBasic(filename, credsKey string) (*goauth.CredentialsBasicAuth, error) {
@@ -26,10 +27,13 @@ func UserPassCredsBasic(filename, credsKey string) (*goauth.CredentialsBasicAuth
 func ClientsBasicAuthFile(filename, credsKey string) (*http.Client, *jira.Client, string, error) {
 	hclient, serverURL, err := HTTPClientBasicAuthFile(filename, credsKey)
 	if err != nil {
-		return nil, nil, "", err
+		return nil, nil, "", errorsutil.Wrapf(err, `jirarest.ClientsBasicAuthFile() (%s)`, filename)
 	}
 	jclient, err := JiraClientBasicAuthFile(filename, credsKey)
-	return hclient, jclient, serverURL, err
+	if err != nil {
+		return hclient, jclient, serverURL, errorsutil.Wrap(err, `jirarest.ClientsBasicAuthFile()..JiraClientBasicAuthFile()`)
+	}
+	return hclient, jclient, serverURL, nil
 }
 
 func HTTPClientBasicAuthFile(filename, credsKey string) (hclient *http.Client, serverURL string, err error) {
