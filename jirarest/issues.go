@@ -1,11 +1,14 @@
 package jirarest
 
 import (
+	"encoding/json"
+	"os"
 	"strconv"
 
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/gocharts/v2/data/histogram"
 	"github.com/grokify/gojira"
+	"github.com/grokify/mogo/encoding/jsonutil"
 )
 
 type Issues []jira.Issue
@@ -52,4 +55,21 @@ func (ii Issues) IssuesSet(cfg *gojira.Config) (*IssuesSet, error) {
 	is := NewIssuesSet(cfg)
 	err := is.Add(ii...)
 	return is, err
+}
+
+func (ii Issues) WriteFileJSON(filename, prefix, indent string) error {
+	b, err := jsonutil.MarshalSimple(ii, prefix, indent)
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(filename, b, 0600)
+}
+
+func IssuesReadFileJSON(filename string) (Issues, error) {
+	ii := Issues{}
+	b, err := os.ReadFile(filename)
+	if err != nil {
+		return ii, err
+	}
+	return ii, json.Unmarshal(b, &ii)
 }
