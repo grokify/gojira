@@ -1,10 +1,10 @@
 package jirarest
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
+	"slices"
 	"sort"
 	"strings"
 
@@ -15,12 +15,14 @@ import (
 	"github.com/grokify/mogo/encoding/jsonutil"
 	"github.com/grokify/mogo/net/urlutil"
 	"github.com/grokify/mogo/text/markdown"
+	"github.com/grokify/mogo/type/maputil"
 	"github.com/grokify/mogo/type/slicesutil"
 )
 
 type IssuesSet struct {
 	Config    *gojira.Config
 	IssuesMap map[string]jira.Issue
+	Parents   *IssuesSet
 }
 
 func NewIssuesSet(cfg *gojira.Config) *IssuesSet {
@@ -45,6 +47,10 @@ func (is *IssuesSet) Add(issues ...jira.Issue) error {
 		}
 	}
 	return nil
+}
+
+func (is *IssuesSet) Keys() []string {
+	return maputil.Keys(is.IssuesMap)
 }
 
 func (is *IssuesSet) FilterByStatus(inclStatuses, exclStatuses []string) (*IssuesSet, error) {
@@ -147,20 +153,40 @@ func (is *IssuesSet) InflateEpics(jclient *jira.Client, customFieldIDEpicLink st
 	return nil
 }
 
+func (is *IssuesSet) FilterStatus(inclStatuses ...string) *IssuesSet {
+	n := NewIssuesSet(is.Config)
+	if len(inclStatuses) == 0 {
+		return n
+	}
+	for _, iss := range is.IssuesMap {
+		im := IssueMore{Issue: &iss}
+		if slices.Index(inclStatuses, im.Status()) >= 0 {
+			n.Add(iss)
+		}
+	}
+	return n
+}
+
+func (is *IssuesSet) FilterType(inclTypes ...string) *IssuesSet {
+	n := NewIssuesSet(is.Config)
+	if len(inclTypes) == 0 {
+		return n
+	}
+	for _, iss := range is.IssuesMap {
+		im := IssueMore{Issue: &iss}
+		if slices.Index(inclTypes, im.Type()) >= 0 {
+			n.Add(iss)
+		}
+	}
+	return n
+}
+
 func (is *IssuesSet) Issues() Issues {
 	ii := Issues{}
 	for _, iss := range is.IssuesMap {
 		ii = append(ii, iss)
 	}
 	return ii
-}
-
-func (is *IssuesSet) WriteJSONFile(filename string) error {
-	b, err := json.Marshal(is)
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(filename, b, 0600)
 }
 
 func (is *IssuesSet) HistogramSets() *histogram.HistogramSets {
@@ -246,6 +272,7 @@ func (is *IssuesSet) Table(customCols *CustomTableCols) (table.Table, error) {
 	}
 
 	for key, iss := range is.IssuesMap {
+		im := IssueMore{Issue: &iss}
 		ifs := IssueFieldsSimple{Fields: iss.Fields}
 
 		keyDisplay := key
@@ -269,13 +296,13 @@ func (is *IssuesSet) Table(customCols *CustomTableCols) (table.Table, error) {
 
 		row := []string{
 			epicKeyDisplay,
-			ifs.EpicName(),
-			iss.Fields.Project.Name,
-			iss.Fields.Type.Name,
+			im.EpicName(),
+			im.Project(),
+			im.Type(),
 			keyDisplay,
-			iss.Fields.Summary,
-			ifs.StatusName(),
-			ifs.ResolutionName(),
+			im.Summary(),
+			im.Status(),
+			im.Resolution(),
 			// strconv.Itoa(iss.Fields.AggregateTimeOriginalEstimate),
 			// strconv.Itoa(iss.Fields.TimeOriginalEstimate),
 			is.Config.SecondsToDaysString(iss.Fields.TimeOriginalEstimate),
