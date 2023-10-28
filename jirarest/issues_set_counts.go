@@ -7,10 +7,11 @@ import (
 
 func (is *IssuesSet) Counts() map[string]map[string]uint {
 	mm := map[string]map[string]uint{
-		"byProject": is.CountsByProject(),
-		"byStatus":  is.CountsByStatus(),
-		"byType":    is.CountsByType(),
-		"byTime":    is.CountsByTime(),
+		"byProject":    is.CountsByProject(),
+		"byProjectKey": is.CountsByProjectKey(),
+		"byStatus":     is.CountsByStatus(),
+		"byType":       is.CountsByType(),
+		"byTime":       is.CountsByTime(),
 	}
 	return mm
 }
@@ -18,9 +19,17 @@ func (is *IssuesSet) Counts() map[string]map[string]uint {
 func (is *IssuesSet) CountsByProject() map[string]uint {
 	m := map[string]uint{}
 	for _, iss := range is.IssuesMap {
-		if iss.Fields != nil {
-			m[iss.Fields.Project.Name]++
-		}
+		im := IssueMore{Issue: &iss}
+		m[im.Project()]++
+	}
+	return m
+}
+
+func (is *IssuesSet) CountsByProjectKey() map[string]uint {
+	m := map[string]uint{}
+	for _, iss := range is.IssuesMap {
+		im := IssueMore{Issue: &iss}
+		m[im.ProjectKey()]++
 	}
 	return m
 }
@@ -28,8 +37,9 @@ func (is *IssuesSet) CountsByProject() map[string]uint {
 func (is *IssuesSet) CountsByStatus() map[string]uint {
 	m := map[string]uint{}
 	for _, iss := range is.IssuesMap {
-		ifs := IssueFieldsSimple{Fields: iss.Fields}
-		m[ifs.StatusName()]++
+		im := IssueMore{Issue: &iss}
+		//ifs := IssueFieldsSimple{Fields: iss.Fields}
+		m[im.Status()]++
 	}
 	return m
 }
