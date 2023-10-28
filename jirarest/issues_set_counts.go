@@ -2,6 +2,7 @@ package jirarest
 
 import (
 	"github.com/grokify/gojira"
+	"github.com/grokify/mogo/pointer"
 	"github.com/grokify/mogo/time/timeutil"
 )
 
@@ -19,7 +20,7 @@ func (is *IssuesSet) Counts() map[string]map[string]uint {
 func (is *IssuesSet) CountsByProject() map[string]uint {
 	m := map[string]uint{}
 	for _, iss := range is.IssuesMap {
-		im := IssueMore{Issue: &iss}
+		im := IssueMore{Issue: pointer.Pointer(iss)}
 		m[im.Project()]++
 	}
 	return m
@@ -28,7 +29,7 @@ func (is *IssuesSet) CountsByProject() map[string]uint {
 func (is *IssuesSet) CountsByProjectKey() map[string]uint {
 	m := map[string]uint{}
 	for _, iss := range is.IssuesMap {
-		im := IssueMore{Issue: &iss}
+		im := IssueMore{Issue: pointer.Pointer(iss)}
 		m[im.ProjectKey()]++
 	}
 	return m
@@ -37,7 +38,7 @@ func (is *IssuesSet) CountsByProjectKey() map[string]uint {
 func (is *IssuesSet) CountsByStatus() map[string]uint {
 	m := map[string]uint{}
 	for _, iss := range is.IssuesMap {
-		im := IssueMore{Issue: &iss}
+		im := IssueMore{Issue: pointer.Pointer(iss)}
 		//ifs := IssueFieldsSimple{Fields: iss.Fields}
 		m[im.Status()]++
 	}
