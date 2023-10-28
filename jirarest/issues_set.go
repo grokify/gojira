@@ -13,6 +13,7 @@ import (
 	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/encoding/jsonutil"
 	"github.com/grokify/mogo/net/urlutil"
+	"github.com/grokify/mogo/pointer"
 	"github.com/grokify/mogo/text/markdown"
 	"github.com/grokify/mogo/type/maputil"
 	"github.com/grokify/mogo/type/slicesutil"
@@ -153,32 +154,38 @@ func (is *IssuesSet) InflateEpics(jclient *jira.Client, customFieldIDEpicLink st
 	return nil
 }
 
-func (is *IssuesSet) FilterStatus(inclStatuses ...string) *IssuesSet {
+func (is *IssuesSet) FilterStatus(inclStatuses ...string) (*IssuesSet, error) {
 	n := NewIssuesSet(is.Config)
 	if len(inclStatuses) == 0 {
-		return n
+		return n, nil
 	}
 	for _, iss := range is.IssuesMap {
-		im := IssueMore{Issue: &iss}
+		im := IssueMore{Issue: pointer.Pointer(iss)}
 		if slices.Index(inclStatuses, im.Status()) >= 0 {
-			n.Add(iss)
+			err := n.Add(iss)
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
-	return n
+	return n, nil
 }
 
-func (is *IssuesSet) FilterType(inclTypes ...string) *IssuesSet {
+func (is *IssuesSet) FilterType(inclTypes ...string) (*IssuesSet, error) {
 	n := NewIssuesSet(is.Config)
 	if len(inclTypes) == 0 {
-		return n
+		return n, nil
 	}
 	for _, iss := range is.IssuesMap {
-		im := IssueMore{Issue: &iss}
+		im := IssueMore{Issue: pointer.Pointer(iss)}
 		if slices.Index(inclTypes, im.Type()) >= 0 {
-			n.Add(iss)
+			err := n.Add(iss)
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
-	return n
+	return n, nil
 }
 
 func (is *IssuesSet) Issues() Issues {
@@ -272,7 +279,7 @@ func (is *IssuesSet) Table(customCols *CustomTableCols) (table.Table, error) {
 	}
 
 	for key, iss := range is.IssuesMap {
-		im := IssueMore{Issue: &iss}
+		im := IssueMore{Issue: pointer.Pointer(iss)}
 		ifs := IssueFieldsSimple{Fields: iss.Fields}
 
 		keyDisplay := key

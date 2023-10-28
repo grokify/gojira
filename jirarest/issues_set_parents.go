@@ -52,8 +52,7 @@ func (is *IssuesSet) RetrieveIssues(client *Client, ids []string) error {
 	if err != nil {
 		return err
 	}
-	is.Add(iss...)
-	return nil
+	return is.Add(iss...)
 }
 
 func (is *IssuesSet) UnknownParents() []string {
