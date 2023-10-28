@@ -22,6 +22,8 @@ const (
 	CustomFieldNameEpicLink = "Epic Link"
 )
 
+var ErrJiraRESTClientCannotBeNil = errors.New("jirarest.Client cannot be nil")
+
 type CustomFields []CustomField
 
 type CustomField struct {
@@ -43,13 +45,18 @@ type CustomFieldSchema struct {
 	CustomID int    `json:"customId"`
 }
 
-func GetCustomFields(client *http.Client, serverURL string) (CustomFields, error) {
-	apiURL := urlutil.JoinAbsolute(serverURL, APIURL2ListCustomFields)
-	if client == nil {
-		client = &http.Client{}
-	}
+func GetCustomFields(client *Client) (CustomFields, error) {
 	var cfs CustomFields
-	resp, err := client.Get(apiURL)
+	if client == nil {
+		return cfs, ErrJiraRESTClientCannotBeNil
+	}
+	apiURL := urlutil.JoinAbsolute(client.ServerURL, APIURL2ListCustomFields)
+	hclient := client.HTTPClient
+	if hclient == nil {
+		hclient = &http.Client{}
+	}
+
+	resp, err := hclient.Get(apiURL)
 	if err != nil {
 		return cfs, err
 	}
@@ -60,15 +67,15 @@ func GetCustomFields(client *http.Client, serverURL string) (CustomFields, error
 	return cfs, err
 }
 
-func GetCustomFieldEpicLink(client *http.Client, serverURL string) (CustomField, error) {
-	return GetCustomField(client, serverURL, CustomFieldNameEpicLink)
+func GetCustomFieldEpicLink(client *Client) (CustomField, error) {
+	return GetCustomField(client, CustomFieldNameEpicLink)
 }
 
-func GetCustomField(client *http.Client, serverURL, customFieldName string) (CustomField, error) {
+func GetCustomField(client *Client, customFieldName string) (CustomField, error) {
 	if client == nil {
-		client = &http.Client{}
+		return CustomField{}, ErrJiraRESTClientCannotBeNil
 	}
-	cfs, err := GetCustomFields(client, serverURL)
+	cfs, err := GetCustomFields(client)
 	if err != nil {
 		return CustomField{}, err
 	}

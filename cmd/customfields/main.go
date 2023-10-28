@@ -19,10 +19,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	hclient, _, serverURL, err := opts.Clients()
+	jrClient, err := opts.Client()
 	logutil.FatalErr(err)
 
-	cfs, err := jirarest.GetCustomFields(hclient, serverURL)
+	cfs, err := jirarest.GetCustomFields(jrClient)
 	logutil.FatalErr(err)
 	cfs.WriteTable(os.Stdout)
 
@@ -39,7 +39,7 @@ func main() {
 	}
 
 	// Get Epic Link Custom Field
-	cfName, err := jirarest.GetCustomFieldEpicLink(hclient, serverURL)
+	cfName, err := jirarest.GetCustomFieldEpicLink(jrClient)
 	logutil.FatalErr(err)
 	cfsName := jirarest.CustomFields{cfName}
 	cfsName.WriteTable(os.Stdout)
