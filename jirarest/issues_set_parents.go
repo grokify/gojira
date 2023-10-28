@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/grokify/mogo/pointer"
 	"github.com/grokify/mogo/type/stringsutil"
 )
 
@@ -58,7 +59,7 @@ func (is *IssuesSet) RetrieveIssues(client *Client, ids []string) error {
 func (is *IssuesSet) UnknownParents() []string {
 	parKeys := []string{}
 	for _, iss := range is.IssuesMap {
-		im := IssueMore{Issue: &iss}
+		im := IssueMore{Issue: pointer.Pointer(iss)}
 		parKey := im.ParentKey()
 		if parKey == "" {
 			continue
