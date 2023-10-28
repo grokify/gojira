@@ -40,7 +40,8 @@ func (es *EpicsSet) GetKeys(jclient *jira.Client, epicKeys []string) error {
 	if jclient == nil {
 		return errors.New("jclient cannot be nil")
 	}
-	newEpics, err := GetIssuesSetForKeys(jclient, epicKeys)
+	c := Client{JiraClient: jclient}
+	newEpics, err := c.GetIssuesSetForKeys(epicKeys)
 	if err != nil {
 		return err
 	}

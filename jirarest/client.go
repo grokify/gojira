@@ -2,13 +2,31 @@ package jirarest
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
+	"strings"
 
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/goauth"
 	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/errors/errorsutil"
 )
+
+func ClientsBasicAuthFile(filename, credsKey string) (*Client, error) {
+	c := &Client{}
+	hclient, serverURL, err := HTTPClientBasicAuthFile(filename, credsKey)
+	if err != nil {
+		return nil, errorsutil.Wrapf(err, `jirarest.ClientsBasicAuthFile() (%s)`, filename)
+	}
+	c.HTTPClient = hclient
+	c.ServerURL = serverURL
+	jclient, err := JiraClientBasicAuthFile(filename, credsKey)
+	if err != nil {
+		return c, errorsutil.Wrap(err, `jirarest.ClientsBasicAuthFile()..JiraClientBasicAuthFile()`)
+	}
+	c.JiraClient = jclient
+	return c, nil
+}
 
 func UserPassCredsBasic(filename, credsKey string) (*goauth.CredentialsBasicAuth, error) {
 	cs, err := goauth.ReadFileCredentialsSet(filename, true)
@@ -22,18 +40,6 @@ func UserPassCredsBasic(filename, credsKey string) (*goauth.CredentialsBasicAuth
 	}
 
 	return creds.Basic, nil
-}
-
-func ClientsBasicAuthFile(filename, credsKey string) (*http.Client, *jira.Client, string, error) {
-	hclient, serverURL, err := HTTPClientBasicAuthFile(filename, credsKey)
-	if err != nil {
-		return nil, nil, "", errorsutil.Wrapf(err, `jirarest.ClientsBasicAuthFile() (%s)`, filename)
-	}
-	jclient, err := JiraClientBasicAuthFile(filename, credsKey)
-	if err != nil {
-		return hclient, jclient, serverURL, errorsutil.Wrap(err, `jirarest.ClientsBasicAuthFile()..JiraClientBasicAuthFile()`)
-	}
-	return hclient, jclient, serverURL, nil
 }
 
 func HTTPClientBasicAuthFile(filename, credsKey string) (hclient *http.Client, serverURL string, err error) {
@@ -68,8 +74,45 @@ func JiraClientBasicAuth(creds *goauth.CredentialsBasicAuth) (*jira.Client, erro
 	return jira.NewClient(tp.Client(), creds.ServerURL)
 }
 
+type Client struct {
+	HTTPClient *http.Client
+	JiraClient *jira.Client
+	ServerURL  string
+}
+
+func (c *Client) Issue(key string) (*jira.Issue, error) {
+	key = strings.TrimSpace(key)
+	if key == "" {
+		return nil, errors.New("issue key is required")
+	}
+	jql := fmt.Sprintf("issue = %s", key)
+	iss, err := c.SearchIssues(jql)
+	if err != nil {
+		return nil, err
+	}
+	if len(iss) == 0 {
+		return nil, fmt.Errorf("key not found (%s)", key)
+	} else if len(iss) > 1 {
+		return nil, fmt.Errorf("too many issues (%d) found for (%s)", len(iss), key)
+	}
+	return &iss[0], nil
+}
+
+func (c *Client) SearchIssuesMulti(jqls ...string) (Issues, error) {
+	var issues Issues
+	for _, jql := range jqls {
+		ii, err := c.SearchIssues(jql)
+		if err != nil {
+			return issues, err
+		}
+		issues = append(issues, ii...)
+		fmt.Printf("LEN (%d) (%d)\n", len(ii), len(issues))
+	}
+	return issues, nil
+}
+
 // SearchIssues returns all issues for a JQL query, automatically handling API pagination.
-func SearchIssues(client *jira.Client, jql string) (Issues, error) {
+func (c *Client) SearchIssues(jql string) (Issues, error) {
 	var issues Issues
 
 	// appendFunc will append jira issues to []jira.Issue
@@ -80,12 +123,12 @@ func SearchIssues(client *jira.Client, jql string) (Issues, error) {
 
 	// SearchPages will page through results and pass each issue to appendFunc
 	// In this example, we'll search for all the issues in the target project
-	err := client.Issue.SearchPages(jql, &jira.SearchOptions{Expand: "epic"}, appendFunc)
+	err := c.JiraClient.Issue.SearchPages(jql, &jira.SearchOptions{Expand: "epic"}, appendFunc)
 	return issues, err
 }
 
-func SearchIssuesSetForJQL(client *jira.Client, jql string, cfg *gojira.Config) (*IssuesSet, error) {
-	ii, err := SearchIssues(client, jql)
+func (c *Client) SearchIssuesSetForJQL(jql string, cfg *gojira.Config) (*IssuesSet, error) {
+	ii, err := c.SearchIssues(jql)
 	if err != nil {
 		return nil, err
 	}
@@ -94,13 +137,13 @@ func SearchIssuesSetForJQL(client *jira.Client, jql string, cfg *gojira.Config) 
 	return is, err
 }
 
-func GetIssuesSetForKeys(client *jira.Client, keys []string) (*IssuesSet, error) {
+func (c *Client) GetIssuesSetForKeys(keys []string) (*IssuesSet, error) {
 	is := NewIssuesSet(nil)
 	jql := KeysJQL(keys)
 	if jql == "" {
 		return is, nil
 	}
-	ii, err := SearchIssues(client, jql)
+	ii, err := c.SearchIssues(jql)
 	if err != nil {
 		return is, nil
 	}
