@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"slices"
 	"sort"
 	"strings"
 
@@ -17,6 +16,7 @@ import (
 	"github.com/grokify/mogo/text/markdown"
 	"github.com/grokify/mogo/type/maputil"
 	"github.com/grokify/mogo/type/slicesutil"
+	"golang.org/x/exp/slices"
 )
 
 type IssuesSet struct {
