@@ -1,7 +1,6 @@
 package jirarest
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -204,7 +203,7 @@ func GetUnmarshalCustomValue(iss jira.Issue, customFieldKey string, v any) error
 	if !ok {
 		return nil
 	}
-	return UnmarshalAny(unv, v)
+	return jsonutil.UnmarshalAny(unv, v)
 }
 
 type IssueCustomField struct {
@@ -213,6 +212,7 @@ type IssueCustomField struct {
 	Value string `json:"value"`
 }
 
+/*
 func UnmarshalAny(data, v any) error {
 	b, err := json.Marshal(data)
 	if err != nil {
@@ -220,3 +220,4 @@ func UnmarshalAny(data, v any) error {
 	}
 	return json.Unmarshal(b, v)
 }
+*/

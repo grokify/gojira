@@ -29,12 +29,14 @@ func BacklogJQL(projectName string) string {
 }
 */
 
+/*
 func Shift[S ~[]E, E any](s S) (E, S) {
 	if len(s) == 0 {
 		return *new(E), []E{}
 	}
 	return s[0], s[1:]
 }
+*/
 
 /*
 func Prepend[S ~[]E, E any](s []E        , e E) []E   {

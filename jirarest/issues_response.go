@@ -6,6 +6,7 @@ import (
 	"os"
 
 	jira "github.com/andygrunwald/go-jira"
+	"github.com/grokify/mogo/encoding/jsonutil"
 )
 
 // IssuesResponse is only a small wrapper around the Search (with JQL) method to be able to parse the results
@@ -48,6 +49,6 @@ func GetIssueCustomValueStruct(iss jira.Issue) (*IssueCustomField, error) {
 		return nil, nil
 	}
 	icf := &IssueCustomField{}
-	err := UnmarshalAny(unv, icf)
+	err := jsonutil.UnmarshalAny(unv, icf)
 	return icf, err
 }
