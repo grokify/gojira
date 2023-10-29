@@ -44,13 +44,21 @@ type CustomFieldSchema struct {
 	CustomID int    `json:"customId"`
 }
 
-func GetCustomFields(client *Client) (CustomFields, error) {
+type CustomFieldsService struct {
+	JRClient *Client
+}
+
+func NewCustomFieldsService(client *Client) *CustomFieldsService {
+	return &CustomFieldsService{JRClient: client}
+}
+
+func (svc *CustomFieldsService) GetCustomFields() (CustomFields, error) {
 	var cfs CustomFields
-	if client == nil {
+	if svc.JRClient == nil {
 		return cfs, ErrJiraRESTClientCannotBeNil
 	}
-	apiURL := urlutil.JoinAbsolute(client.ServerURL, APIURL2ListCustomFields)
-	hclient := client.HTTPClient
+	apiURL := urlutil.JoinAbsolute(svc.JRClient.Config.ServerURL, APIURL2ListCustomFields)
+	hclient := svc.JRClient.HTTPClient
 	if hclient == nil {
 		hclient = &http.Client{}
 	}
@@ -66,15 +74,12 @@ func GetCustomFields(client *Client) (CustomFields, error) {
 	return cfs, err
 }
 
-func GetCustomFieldEpicLink(client *Client) (CustomField, error) {
-	return GetCustomField(client, CustomFieldNameEpicLink)
+func (svc *CustomFieldsService) GetCustomFieldEpicLink() (CustomField, error) {
+	return svc.GetCustomField(CustomFieldNameEpicLink)
 }
 
-func GetCustomField(client *Client, customFieldName string) (CustomField, error) {
-	if client == nil {
-		return CustomField{}, ErrJiraRESTClientCannotBeNil
-	}
-	cfs, err := GetCustomFields(client)
+func (svc *CustomFieldsService) GetCustomField(customFieldName string) (CustomField, error) {
+	cfs, err := svc.GetCustomFields()
 	if err != nil {
 		return CustomField{}, err
 	}

@@ -9,7 +9,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/net/http/httpsimple"
 )
 
@@ -100,18 +99,19 @@ func BacklogAPIURL(baseURL string, boardID uint, qry *BoardBacklogParams) string
 }
 
 type BacklogService struct {
-	config  gojira.Config
+	Client  *Client
 	sclient httpsimple.SimpleClient
+	// config  gojira.Config
 	// client    *http.Client
 	// serverURL string
 }
 
-func NewBacklogService(client *http.Client, cfg *gojira.Config) *BacklogService {
+func NewBacklogService(client *Client) *BacklogService {
 	return &BacklogService{
-		config: *cfg,
+		Client: client,
 		sclient: httpsimple.SimpleClient{
-			HTTPClient: client,
-			BaseURL:    cfg.BaseURL}}
+			HTTPClient: client.HTTPClient,
+			BaseURL:    client.Config.ServerURL}}
 }
 
 func (s *BacklogService) GetBacklogIssuesResponse(boardID uint, qry *BoardBacklogParams) (*IssuesResponse, []byte, error) {
@@ -120,7 +120,7 @@ func (s *BacklogService) GetBacklogIssuesResponse(boardID uint, qry *BoardBacklo
 	}
 	sreq := httpsimple.SimpleRequest{
 		Method: http.MethodGet,
-		URL:    BacklogAPIURL("", boardID, nil),
+		URL:    BacklogAPIURL(s.Client.Config.ServerURL, boardID, nil),
 		Query:  qry.URLValues(),
 	}
 	resp, err := s.sclient.Do(sreq)
@@ -176,7 +176,7 @@ func (s *BacklogService) GetBacklogIssuesSetAll(boardID uint, jql string) (*Issu
 	if err != nil {
 		return nil, b, err
 	}
-	is := NewIssuesSet(&s.config)
+	is := NewIssuesSet(&s.Client.Config)
 	err = is.Add(iir.Issues...)
 	return is, b, err
 }

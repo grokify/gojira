@@ -250,7 +250,7 @@ func BuildJiraIssueURL(baseURL, issueKey string) string {
 }
 
 func (is *IssuesSet) Table(customCols *CustomTableCols) (table.Table, error) {
-	baseURL := strings.TrimSpace(is.Config.BaseURL)
+	baseURL := strings.TrimSpace(is.Config.ServerURL)
 
 	if is.Config == nil {
 		is.Config = gojira.NewConfigDefault()

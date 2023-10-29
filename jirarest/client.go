@@ -19,7 +19,9 @@ func ClientsBasicAuthFile(filename, credsKey string) (*Client, error) {
 		return nil, errorsutil.Wrapf(err, `jirarest.ClientsBasicAuthFile() (%s)`, filename)
 	}
 	c.HTTPClient = hclient
-	c.ServerURL = serverURL
+	cfg := gojira.NewConfigDefault()
+	cfg.ServerURL = serverURL
+	c.Config = *cfg
 	jclient, err := JiraClientBasicAuthFile(filename, credsKey)
 	if err != nil {
 		return c, errorsutil.Wrap(err, `jirarest.ClientsBasicAuthFile()..JiraClientBasicAuthFile()`)
@@ -75,9 +77,9 @@ func JiraClientBasicAuth(creds *goauth.CredentialsBasicAuth) (*jira.Client, erro
 }
 
 type Client struct {
+	Config     gojira.Config
 	HTTPClient *http.Client
 	JiraClient *jira.Client
-	ServerURL  string
 }
 
 func (c *Client) Issue(key string) (*jira.Issue, error) {
@@ -127,12 +129,12 @@ func (c *Client) SearchIssues(jql string) (Issues, error) {
 	return issues, err
 }
 
-func (c *Client) SearchIssuesSetForJQL(jql string, cfg *gojira.Config) (*IssuesSet, error) {
+func (c *Client) SearchIssuesSetForJQL(jql string) (*IssuesSet, error) {
 	ii, err := c.SearchIssues(jql)
 	if err != nil {
 		return nil, err
 	}
-	is := NewIssuesSet(cfg)
+	is := NewIssuesSet(&c.Config)
 	err = is.Add(ii...)
 	return is, err
 }

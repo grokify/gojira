@@ -79,7 +79,7 @@ func (is *IssuesSet) Lineage(key string) (IssueMetas, error) {
 		return ims, fmt.Errorf("key not found (%s)", key)
 	}
 	im := IssueMore{Issue: &iss}
-	imeta := im.Meta(is.Config.BaseURL)
+	imeta := im.Meta(is.Config.ServerURL)
 	ims = append(ims, imeta)
 
 	parKey := im.ParentKey()
@@ -97,7 +97,7 @@ func (is *IssuesSet) Lineage(key string) (IssueMetas, error) {
 			return ims, errors.New("parent not found")
 		}
 		parIM := IssueMore{Issue: &parIss}
-		parM := parIM.Meta(is.Config.BaseURL)
+		parM := parIM.Meta(is.Config.ServerURL)
 		ims = append(ims, parM)
 		parKey = parIM.ParentKey()
 	}
