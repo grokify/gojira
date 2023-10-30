@@ -1,6 +1,7 @@
 package jirarest
 
 import (
+	"errors"
 	"strings"
 	"time"
 
@@ -30,6 +31,16 @@ func (im *IssueMore) CreatorName() string {
 		return ""
 	}
 	return im.Issue.Fields.Creator.DisplayName
+}
+
+// CustomField takes a custom value key such as `customfield_12345`.`
+func (im *IssueMore) CustomField(customFieldLabel string) (IssueCustomField, error) {
+	cf := IssueCustomField{}
+	if im.Issue == nil {
+		return cf, errors.New("issue not set")
+	}
+	err := GetUnmarshalCustomValue(*im.Issue, customFieldLabel, &cf)
+	return cf, err
 }
 
 func (im *IssueMore) EpicName() string {
