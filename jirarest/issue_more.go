@@ -43,12 +43,34 @@ func (im *IssueMore) CustomField(customFieldLabel string) (IssueCustomField, err
 	return cf, err
 }
 
+func (im *IssueMore) EpicKey() string {
+	if im.Issue == nil || im.Issue.Fields == nil || im.Issue.Fields.Epic == nil {
+		return ""
+	} else {
+		return im.Issue.Fields.Epic.Key
+	}
+}
+
 func (im *IssueMore) EpicName() string {
-	if im.Issue == nil {
+	if im.Issue == nil || im.Issue.Fields == nil || im.Issue.Fields.Epic == nil {
+		return ""
+	} else if strings.TrimSpace(im.Issue.Fields.Epic.Name) != "" {
+		return im.Issue.Fields.Epic.Name
+	} else {
 		return ""
 	}
-	ifs := IssueFieldsSimple{Fields: im.Issue.Fields}
-	return ifs.EpicName()
+}
+
+func (im *IssueMore) EpicNameOrSummary() string {
+	if im.Issue == nil || im.Issue.Fields == nil || im.Issue.Fields.Epic == nil {
+		return ""
+	} else if strings.TrimSpace(im.Issue.Fields.Epic.Name) != "" {
+		return im.Issue.Fields.Epic.Name
+	} else if strings.TrimSpace(im.Issue.Fields.Epic.Summary) != "" {
+		return im.Issue.Fields.Epic.Summary
+	} else {
+		return ""
+	}
 }
 
 func (im *IssueMore) Key() string {
@@ -91,19 +113,17 @@ func (im *IssueMore) ProjectKey() string {
 }
 
 func (im *IssueMore) Resolution() string {
-	if im.Issue == nil {
+	if im.Issue == nil || im.Issue.Fields == nil || im.Issue.Fields.Resolution == nil {
 		return ""
 	}
-	ifs := IssueFieldsSimple{Fields: im.Issue.Fields}
-	return ifs.ResolutionName()
+	return im.Issue.Fields.Resolution.Name
 }
 
 func (im *IssueMore) Status() string {
-	if im.Issue == nil {
+	if im.Issue == nil || im.Issue.Fields == nil || im.Issue.Fields.Status == nil {
 		return ""
 	}
-	ifs := IssueFieldsSimple{Fields: im.Issue.Fields}
-	return ifs.StatusName()
+	return im.Issue.Fields.Status.Name
 }
 
 func (im *IssueMore) Summary() string {

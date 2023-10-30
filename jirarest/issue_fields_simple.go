@@ -1,5 +1,6 @@
 package jirarest
 
+/*
 import (
 	jira "github.com/andygrunwald/go-jira"
 )
@@ -45,3 +46,4 @@ func (ifs IssueFieldsSimple) StatusName() string {
 		return ifs.Fields.Status.Name
 	}
 }
+*/

@@ -65,11 +65,9 @@ func (is *IssuesSet) FilterByStatus(inclStatuses, exclStatuses []string) (*Issue
 		exclStatusesMap[s]++
 	}
 	for _, iss := range is.IssuesMap {
-		if iss.Fields == nil {
-			continue
-		}
-		ifs := IssueFieldsSimple{Fields: iss.Fields}
-		statusName := ifs.StatusName()
+		im := IssueMore{Issue: pointer.Pointer(iss)}
+		// ifs := IssueFieldsSimple{Fields: iss.Fields}
+		statusName := im.Status()
 		_, inclStatusOk := inclStatusesMap[statusName]
 		_, exclStatusOk := exclStatusesMap[statusName]
 		if len(inclStatusesMap) > 0 && !inclStatusOk {
@@ -280,24 +278,24 @@ func (is *IssuesSet) Table(customCols *CustomTableCols) (table.Table, error) {
 
 	for key, iss := range is.IssuesMap {
 		im := IssueMore{Issue: pointer.Pointer(iss)}
-		ifs := IssueFieldsSimple{Fields: iss.Fields}
+		// ifs := IssueFieldsSimple{Fields: iss.Fields}
 
 		keyDisplay := key
-		epicKeyDisplay := ifs.EpicKey()
+		epicKeyDisplay := im.EpicKey()
 		if len(baseURL) > 0 {
 			keyURL := BuildJiraIssueURL(baseURL, key)
 			keyDisplay = markdown.Linkify(keyURL, key)
 
 			if len(epicKeyDisplay) > 0 {
-				epicKeyURL := BuildJiraIssueURL(baseURL, ifs.EpicKey())
-				epicKeyDisplay = markdown.Linkify(epicKeyURL, ifs.EpicKey())
+				epicKeyURL := BuildJiraIssueURL(baseURL, im.EpicKey())
+				epicKeyDisplay = markdown.Linkify(epicKeyURL, im.EpicKey())
 			}
 		}
 
 		timeRemainingSecs := iss.Fields.TimeEstimate - iss.Fields.TimeSpent
 		if timeRemainingSecs < 0 ||
-			ifs.StatusName() == "Closed" ||
-			ifs.StatusName() == "Done" {
+			im.Status() == "Closed" ||
+			im.Status() == "Done" {
 			timeRemainingSecs = 0
 		}
 
