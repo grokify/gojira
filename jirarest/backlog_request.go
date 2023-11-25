@@ -100,7 +100,7 @@ func BacklogAPIURL(baseURL string, boardID uint, qry *BoardBacklogParams) string
 
 type BacklogService struct {
 	Client  *Client
-	sclient httpsimple.SimpleClient
+	sclient httpsimple.Client
 	// config  gojira.Config
 	// client    *http.Client
 	// serverURL string
@@ -109,7 +109,7 @@ type BacklogService struct {
 func NewBacklogService(client *Client) *BacklogService {
 	return &BacklogService{
 		Client: client,
-		sclient: httpsimple.SimpleClient{
+		sclient: httpsimple.Client{
 			HTTPClient: client.HTTPClient,
 			BaseURL:    client.Config.ServerURL}}
 }
@@ -118,7 +118,7 @@ func (s *BacklogService) GetBacklogIssuesResponse(boardID uint, qry *BoardBacklo
 	if s.sclient.HTTPClient == nil {
 		return nil, []byte{}, errors.New("client not set")
 	}
-	sreq := httpsimple.SimpleRequest{
+	sreq := httpsimple.Request{
 		Method: http.MethodGet,
 		URL:    BacklogAPIURL(s.Client.Config.ServerURL, boardID, nil),
 		Query:  qry.URLValues(),

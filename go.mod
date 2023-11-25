@@ -6,9 +6,9 @@ go 1.21
 
 require (
 	github.com/andygrunwald/go-jira v1.16.0
-	github.com/grokify/goauth v0.20.4
-	github.com/grokify/gocharts/v2 v2.15.1
-	github.com/grokify/mogo v0.60.1
+	github.com/grokify/goauth v0.20.5
+	github.com/grokify/gocharts/v2 v2.15.2
+	github.com/grokify/mogo v0.61.0
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/olekukonko/tablewriter v0.0.5
 	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa
@@ -17,9 +17,7 @@ require (
 require (
 	cloud.google.com/go/compute v1.23.3 // indirect
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
-	github.com/buger/jsonparser v1.1.1 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
-	github.com/go-logfmt/logfmt v0.6.0 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/golang-jwt/jwt/v5 v5.1.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
@@ -42,7 +40,6 @@ require (
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/trivago/tgo v1.0.7 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fastjson v1.6.4 // indirect
 	github.com/valyala/quicktemplate v1.7.0 // indirect
 	github.com/xuri/efp v0.0.0-20231025114914-d1ff6096ae53 // indirect
 	github.com/xuri/excelize/v2 v2.8.0 // indirect
@@ -56,10 +53,9 @@ require (
 	gonum.org/v1/gonum v0.14.0 // indirect
 	google.golang.org/api v0.151.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20231106174013-bbf56f31fb17 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20231120223509-83a465c0220f // indirect
 	google.golang.org/grpc v1.59.0 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
-	gopkg.in/oleiade/reflections.v1 v1.0.0 // indirect
 )
 
 // replace github.com/grokify/goauth => ../goauth
