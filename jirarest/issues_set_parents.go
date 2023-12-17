@@ -2,13 +2,14 @@ package jirarest
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 
+	"github.com/grokify/mogo/errors/errorsutil"
 	"github.com/grokify/mogo/pointer"
 	"github.com/grokify/mogo/type/stringsutil"
 )
 
+/*
 func (is *IssuesSet) RetrieveParentsIssuesSet(client *Client) (*IssuesSet, error) {
 	parIssuesSet := NewIssuesSet(is.Config)
 	parIDs := is.UnknownParents()
@@ -25,6 +26,7 @@ func (is *IssuesSet) RetrieveParentsIssuesSet(client *Client) (*IssuesSet, error
 
 	return parIssuesSet, err
 }
+*/
 
 func (is *IssuesSet) RetrieveParents(client *Client) error {
 	parIDs := is.UnknownParents()
@@ -72,29 +74,30 @@ func (is *IssuesSet) UnknownParents() []string {
 	return stringsutil.SliceCondenseSpace(parKeys, true, true)
 }
 
+// Lineage returns a slice of `IssueMeta` where the suppied key is in index 0 and the most senior
+// parent is the last element of the slice. If a parent is not found in the set, an error is returned.
 func (is *IssuesSet) Lineage(key string) (IssueMetas, error) {
+	if key == "Epic" {
+		panic("Lineage Epic")
+	}
 	ims := IssueMetas{}
-	iss, ok := is.IssuesMap[key]
-	if !ok {
-		return ims, fmt.Errorf("key not found (%s)", key)
+	iss, err := is.Get(key)
+	if err != nil {
+		return ims, errorsutil.Wrapf(err, "key not found (%s)", key)
 	}
 	im := IssueMore{Issue: &iss}
 	imeta := im.Meta(is.Config.ServerURL)
 	ims = append(ims, imeta)
-
 	parKey := im.ParentKey()
-	if parKey == "" {
-		return ims, nil
-	}
 
-	if is.Parents == nil {
+	if parKey != "" && is.Parents == nil {
 		return ims, errors.New("parents not set")
 	}
 
 	for parKey != "" {
-		parIss, ok := is.Parents.IssuesMap[parKey]
-		if !ok {
-			return ims, errors.New("parent not found")
+		parIss, err := is.Get(parKey)
+		if err != nil {
+			return ims, errorsutil.Wrap(err, "parent not found")
 		}
 		parIM := IssueMore{Issue: &parIss}
 		parM := parIM.Meta(is.Config.ServerURL)
@@ -104,3 +107,33 @@ func (is *IssuesSet) Lineage(key string) (IssueMetas, error) {
 
 	return ims, nil
 }
+
+/*
+func (is *IssuesSet) GetLineage(key string) (Issues, error) {
+	key = strings.TrimSpace(key)
+	lineage := Issues{}
+	if key == "" {
+		return lineage, nil
+	}
+	iss, err := is.Get(key)
+	if err != nil {
+		return lineage, err
+	}
+
+	im := IssueMore{Issue: &iss}
+	parKey := im.ParentKey()
+	for {
+		if parKey == "" {
+			return lineage, nil
+		}
+		if parIss, err := is.Get(parKey); err != nil {
+			return lineage, err
+		} else {
+			lineage = append(lineage, parIss)
+			parIM := IssueMore{Issue: &parIss}
+			parKey = parIM.ParentKey()
+		}
+	}
+	return lineage, nil
+}
+*/
