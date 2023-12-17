@@ -8,9 +8,10 @@ require (
 	github.com/andygrunwald/go-jira v1.16.0
 	github.com/grokify/goauth v0.20.7
 	github.com/grokify/gocharts/v2 v2.16.1
-	github.com/grokify/mogo v0.62.3
+	github.com/grokify/mogo v0.62.4
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/olekukonko/tablewriter v0.0.5
+	github.com/rs/zerolog v1.31.0
 	golang.org/x/exp v0.0.0-20231214170342-aacd6d4b4611
 )
 
@@ -33,6 +34,8 @@ require (
 	github.com/grokify/base36 v1.0.5 // indirect
 	github.com/huandu/xstrings v1.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/mattn/go-colorable v0.1.13 // indirect
+	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
