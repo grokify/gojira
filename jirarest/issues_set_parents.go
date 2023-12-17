@@ -2,12 +2,10 @@ package jirarest
 
 import (
 	"errors"
-	"fmt"
 
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/errors/errorsutil"
-	"github.com/grokify/mogo/fmt/fmtutil"
 	"github.com/grokify/mogo/pointer"
 	"github.com/grokify/mogo/type/slicesutil"
 	"github.com/grokify/mogo/type/stringsutil"
@@ -57,15 +55,11 @@ func (is *IssuesSet) RetrieveIssues(client *Client, ids []string) error {
 	if len(ids) == 0 {
 		return nil
 	}
-	fmt.Printf("LEN(%d)\n", len(ids))
 
 	idsSlicesMaxResults := slicesutil.SplitMaxLength(ids, gojira.JQLMaxResults)
-	fmtutil.PrintJSON(idsSlicesMaxResults)
 
 	for _, idsSlice := range idsSlicesMaxResults {
 		jqls := gojira.JQLStringsSimple(gojira.FieldKey, false, idsSlice, 0)
-		//fmtutil.PrintJSON(jqls)
-		//panic("Z")
 
 		for _, jql := range jqls {
 			if iss, err := client.SearchIssuesPages(jql, 0, 0, 0); err != nil {
@@ -73,14 +67,6 @@ func (is *IssuesSet) RetrieveIssues(client *Client, ids []string) error {
 			} else {
 				return is.Add(iss...)
 			}
-			/*
-				// jql := "key in (" + strings.Join(ids, ",") + ")"
-				if iss, err := client.SearchIssues(jql); err != nil {
-					return err
-				} else {
-					return is.Add(iss...)
-				}
-			*/
 		}
 	}
 	return nil

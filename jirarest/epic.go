@@ -8,26 +8,6 @@ import (
 	jira "github.com/andygrunwald/go-jira"
 )
 
-/*
-func KeysJQL(keys []string) string {
-	keys = stringsutil.SliceCondenseSpace(keys, true, false)
-	if len(keys) == 0 {
-		return ""
-	}
-	return fmt.Sprintf("key in (%s)", strings.Join(keys, ","))
-}
-*/
-
-/*
-func GetEpics(epicKeys []string) IssuesSet {
-	jql := KeysJQL(epicKeys)
-	if jql == "" {
-		return NewIssuesSet(nil)
-	}
-
-}
-*/
-
 type EpicsSet struct {
 	EpicsMap map[string]jira.Epic
 }
@@ -80,14 +60,3 @@ func IssueToEpic(iss jira.Issue) (*jira.Epic, error) {
 	}
 	return epic, nil
 }
-
-/*
-type Epic struct {
-	ID      int    `json:"id" structs:"id"`
-	Key     string `json:"key" structs:"key"`
-	Self    string `json:"self" structs:"self"`
-	Name    string `json:"name" structs:"name"`
-	Summary string `json:"summary" structs:"summary"`
-	Done    bool   `json:"done" structs:"done"`
-}
-*/

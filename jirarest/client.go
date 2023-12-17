@@ -239,24 +239,16 @@ func (c *Client) SearchIssuesSetParents(is *IssuesSet) (*IssuesSet, error) {
 
 		if c.Logger != nil {
 			c.Logger.Info().
-				Int("iteration", int(i)).
+				Int("iteration", i).
 				Msg("jira api populate parents (SearchIssuesSetParents)")
 		}
 
-		parIssues, err := c.GetIssuesSetForKeys(parIDs)
-		if err != nil {
+		if parIssues, err := c.GetIssuesSetForKeys(parIDs); err != nil {
 			return nil, err
-		}
-		parIssuesSet.Add(parIssues.Issues()...)
-		/*
-			err = parIssuesSet.RetrieveParents(c)
-			if err != nil {
-				return parIssuesSet, nil
-			}
-		*/
-		// parIDs = parIssuesSet.KeysParentsPopulated()
-		parIDs, err = parIssuesSet.LineageTopKeysUnpopulated()
-		if err != nil {
+		} else if err := parIssuesSet.Add(parIssues.Issues()...); err != nil {
+			return nil, err
+		} else if parIDs, err = parIssuesSet.LineageTopKeysUnpopulated(); err != nil {
+			// err = parIssuesSet.RetrieveParents(c) // don't use - use lineage instead.
 			return nil, err
 		}
 		i++
