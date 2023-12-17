@@ -63,8 +63,53 @@ func (is *IssuesSet) Keys() []string {
 	return maputil.Keys(is.IssuesMap)
 }
 
-func (is *IssuesSet) Len() int {
-	return len(is.IssuesMap)
+func (is *IssuesSet) Len() uint {
+	return uint(len(is.IssuesMap))
+}
+
+func (is *IssuesSet) LenParents() uint {
+	return uint(len(is.KeysParents()))
+}
+
+func (is *IssuesSet) LenParentsPopulated() uint {
+	return uint(len(is.KeysParentsPopulated()))
+}
+
+func (is *IssuesSet) LenParentsUnpopulated() uint {
+	return uint(len(is.KeysParentsUnpopulated()))
+}
+
+func (is *IssuesSet) LenLineageTopKeysPopulated() uint {
+	if linPopIDs, err := is.LineageTopKeysPopulated(); err != nil {
+		panic(err)
+	} else {
+		return uint(len(linPopIDs))
+	}
+}
+
+func (is *IssuesSet) LenLineageTopKeysUnpopulated() uint {
+	if linUnpopIDs, err := is.LineageTopKeysUnpopulated(); err != nil {
+		panic(err)
+	} else {
+		return uint(len(linUnpopIDs))
+	}
+}
+
+// LenMap provides various metrics. It is useful for determining if all parents and lineages have been loaded.
+func (is *IssuesSet) LenMap() map[string]uint {
+	lenParentsSet := 0
+	if is.Parents != nil {
+		lenParentsSet = len(is.Parents.IssuesMap)
+	}
+	return map[string]uint{
+		"len":                       is.Len(),
+		"lineageTopKeysPopulated":   is.LenLineageTopKeysPopulated(),
+		"lineageTopKeysUnpopulated": is.LenLineageTopKeysUnpopulated(),
+		"parents":                   is.LenParents(),
+		"parentsPopulated":          is.LenParentsPopulated(),
+		"parentsUnpopulated":        is.LenParentsUnpopulated(),
+		"parentsSetAll":             uint(lenParentsSet),
+	}
 }
 
 func (is *IssuesSet) FilterByStatus(inclStatuses, exclStatuses []string) (*IssuesSet, error) {
