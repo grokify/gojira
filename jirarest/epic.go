@@ -2,14 +2,13 @@ package jirarest
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 
 	jira "github.com/andygrunwald/go-jira"
-	"github.com/grokify/mogo/type/stringsutil"
 )
 
+/*
 func KeysJQL(keys []string) string {
 	keys = stringsutil.SliceCondenseSpace(keys, true, false)
 	if len(keys) == 0 {
@@ -17,6 +16,7 @@ func KeysJQL(keys []string) string {
 	}
 	return fmt.Sprintf("key in (%s)", strings.Join(keys, ","))
 }
+*/
 
 /*
 func GetEpics(epicKeys []string) IssuesSet {
