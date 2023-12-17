@@ -46,7 +46,7 @@ func main() {
 
 	timeStatsDays, err := timeStats.SecondsToDays()
 	logutil.FatalErr(errorsutil.Wrap(err, "SecondsToDays"))
-	fmtutil.PrintJSON(timeStatsDays)
+	fmtutil.MustPrintJSON(timeStatsDays)
 
 	dt := time.Now().UTC()
 	dtfs := dt.Format(timeutil.RFC3339Dash)
