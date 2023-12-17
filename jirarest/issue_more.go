@@ -2,6 +2,7 @@ package jirarest
 
 import (
 	"errors"
+	"sort"
 	"strings"
 	"time"
 
@@ -91,6 +92,18 @@ func (im *IssueMore) KeyURL(baseURL string) string {
 	return BuildJiraIssueURL(baseURL, key)
 }
 
+func (im *IssueMore) Labels(sortAsc bool) []string {
+	if im.Issue == nil || im.Issue.Fields == nil || len(im.Issue.Fields.Labels) == 0 {
+		return []string{}
+	} else if !sortAsc || len(im.Issue.Fields.Labels) == 1 {
+		return im.Issue.Fields.Labels
+	} else {
+		labels := im.Issue.Fields.Labels
+		sort.Strings(labels)
+		return labels
+	}
+}
+
 func (im *IssueMore) ParentKey() string {
 	if im.Issue == nil || im.Issue.Fields == nil || im.Issue.Fields.Parent == nil {
 		return ""
@@ -147,7 +160,7 @@ func (im *IssueMore) UpdateTime() time.Time {
 	return time.Time(im.Issue.Fields.Updated)
 }
 
-func (im *IssueMore) Meta(baseURL string) IssueMeta {
+func (im *IssueMore) Meta(serverURL string) IssueMeta {
 	created := im.CreateTime().UTC()
 	var createdPtr *time.Time
 	if !created.IsZero() {
@@ -165,7 +178,8 @@ func (im *IssueMore) Meta(baseURL string) IssueMeta {
 		CreatorName:  im.CreatorName(),
 		EpicName:     im.EpicName(),
 		Key:          im.Key(),
-		KeyURL:       im.KeyURL(baseURL),
+		KeyURL:       im.KeyURL(serverURL),
+		Labels:       im.Labels(true),
 		ParentKey:    im.ParentKey(),
 		Project:      im.Project(),
 		ProjectKey:   im.ProjectKey(),
@@ -175,39 +189,4 @@ func (im *IssueMore) Meta(baseURL string) IssueMeta {
 		Type:         im.Type(),
 		UpdateTime:   updatedPtr,
 	}
-}
-
-type IssueMetas []IssueMeta
-
-type IssueMeta struct {
-	AssigneeName string
-	CreateTime   *time.Time
-	CreatorName  string
-	EpicName     string
-	Key          string
-	KeyURL       string
-	ParentKey    string
-	Project      string
-	ProjectKey   string
-	Resolution   string
-	Status       string
-	Summary      string
-	Type         string
-	UpdateTime   *time.Time
-}
-
-func (im IssueMeta) String() string {
-	k := strings.TrimSpace(im.Key)
-	s := strings.TrimSpace(im.Summary)
-	if k == "" && s == "" {
-		return ""
-	}
-	parts := []string{}
-	if len(k) > 0 {
-		parts = append(parts, k)
-	}
-	if len(s) > 0 {
-		parts = append(parts, s)
-	}
-	return strings.Join(parts, ": ")
 }
