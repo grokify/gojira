@@ -12,9 +12,9 @@ import (
 	"github.com/grokify/mogo/errors/errorsutil"
 )
 
-func ClientsBasicAuthFile(filename, credsKey string) (*Client, error) {
+func NewClientGoauthBasicAuthFile(filename, credsKey string) (*Client, error) {
 	c := &Client{}
-	hclient, serverURL, err := HTTPClientBasicAuthFile(filename, credsKey)
+	hclient, serverURL, err := NewClientHTTPBasicAuthFile(filename, credsKey)
 	if err != nil {
 		return nil, errorsutil.Wrapf(err, `jirarest.ClientsBasicAuthFile() (%s)`, filename)
 	}
@@ -22,7 +22,7 @@ func ClientsBasicAuthFile(filename, credsKey string) (*Client, error) {
 	cfg := gojira.NewConfigDefault()
 	cfg.ServerURL = serverURL
 	c.Config = *cfg
-	jclient, err := JiraClientBasicAuthFile(filename, credsKey)
+	jclient, err := NewClientJiraBasicAuthFile(filename, credsKey)
 	if err != nil {
 		return c, errorsutil.Wrap(err, `jirarest.ClientsBasicAuthFile()..JiraClientBasicAuthFile()`)
 	}
@@ -30,7 +30,8 @@ func ClientsBasicAuthFile(filename, credsKey string) (*Client, error) {
 	return c, nil
 }
 
-func UserPassCredsBasic(filename, credsKey string) (*goauth.CredentialsBasicAuth, error) {
+func NewCredentialsBasicAuthGoauthFile(filename, credsKey string) (*goauth.CredentialsBasicAuth, error) {
+	// func UserPassCredsBasic(filename, credsKey string) (*goauth.CredentialsBasicAuth, error) {
 	cs, err := goauth.ReadFileCredentialsSet(filename, true)
 	if err != nil {
 		return nil, err
@@ -44,8 +45,8 @@ func UserPassCredsBasic(filename, credsKey string) (*goauth.CredentialsBasicAuth
 	return creds.Basic, nil
 }
 
-func HTTPClientBasicAuthFile(filename, credsKey string) (hclient *http.Client, serverURL string, err error) {
-	creds, err := UserPassCredsBasic(filename, credsKey)
+func NewClientHTTPBasicAuthFile(filename, credsKey string) (hclient *http.Client, serverURL string, err error) {
+	creds, err := NewCredentialsBasicAuthGoauthFile(filename, credsKey)
 	if err != nil {
 		return nil, "", err
 	}
@@ -57,8 +58,8 @@ func HTTPClientBasicAuthFile(filename, credsKey string) (hclient *http.Client, s
 	return
 }
 
-func JiraClientBasicAuthFile(filename, credsKey string) (*jira.Client, error) {
-	creds, err := UserPassCredsBasic(filename, credsKey)
+func NewClientJiraBasicAuthFile(filename, credsKey string) (*jira.Client, error) {
+	creds, err := NewCredentialsBasicAuthGoauthFile(filename, credsKey)
 	if err != nil {
 		return nil, err
 	}
@@ -84,20 +85,18 @@ type Client struct {
 
 func (c *Client) Issue(key string) (*jira.Issue, error) {
 	key = strings.TrimSpace(key)
+	jql := fmt.Sprintf("issue = %s", key)
 	if key == "" {
 		return nil, errors.New("issue key is required")
-	}
-	jql := fmt.Sprintf("issue = %s", key)
-	iss, err := c.SearchIssues(jql)
-	if err != nil {
+	} else if iss, err := c.SearchIssues(jql); err != nil {
 		return nil, err
-	}
-	if len(iss) == 0 {
+	} else if len(iss) == 0 {
 		return nil, fmt.Errorf("key not found (%s)", key)
 	} else if len(iss) > 1 {
 		return nil, fmt.Errorf("too many issues (%d) found for (%s)", len(iss), key)
+	} else {
+		return &iss[0], nil
 	}
-	return &iss[0], nil
 }
 
 func (c *Client) SearchIssuesMulti(jqls ...string) (Issues, error) {
@@ -129,7 +128,7 @@ func (c *Client) SearchIssues(jql string) (Issues, error) {
 	return issues, err
 }
 
-func (c *Client) SearchIssuesSetForJQL(jql string) (*IssuesSet, error) {
+func (c *Client) SearchIssuesSet(jql string) (*IssuesSet, error) {
 	ii, err := c.SearchIssues(jql)
 	if err != nil {
 		return nil, err
@@ -152,4 +151,34 @@ func (c *Client) GetIssuesSetForKeys(keys []string) (*IssuesSet, error) {
 
 	err = is.Add(ii...)
 	return is, err
+}
+
+func (c *Client) SearchIssuesSetParents(is *IssuesSet) (*IssuesSet, error) {
+	// func (is *IssuesSet) RetrieveParentsIssuesSet(client *Client) (*IssuesSet, error) {
+	parIssuesSet := NewIssuesSet(is.Config)
+	parIDs := is.UnknownParents()
+	if len(parIDs) == 0 {
+		return parIssuesSet, nil
+	}
+
+	err := parIssuesSet.RetrieveIssues(c, parIDs)
+	if err != nil {
+		return nil, err
+	}
+
+	err = parIssuesSet.RetrieveParents(c)
+
+	return parIssuesSet, err
+}
+
+func (c *Client) IssuesSetAddParents(is *IssuesSet) error {
+	if is == nil {
+		return errors.New("issues set is nil")
+	}
+	parents, err := c.SearchIssuesSetParents(is)
+	if err != nil {
+		return err
+	}
+	is.Parents = parents
+	return nil
 }
