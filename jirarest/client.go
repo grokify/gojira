@@ -231,15 +231,15 @@ func (c *Client) SearchIssuesSetParents(is *IssuesSet) (*IssuesSet, error) {
 	parIssuesSet := NewIssuesSet(is.Config)
 	parIDs := is.KeysParentsUnpopulated()
 
-	i := 0
+	iter := 0
 	for {
 		if len(parIDs) == 0 {
-			return parIssuesSet, nil
+			break
 		}
 
 		if c.Logger != nil {
 			c.Logger.Info().
-				Int("iteration", i).
+				Int("iteration", iter).
 				Msg("jira api populate parents (SearchIssuesSetParents)")
 		}
 
@@ -251,7 +251,10 @@ func (c *Client) SearchIssuesSetParents(is *IssuesSet) (*IssuesSet, error) {
 			// err = parIssuesSet.RetrieveParents(c) // don't use - use lineage instead.
 			return nil, err
 		}
-		i++
+		iter++
+		if iter > 1000 {
+			return nil, errors.New("search for parents over 1000 iterations")
+		}
 	}
 
 	return parIssuesSet, nil
