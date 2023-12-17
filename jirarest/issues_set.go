@@ -37,6 +37,14 @@ func NewIssuesSet(cfg *gojira.Config) *IssuesSet {
 	}
 }
 
+func (is *IssuesSet) AddIssuesFile(filename string) error {
+	if ii, err := IssuesReadFileJSON(filename); err != nil {
+		return err
+	} else {
+		return is.Add(ii...)
+	}
+}
+
 func (is *IssuesSet) Add(issues ...jira.Issue) error {
 	if is.IssuesMap == nil {
 		is.IssuesMap = map[string]jira.Issue{}
@@ -53,6 +61,10 @@ func (is *IssuesSet) Add(issues ...jira.Issue) error {
 
 func (is *IssuesSet) Keys() []string {
 	return maputil.Keys(is.IssuesMap)
+}
+
+func (is *IssuesSet) Len() int {
+	return len(is.IssuesMap)
 }
 
 func (is *IssuesSet) FilterByStatus(inclStatuses, exclStatuses []string) (*IssuesSet, error) {
