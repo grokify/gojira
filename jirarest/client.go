@@ -10,6 +10,7 @@ import (
 	"github.com/grokify/goauth"
 	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/errors/errorsutil"
+	"github.com/rs/zerolog"
 )
 
 func NewClientGoauthBasicAuthFile(filename, credsKey string) (*Client, error) {
@@ -81,11 +82,14 @@ type Client struct {
 	Config     gojira.Config
 	HTTPClient *http.Client
 	JiraClient *jira.Client
+	Logger     *zerolog.Logger
 }
 
 func (c *Client) Issue(key string) (*jira.Issue, error) {
 	key = strings.TrimSpace(key)
-	jql := fmt.Sprintf("issue = %s", key)
+	jqlInfo := gojira.JQL{IssuesIncl: []string{key}}
+	//jql := fmt.Sprintf("issue = %s", key)
+	jql := jqlInfo.String()
 	if key == "" {
 		return nil, errors.New("issue key is required")
 	} else if iss, err := c.SearchIssues(jql); err != nil {
@@ -101,14 +105,65 @@ func (c *Client) Issue(key string) (*jira.Issue, error) {
 
 func (c *Client) SearchIssuesMulti(jqls ...string) (Issues, error) {
 	var issues Issues
-	for _, jql := range jqls {
+	for i, jql := range jqls {
 		ii, err := c.SearchIssues(jql)
 		if err != nil {
 			return issues, err
 		}
 		issues = append(issues, ii...)
-		fmt.Printf("LEN (%d) (%d)\n", len(ii), len(issues))
+		if c.Logger != nil {
+			c.Logger.Info().
+				Str("jql", jql).
+				Int("index", i).
+				Int("totalQueries", len(jqls)).
+				Int("totalIssues", len(issues)).
+				Msg("jira api iteration")
+		}
 	}
+	return issues, nil
+}
+
+// SearchIssuesPage returns all issues for a JQL query, automatically handling API pagination.
+func (c *Client) SearchIssuesPages(jql string, limit, offset, maxPages uint) (Issues, error) {
+	var issues Issues
+
+	if limit == 0 {
+		limit = gojira.JQLMaxResults
+	}
+
+	so := jira.SearchOptions{
+		MaxResults: int(limit),
+		StartAt:    int(offset),
+	}
+
+	i := uint(0)
+	for {
+		if maxPages > 0 && i >= maxPages {
+			break
+		}
+		ii, resp, err := c.JiraClient.Issue.Search(jql, &so)
+		if err != nil {
+			return issues, err
+		} else if resp.Response.StatusCode >= 300 {
+			return issues, fmt.Errorf("jira api status code (%d)", resp.Response.StatusCode)
+		}
+		if c.Logger != nil {
+			c.Logger.Info().
+				Int("limit", resp.MaxResults).
+				Int("offset", resp.StartAt).
+				Int("total", resp.Total).
+				Msg("jira api iteration")
+		}
+		if len(ii) > 0 {
+			issues = append(issues, ii...)
+		}
+		if resp.StartAt+len(ii) >= resp.Total {
+			break
+		}
+		so.StartAt += len(ii)
+		i++
+	}
+
 	return issues, nil
 }
 
