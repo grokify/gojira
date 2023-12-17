@@ -468,7 +468,7 @@ func (is *IssuesSet) Table(customCols *CustomTableCols, inclEpic bool, initiativ
 			timeRemainingSecs = 0
 		}
 
-		row := []string{}
+		var row []string
 
 		if inclInitiative {
 			initKeyDispplay := ""
