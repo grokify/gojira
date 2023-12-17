@@ -8,6 +8,7 @@ import (
 	"github.com/grokify/mogo/type/stringsutil/join"
 )
 
+// JQL is a JQL builder. It will create a JQL string using `JQL.String()` from the supplied infomration.
 type JQL struct {
 	IssuesIncl   []string
 	IssuesExcl   []string
