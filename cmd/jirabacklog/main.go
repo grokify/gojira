@@ -20,7 +20,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmtutil.PrintJSON(opts)
+	fmtutil.MustPrintJSON(opts)
 
 	jrClient, err := opts.Client()
 	logutil.FatalErr(errorsutil.Wrap(err, "Client"))
@@ -39,10 +39,10 @@ func main() {
 	fmt.Printf("COUNT (%d)\n", len(is.IssuesMap))
 
 	countsByStatus := is.Counts()
-	fmtutil.PrintJSON(countsByStatus)
+	fmtutil.MustPrintJSON(countsByStatus)
 
 	timeStats := is.TimeStats()
-	fmtutil.PrintJSON(timeStats)
+	fmtutil.MustPrintJSON(timeStats)
 
 	timeStatsDays, err := timeStats.SecondsToDays()
 	logutil.FatalErr(errorsutil.Wrap(err, "SecondsToDays"))
