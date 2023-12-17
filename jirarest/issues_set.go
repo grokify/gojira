@@ -297,6 +297,7 @@ func BuildJiraIssueURL(baseURL, issueKey string) string {
 func (is *IssuesSet) IssuesSetHighestType(issueType string) (*IssuesSet, error) {
 	new := NewIssuesSet(is.Config)
 	for _, iss := range is.IssuesMap {
+		iss := iss
 		issMore := IssueMore{Issue: &iss}
 		issMeta := issMore.Meta(is.Config.ServerURL)
 		issKey := strings.TrimSpace(issMeta.Key)
