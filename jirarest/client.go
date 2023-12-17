@@ -10,6 +10,7 @@ import (
 	"github.com/grokify/goauth"
 	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/errors/errorsutil"
+	"github.com/grokify/mogo/type/stringsutil"
 	"github.com/rs/zerolog"
 )
 
@@ -124,6 +125,8 @@ func (c *Client) SearchIssuesMulti(jqls ...string) (Issues, error) {
 }
 
 // SearchIssuesPage returns all issues for a JQL query, automatically handling API pagination.
+// A `limit` value of `0` means the max results available. A `maxPages` of `0` means to retrieve
+// all pages.
 func (c *Client) SearchIssuesPages(jql string, limit, offset, maxPages uint) (Issues, error) {
 	var issues Issues
 
@@ -149,10 +152,12 @@ func (c *Client) SearchIssuesPages(jql string, limit, offset, maxPages uint) (Is
 		}
 		if c.Logger != nil {
 			c.Logger.Info().
+				Int("iteration", int(i)).
 				Int("limit", resp.MaxResults).
 				Int("offset", resp.StartAt).
 				Int("total", resp.Total).
-				Msg("jira api iteration")
+				Str("jql", jql).
+				Msg("jira api iteration (SearchIssuesPages)")
 		}
 		if len(ii) > 0 {
 			issues = append(issues, ii...)
@@ -195,35 +200,68 @@ func (c *Client) SearchIssuesSet(jql string) (*IssuesSet, error) {
 
 func (c *Client) GetIssuesSetForKeys(keys []string) (*IssuesSet, error) {
 	is := NewIssuesSet(nil)
-	jql := KeysJQL(keys)
-	if jql == "" {
-		return is, nil
-	}
-	ii, err := c.SearchIssues(jql)
-	if err != nil {
-		return is, nil
+
+	keysSlice := SplitMaxLength(stringsutil.SliceCondenseSpace(keys, true, true), gojira.JQLMaxResults)
+
+	for _, keysIter := range keysSlice {
+		keysIter = stringsutil.SliceCondenseSpace(keysIter, true, true)
+		if len(keysIter) == 0 {
+			continue
+		}
+		jqlInfo := gojira.JQL{KeysIncl: keysIter}
+		// jql := KeysJQL(keys)
+		if jql := jqlInfo.String(); jql == "" {
+			return is, nil
+		} else if ii, err := c.SearchIssuesPages(jql, 0, 0, 0); err != nil {
+			return nil, err
+		} else if err = is.Add(ii...); err != nil {
+			return nil, err
+		}
 	}
 
-	err = is.Add(ii...)
-	return is, err
+	return is, nil
 }
 
 func (c *Client) SearchIssuesSetParents(is *IssuesSet) (*IssuesSet, error) {
+	if is == nil {
+		return nil, errors.New("issues set must be set")
+	}
 	// func (is *IssuesSet) RetrieveParentsIssuesSet(client *Client) (*IssuesSet, error) {
 	parIssuesSet := NewIssuesSet(is.Config)
-	parIDs := is.UnknownParents()
-	if len(parIDs) == 0 {
-		return parIssuesSet, nil
+	parIDs := is.KeysParentsUnpopulated()
+
+	i := 0
+	for {
+		if len(parIDs) == 0 {
+			return parIssuesSet, nil
+		}
+
+		if c.Logger != nil {
+			c.Logger.Info().
+				Int("iteration", int(i)).
+				Msg("jira api populate parents (SearchIssuesSetParents)")
+		}
+
+		parIssues, err := c.GetIssuesSetForKeys(parIDs)
+		if err != nil {
+			return nil, err
+		}
+		parIssuesSet.Add(parIssues.Issues()...)
+		/*
+			err = parIssuesSet.RetrieveParents(c)
+			if err != nil {
+				return parIssuesSet, nil
+			}
+		*/
+		// parIDs = parIssuesSet.KeysParentsPopulated()
+		parIDs, err = parIssuesSet.LineageTopKeysUnpopulated()
+		if err != nil {
+			return nil, err
+		}
+		i++
 	}
 
-	err := parIssuesSet.RetrieveIssues(c, parIDs)
-	if err != nil {
-		return nil, err
-	}
-
-	err = parIssuesSet.RetrieveParents(c)
-
-	return parIssuesSet, err
+	return parIssuesSet, nil
 }
 
 func (c *Client) IssuesSetAddParents(is *IssuesSet) error {
