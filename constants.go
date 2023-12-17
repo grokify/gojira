@@ -3,6 +3,11 @@ package gojira
 import "time"
 
 const (
+	FieldIssue   = "issue"   // issue keys
+	FieldProject = "project" // project keys
+	FieldStatus  = "status"
+	FieldType    = "type"
+
 	// Statuses: https://support.atlassian.com/jira-cloud-administration/docs/what-are-issue-statuses-priorities-and-resolutions/
 	StatusClosed            = "Closed"
 	StatusDone              = "Done"
@@ -28,4 +33,13 @@ const (
 	WorkingDaysPerWeekDefault float32 = 5.0
 
 	JiraXMLGenerated = time.UnixDate // "Fri Jul 28 01:07:16 UTC 2023"
+
+	JQLMaxResults = 100
 )
+
+func StatusesInactive() []string {
+	return []string{
+		StatusClosed,
+		StatusDone,
+	}
+}
