@@ -12,6 +12,8 @@ import (
 type JQL struct {
 	IssuesIncl   []string
 	IssuesExcl   []string
+	KeysIncl     []string
+	KeysExcl     []string
 	ProjectsIncl []string
 	ProjectsExcl []string
 	StatusesIncl []string
@@ -32,6 +34,8 @@ func (j JQL) String() string {
 	procs := []inclExclProc{
 		{Field: FieldIssue, Values: j.IssuesIncl, Exclude: false},
 		{Field: FieldIssue, Values: j.IssuesExcl, Exclude: true},
+		{Field: FieldKey, Values: j.KeysIncl, Exclude: false},
+		{Field: FieldKey, Values: j.KeysExcl, Exclude: true},
 		{Field: FieldProject, Values: j.ProjectsIncl, Exclude: false},
 		{Field: FieldProject, Values: j.ProjectsExcl, Exclude: true},
 		{Field: FieldStatus, Values: j.StatusesIncl, Exclude: false},
@@ -40,7 +44,11 @@ func (j JQL) String() string {
 		{Field: FieldType, Values: j.TypesExcl, Exclude: true},
 	}
 	for _, proc := range procs {
-		if clause := inClause(proc.Field, proc.Values, proc.Exclude); clause != "" {
+		if len(proc.Values) == 0 {
+			continue
+		} else if field := strings.TrimSpace(proc.Field); field == "" {
+			panic("field is empty")
+		} else if clause := inClause(proc.Field, proc.Values, proc.Exclude); clause != "" {
 			parts = append(parts, clause)
 		}
 	}
@@ -73,8 +81,53 @@ func inClause(field string, values []string, exclude bool) string {
 		if exclude {
 			operator = "NOT IN"
 		}
-		return fmt.Sprintf("%s %s (%s)", field, operator, join.JoinQuote(values, "'", "'", ","))
+		return fmt.Sprintf("%s %s (%s)", field, operator, join.JoinQuote(values, "'", "'", JQLInSep))
 	} else {
 		return ""
 	}
+}
+
+// JQLStringsSimple provides a set of JQLs for a single field and values. The purpose of this function
+// is to split very long lists of values so that each JQL is under a certain length limit.
+func JQLStringsSimple(field string, exclude bool, vals []string, jqlMaxLength uint) []string {
+	field = strings.TrimSpace(field)
+	if field == "" {
+		return []string{}
+	}
+	vals = stringsutil.SliceCondenseSpace(vals, true, true)
+	if len(vals) == 0 {
+		return []string{}
+	}
+	var jqls []string
+	operator := "IN"
+	if exclude {
+		operator = "NOT IN"
+	}
+	baseString := fmt.Sprintf("%s %s ()", field, operator)
+	baseStringLen := len(baseString)
+	quoter := stringsutil.Quoter{
+		Beg:         "'",
+		End:         "'",
+		SkipNesting: true,
+	}
+	if jqlMaxLength == 0 {
+		jqlMaxLength = JQLMaxLength
+	}
+	valsMaxLength := int(jqlMaxLength) - baseStringLen
+	valsString := ""
+	for i, val := range vals {
+		valQuoted := quoter.Quote(val)
+		if len(valsString)+len(valQuoted) > valsMaxLength {
+			jqls = append(jqls, fmt.Sprintf("%s %s (%s)", field, operator, valsString))
+			valsString = ""
+		}
+		valsString += valQuoted
+		if i < len(vals)-1 {
+			valsString += JQLInSep
+		}
+	}
+	if len(valsString) > 0 {
+		jqls = append(jqls, fmt.Sprintf("%s %s (%s)", field, operator, valsString))
+	}
+	return jqls
 }
