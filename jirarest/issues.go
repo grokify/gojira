@@ -68,15 +68,15 @@ func (ii Issues) Metas(baseURL string) IssueMetas {
 }
 
 func (ii Issues) WriteFileJSON(filename, prefix, indent string) error {
-	b, err := jsonutil.MarshalSimple(ii, prefix, indent)
-	if err != nil {
+	if b, err := jsonutil.MarshalSimple(ii, prefix, indent); err != nil {
 		return err
+	} else {
+		return os.WriteFile(filename, b, 0600)
 	}
-	return os.WriteFile(filename, b, 0600)
 }
 
 func IssuesReadFileJSON(filename string) (Issues, error) {
-	ii := Issues{}
+	var ii Issues
 	if b, err := os.ReadFile(filename); err != nil {
 		return ii, err
 	} else {
