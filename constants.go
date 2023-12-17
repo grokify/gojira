@@ -3,7 +3,8 @@ package gojira
 import "time"
 
 const (
-	FieldIssue   = "issue"   // issue keys
+	FieldIssue   = "issue" // issue keys
+	FieldKey     = "key"
 	FieldProject = "project" // project keys
 	FieldStatus  = "status"
 	FieldType    = "type"
@@ -35,6 +36,8 @@ const (
 	JiraXMLGenerated = time.UnixDate // "Fri Jul 28 01:07:16 UTC 2023"
 
 	JQLMaxResults = 100
+	JQLMaxLength  = 6000 // https://jira.atlassian.com/browse/JRASERVER-41005
+	JQLInSep      = ","
 )
 
 func StatusesInactive() []string {
