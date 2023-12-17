@@ -212,6 +212,7 @@ func (is *IssuesSet) Issues() Issues {
 func (is *IssuesSet) IssueMetas() IssueMetas {
 	var imetas IssueMetas
 	for _, iss := range is.IssuesMap {
+		iss := iss
 		issMore := IssueMore{Issue: &iss}
 		issMeta := issMore.Meta(is.Config.ServerURL)
 		imetas = append(imetas, issMeta)
@@ -229,6 +230,7 @@ func (is *IssuesSet) HistogramSetProjectType() *histogram.HistogramSet {
 	}
 
 	for _, iss := range is.IssuesMap {
+		iss := iss
 		issMore := IssueMore{Issue: &iss}
 		issMeta := issMore.Meta(serverURL)
 		projKey := issMeta.ProjectKey
@@ -307,7 +309,9 @@ func (is *IssuesSet) IssuesSetHighestType(issueType string) (*IssuesSet, error) 
 				if issType, err := is.Get(issMetaType.Key); err != nil {
 					return nil, errorsutil.Wrapf(err, "error on `is.Get(%s)`", issMetaType.Key)
 				} else {
-					new.Add(issType)
+					if err := new.Add(issType); err != nil {
+						return nil, err
+					}
 				}
 			}
 		}
@@ -326,7 +330,7 @@ func (is *IssuesSet) TableSet(customCols *CustomTableCols, inclEpic bool, initia
 	tbl1Issues.Name = gojira.TypeIssue
 	ts.TableMap[tbl1Issues.Name] = tbl1Issues
 	ts.Order = append(ts.Order, tbl1Issues.Name)
-	if inclEpic && 1 == 1 {
+	if inclEpic {
 		isEpic, err := is.IssuesSetHighestType(gojira.TypeEpic)
 		if err != nil {
 			return nil, errorsutil.Wrapf(err, "error on `is.IssuesSetHighestType(%s)`", gojira.TypeEpic)
