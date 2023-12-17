@@ -16,7 +16,7 @@ func main() {
 	_, err := flags.Parse(&opts)
 	logutil.FatalErr(err)
 
-	fmtutil.PrintJSON(opts)
+	fmtutil.MustPrintJSON(opts)
 
 	jrClient, err := opts.Client()
 	logutil.FatalErr(errorsutil.Wrap(err, "Client"))
@@ -26,8 +26,8 @@ func main() {
 
 	im := jirarest.IssueMore{Issue: iss}
 
-	fmtutil.PrintJSON(im.Issue)
-	fmtutil.PrintJSON(im.Meta(jrClient.Config.ServerURL))
+	fmtutil.MustPrintJSON(im.Issue)
+	fmtutil.MustPrintJSON(im.Meta(jrClient.Config.ServerURL))
 
 	fmt.Println("DONE")
 }

@@ -51,7 +51,7 @@ func main() {
 	dt := time.Now().UTC()
 	dtfs := dt.Format(timeutil.RFC3339Dash)
 	outfile := "backlog-" + dtfs + ".json"
-	is.WriteFileJSON(outfile, "", "  ")
+	err = is.WriteFileJSON(outfile, "", "  ")
 	logutil.FatalErr(errorsutil.Wrap(err, "WriteFileJSON"))
 
 	tbl, err := is.Table(nil, true, "")
