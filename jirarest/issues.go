@@ -57,6 +57,15 @@ func (ii Issues) IssuesSet(cfg *gojira.Config) (*IssuesSet, error) {
 	return is, err
 }
 
+func (ii Issues) Metas(baseURL string) IssueMetas {
+	metas := IssueMetas{}
+	for _, iss := range ii {
+		im := IssueMore{Issue: &iss}
+		metas = append(metas, im.Meta(baseURL))
+	}
+	return metas
+}
+
 func (ii Issues) WriteFileJSON(filename, prefix, indent string) error {
 	b, err := jsonutil.MarshalSimple(ii, prefix, indent)
 	if err != nil {
