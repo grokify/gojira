@@ -9,6 +9,7 @@ import (
 	"github.com/grokify/mogo/errors/errorsutil"
 	"github.com/grokify/mogo/fmt/fmtutil"
 	"github.com/grokify/mogo/pointer"
+	"github.com/grokify/mogo/type/slicesutil"
 	"github.com/grokify/mogo/type/stringsutil"
 )
 
@@ -58,7 +59,7 @@ func (is *IssuesSet) RetrieveIssues(client *Client, ids []string) error {
 	}
 	fmt.Printf("LEN(%d)\n", len(ids))
 
-	idsSlicesMaxResults := SplitMaxLength(ids, gojira.JQLMaxResults)
+	idsSlicesMaxResults := slicesutil.SplitMaxLength(ids, gojira.JQLMaxResults)
 	fmtutil.PrintJSON(idsSlicesMaxResults)
 
 	for _, idsSlice := range idsSlicesMaxResults {

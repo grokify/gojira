@@ -10,6 +10,7 @@ import (
 	"github.com/grokify/goauth"
 	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/errors/errorsutil"
+	"github.com/grokify/mogo/type/slicesutil"
 	"github.com/grokify/mogo/type/stringsutil"
 	"github.com/rs/zerolog"
 )
@@ -201,7 +202,7 @@ func (c *Client) SearchIssuesSet(jql string) (*IssuesSet, error) {
 func (c *Client) GetIssuesSetForKeys(keys []string) (*IssuesSet, error) {
 	is := NewIssuesSet(nil)
 
-	keysSlice := SplitMaxLength(stringsutil.SliceCondenseSpace(keys, true, true), gojira.JQLMaxResults)
+	keysSlice := slicesutil.SplitMaxLength(stringsutil.SliceCondenseSpace(keys, true, true), gojira.JQLMaxResults)
 
 	for _, keysIter := range keysSlice {
 		keysIter = stringsutil.SliceCondenseSpace(keysIter, true, true)

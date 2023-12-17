@@ -8,7 +8,7 @@ require (
 	github.com/andygrunwald/go-jira v1.16.0
 	github.com/grokify/goauth v0.20.7
 	github.com/grokify/gocharts/v2 v2.16.1
-	github.com/grokify/mogo v0.62.4
+	github.com/grokify/mogo v0.62.5
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/rs/zerolog v1.31.0
