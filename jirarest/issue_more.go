@@ -2,6 +2,7 @@ package jirarest
 
 import (
 	"errors"
+	"slices"
 	"sort"
 	"strings"
 	"time"
@@ -102,6 +103,11 @@ func (im *IssueMore) Labels(sortAsc bool) []string {
 		sort.Strings(labels)
 		return labels
 	}
+}
+
+func (im *IssueMore) LabelExists(label string) bool {
+	labels := im.Labels(true)
+	return slices.Contains(labels, label)
 }
 
 func (im *IssueMore) ParentKey() string {
