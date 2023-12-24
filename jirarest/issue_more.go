@@ -2,12 +2,12 @@ package jirarest
 
 import (
 	"errors"
-	"slices"
 	"sort"
 	"strings"
 	"time"
 
 	jira "github.com/andygrunwald/go-jira"
+	"golang.org/x/exp/slices"
 )
 
 type IssueMore struct {
