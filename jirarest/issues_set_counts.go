@@ -11,10 +11,27 @@ func (is *IssuesSet) Counts() map[string]map[string]uint {
 		"byProject":    is.CountsByProject(),
 		"byProjectKey": is.CountsByProjectKey(),
 		"byStatus":     is.CountsByStatus(),
-		"byType":       is.CountsByType(),
+		"byType":       is.CountsByType(true, false),
 		"byTime":       is.CountsByTime(),
 	}
 	return mm
+}
+
+// CountsByCustomFieldValues returns a list of custom field value counts where `customField` is in
+// the format `customfield_12345`.
+func (is *IssuesSet) CountsByCustomFieldValues(customField string) (map[string]uint, error) {
+	out := map[string]uint{}
+	for _, iss := range is.IssuesMap {
+		iss := iss
+		im := IssueMore{Issue: &iss}
+		cfInfo, err := im.CustomField(customField)
+		if err != nil {
+			return out, err
+		}
+		out[cfInfo.Value]++
+
+	}
+	return out, nil
 }
 
 func (is *IssuesSet) CountsByProject() map[string]uint {
@@ -45,11 +62,20 @@ func (is *IssuesSet) CountsByStatus() map[string]uint {
 	return m
 }
 
-func (is *IssuesSet) CountsByType() map[string]uint {
+func (is *IssuesSet) CountsByType(inclLeafs, inclParents bool) map[string]uint {
 	m := map[string]uint{}
-	for _, iss := range is.IssuesMap {
-		if iss.Fields != nil {
-			m[iss.Fields.Type.Name]++
+	if inclLeafs {
+		for _, iss := range is.IssuesMap {
+			iss := iss
+			im := IssueMore{Issue: &iss}
+			m[im.Type()]++
+		}
+	}
+	if inclParents && is.Parents != nil {
+		for _, iss := range is.Parents.IssuesMap {
+			iss := iss
+			im := IssueMore{Issue: &iss}
+			m[im.Type()]++
 		}
 	}
 	return m
