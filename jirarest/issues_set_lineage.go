@@ -11,6 +11,40 @@ import (
 
 var ErrLineageNotFound = errors.New("lineage not found")
 
+// Lineage returns a slice of `IssueMeta` where the suppied key is in index 0 and the most senior
+// parent is the last element of the slice. If a parent is not found in the set, an error is returned.
+func (is *IssuesSet) Lineage(key string) (IssueMetas, error) {
+	if key == "Epic" {
+		panic("Lineage Epic")
+	}
+	ims := IssueMetas{}
+	iss, err := is.Get(key)
+	if err != nil {
+		return ims, errorsutil.Wrapf(err, "key not found (%s)", key)
+	}
+	im := IssueMore{Issue: &iss}
+	imeta := im.Meta(is.Config.ServerURL)
+	ims = append(ims, imeta)
+	parKey := im.ParentKey()
+
+	if parKey != "" && is.Parents == nil {
+		return ims, errors.New("parents not set")
+	}
+
+	for parKey != "" {
+		parIss, err := is.Get(parKey)
+		if err != nil {
+			return ims, errorsutil.Wrap(err, "parent not found")
+		}
+		parIM := IssueMore{Issue: &parIss}
+		parM := parIM.Meta(is.Config.ServerURL)
+		ims = append(ims, parM)
+		parKey = parIM.ParentKey()
+	}
+
+	return ims, nil
+}
+
 func (is *IssuesSet) LineageValidateSet() (popLineage []string, unpopLineage []string, allValid bool) {
 	issKeys := is.Keys()
 	for _, issKey := range issKeys {

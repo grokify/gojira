@@ -5,7 +5,6 @@ import (
 
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/gojira"
-	"github.com/grokify/mogo/errors/errorsutil"
 	"github.com/grokify/mogo/pointer"
 	"github.com/grokify/mogo/type/slicesutil"
 	"github.com/grokify/mogo/type/stringsutil"
@@ -121,40 +120,6 @@ func (is *IssuesSet) KeysParentsUnpopulated() []string {
 	}
 
 	return stringsutil.SliceCondenseSpace(parKeysUnpop, true, true)
-}
-
-// Lineage returns a slice of `IssueMeta` where the suppied key is in index 0 and the most senior
-// parent is the last element of the slice. If a parent is not found in the set, an error is returned.
-func (is *IssuesSet) Lineage(key string) (IssueMetas, error) {
-	if key == "Epic" {
-		panic("Lineage Epic")
-	}
-	ims := IssueMetas{}
-	iss, err := is.Get(key)
-	if err != nil {
-		return ims, errorsutil.Wrapf(err, "key not found (%s)", key)
-	}
-	im := IssueMore{Issue: &iss}
-	imeta := im.Meta(is.Config.ServerURL)
-	ims = append(ims, imeta)
-	parKey := im.ParentKey()
-
-	if parKey != "" && is.Parents == nil {
-		return ims, errors.New("parents not set")
-	}
-
-	for parKey != "" {
-		parIss, err := is.Get(parKey)
-		if err != nil {
-			return ims, errorsutil.Wrap(err, "parent not found")
-		}
-		parIM := IssueMore{Issue: &parIss}
-		parM := parIM.Meta(is.Config.ServerURL)
-		ims = append(ims, parM)
-		parKey = parIM.ParentKey()
-	}
-
-	return ims, nil
 }
 
 /*
