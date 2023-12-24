@@ -29,7 +29,6 @@ func (is *IssuesSet) CountsByCustomFieldValues(customField string) (map[string]u
 			return out, err
 		}
 		out[cfInfo.Value]++
-
 	}
 	return out, nil
 }
