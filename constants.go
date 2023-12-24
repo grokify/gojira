@@ -3,11 +3,14 @@ package gojira
 import "time"
 
 const (
+	FieldFilter  = "filter"
 	FieldIssue   = "issue" // issue keys
 	FieldKey     = "key"
 	FieldProject = "project" // project keys
 	FieldStatus  = "status"
 	FieldType    = "type"
+
+	FieldIssuePlural = "issues"
 
 	// Statuses: https://support.atlassian.com/jira-cloud-administration/docs/what-are-issue-statuses-priorities-and-resolutions/
 	StatusClosed            = "Closed"
