@@ -10,6 +10,8 @@ import (
 
 // JQL is a JQL builder. It will create a JQL string using `JQL.String()` from the supplied infomration.
 type JQL struct {
+	FiltersIncl  [][]string // outer level is `AND`, inner level is `IN`.
+	FiltersExcl  [][]string
 	IssuesIncl   []string
 	IssuesExcl   []string
 	KeysIncl     []string
@@ -26,12 +28,15 @@ func (j JQL) String() string {
 	var parts []string
 
 	type inclExclProc struct {
-		Field   string
-		Values  []string
-		Exclude bool
+		Field      string
+		Values     []string
+		ValuesMore [][]string
+		Exclude    bool
 	}
 
 	procs := []inclExclProc{
+		{Field: FieldFilter, ValuesMore: j.FiltersIncl, Exclude: false},
+		{Field: FieldFilter, ValuesMore: j.FiltersExcl, Exclude: true},
 		{Field: FieldIssue, Values: j.IssuesIncl, Exclude: false},
 		{Field: FieldIssue, Values: j.IssuesExcl, Exclude: true},
 		{Field: FieldKey, Values: j.KeysIncl, Exclude: false},
@@ -44,6 +49,17 @@ func (j JQL) String() string {
 		{Field: FieldType, Values: j.TypesExcl, Exclude: true},
 	}
 	for _, proc := range procs {
+		if len(proc.ValuesMore) > 0 {
+			if field := strings.TrimSpace(proc.Field); field == "" {
+				panic("field is empty")
+			}
+			for _, inClauseVals := range proc.ValuesMore {
+				if clause := inClause(proc.Field, inClauseVals, proc.Exclude); clause != "" {
+					parts = append(parts, clause)
+				}
+			}
+			continue
+		}
 		if len(proc.Values) == 0 {
 			continue
 		} else if field := strings.TrimSpace(proc.Field); field == "" {
