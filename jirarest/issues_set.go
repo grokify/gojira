@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	jira "github.com/andygrunwald/go-jira"
-	"github.com/grokify/gocharts/v2/data/histogram"
 	"github.com/grokify/gocharts/v2/data/table"
 	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/encoding/jsonutil"
@@ -275,27 +274,6 @@ func (is *IssuesSet) IssueMetas() IssueMetas {
 		imetas = append(imetas, issMeta)
 	}
 	return imetas
-}
-
-// HistogramSets returns a list of histograms by Project and Type.
-func (is *IssuesSet) HistogramSetProjectType() *histogram.HistogramSet {
-	hset := histogram.NewHistogramSet("issues")
-
-	serverURL := ""
-	if is.Config != nil {
-		serverURL = is.Config.ServerURL
-	}
-
-	for _, iss := range is.IssuesMap {
-		iss := iss
-		issMore := IssueMore{Issue: &iss}
-		issMeta := issMore.Meta(serverURL)
-		projKey := issMeta.ProjectKey
-		issType := issMeta.Type
-		hset.Add(projKey, issType, 1)
-	}
-
-	return hset
 }
 
 type CustomTableCols struct {
