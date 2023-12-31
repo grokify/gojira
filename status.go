@@ -29,7 +29,6 @@ func (ss *StatusesSet) StatusesOpen() []string {
 	var statuses []string
 
 	return statuses
-
 }
 
 func (ss *StatusesSet) StatusesInProgress() []string {
