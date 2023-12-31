@@ -176,7 +176,7 @@ func (s *BacklogService) GetBacklogIssuesSetAll(boardID uint, jql string) (*Issu
 	if err != nil {
 		return nil, b, err
 	}
-	is := NewIssuesSet(&s.Client.Config)
+	is := NewIssuesSet(s.Client.Config)
 	err = is.Add(iir.Issues...)
 	return is, b, err
 }
