@@ -73,7 +73,7 @@ func (ii Issues) Stats(workingHoursPerDay, workingDaysPerWeek float32) gojira.Is
 			esStats.WithoutEstimate++
 		}
 		stats.EstimateStatsByType[it.Type.DisplayName] = esStats
-		if it.Status.DisplayName == gojira.StatusClosed {
+		if it.Status.DisplayName == gojira.StatusDone {
 			stats.ClosedEstimateVsActual.ClosedCount++
 			if it.TimeOriginalEstimate.Seconds > 0 {
 				stats.ClosedEstimateVsActual.ClosedCountWithEstimate++

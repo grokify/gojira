@@ -13,12 +13,13 @@ const (
 	FieldIssuePlural = "issues"
 
 	// Statuses: https://support.atlassian.com/jira-cloud-administration/docs/what-are-issue-statuses-priorities-and-resolutions/
-	StatusClosed            = "Closed"
-	StatusDone              = "Done"
-	StatusInProgress        = "In Progress"
-	StatusPOReview          = "PO Review"
-	StatusPendingValidation = "Pending Validation"
-	StatusReady             = "Ready"
+	StatusOpen        = "Open"
+	StatusInProgress  = "In Progress"
+	StatusDone        = "Done"
+	StatusToDo        = "To Do"
+	StatusInReview    = "In Review"
+	StatusUnderReview = "Under review"
+	StatusApproved    = "Approved" // Done
 
 	TypeIssue           = "Issue"
 	TypeIssuePlural     = "Issues"
@@ -45,7 +46,6 @@ const (
 
 func StatusesInactive() []string {
 	return []string{
-		StatusClosed,
 		StatusDone,
 	}
 }
