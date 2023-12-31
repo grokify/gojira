@@ -12,31 +12,31 @@ import (
 type JQL struct {
 	FiltersIncl  [][]string // outer level is `AND`, inner level is `IN`.
 	FiltersExcl  [][]string
-	IssuesIncl   []string
-	IssuesExcl   []string
-	KeysIncl     []string
-	KeysExcl     []string
-	ProjectsIncl []string
-	ProjectsExcl []string
-	StatusesIncl []string
-	StatusesExcl []string
-	TypesIncl    []string
-	TypesExcl    []string
+	IssuesIncl   [][]string
+	IssuesExcl   [][]string
+	KeysIncl     [][]string
+	KeysExcl     [][]string
+	ProjectsIncl [][]string
+	ProjectsExcl [][]string
+	StatusesIncl [][]string
+	StatusesExcl [][]string
+	TypesIncl    [][]string
+	TypesExcl    [][]string
 }
 
 func (j JQL) String() string {
 	var parts []string
 
 	type inclExclProc struct {
-		Field      string
-		Values     []string
-		ValuesMore [][]string
-		Exclude    bool
+		Field  string
+		Values [][]string
+		//ValuesMore [][]string
+		Exclude bool
 	}
 
 	procs := []inclExclProc{
-		{Field: FieldFilter, ValuesMore: j.FiltersIncl, Exclude: false},
-		{Field: FieldFilter, ValuesMore: j.FiltersExcl, Exclude: true},
+		{Field: FieldFilter, Values: j.FiltersIncl, Exclude: false},
+		{Field: FieldFilter, Values: j.FiltersExcl, Exclude: true},
 		{Field: FieldIssue, Values: j.IssuesIncl, Exclude: false},
 		{Field: FieldIssue, Values: j.IssuesExcl, Exclude: true},
 		{Field: FieldKey, Values: j.KeysIncl, Exclude: false},
@@ -49,24 +49,24 @@ func (j JQL) String() string {
 		{Field: FieldType, Values: j.TypesExcl, Exclude: true},
 	}
 	for _, proc := range procs {
-		if len(proc.ValuesMore) > 0 {
-			if field := strings.TrimSpace(proc.Field); field == "" {
-				panic("field is empty")
-			}
-			for _, inClauseVals := range proc.ValuesMore {
+		if field := strings.TrimSpace(proc.Field); field == "" {
+			panic("field is empty")
+		} else if len(proc.Values) > 0 {
+			for _, inClauseVals := range proc.Values {
 				if clause := inClause(proc.Field, inClauseVals, proc.Exclude); clause != "" {
 					parts = append(parts, clause)
 				}
 			}
-			continue
 		}
-		if len(proc.Values) == 0 {
-			continue
-		} else if field := strings.TrimSpace(proc.Field); field == "" {
-			panic("field is empty")
-		} else if clause := inClause(proc.Field, proc.Values, proc.Exclude); clause != "" {
-			parts = append(parts, clause)
-		}
+		/*
+			if len(proc.Values) == 0 {
+				continue
+			} else if field := strings.TrimSpace(proc.Field); field == "" {
+				panic("field is empty")
+				// } else if clause := inClause(proc.Field, proc.Values, proc.Exclude); clause != "" {
+				// parts = append(parts, clause)
+			}
+		*/
 	}
 
 	if len(parts) > 0 {

@@ -24,7 +24,7 @@ func NewClientGoauthBasicAuthFile(filename, credsKey string) (*Client, error) {
 	c.HTTPClient = hclient
 	cfg := gojira.NewConfigDefault()
 	cfg.ServerURL = serverURL
-	c.Config = *cfg
+	c.Config = cfg
 	jclient, err := NewClientJiraBasicAuthFile(filename, credsKey)
 	if err != nil {
 		return c, errorsutil.Wrap(err, `jirarest.ClientsBasicAuthFile()..JiraClientBasicAuthFile()`)
@@ -81,7 +81,7 @@ func JiraClientBasicAuth(creds *goauth.CredentialsBasicAuth) (*jira.Client, erro
 }
 
 type Client struct {
-	Config     gojira.Config
+	Config     *gojira.Config
 	HTTPClient *http.Client
 	JiraClient *jira.Client
 	Logger     *zerolog.Logger
@@ -89,7 +89,7 @@ type Client struct {
 
 func (c *Client) Issue(key string) (*jira.Issue, error) {
 	key = strings.TrimSpace(key)
-	jqlInfo := gojira.JQL{IssuesIncl: []string{key}}
+	jqlInfo := gojira.JQL{IssuesIncl: [][]string{{key}}}
 	//jql := fmt.Sprintf("issue = %s", key)
 	jql := jqlInfo.String()
 	if key == "" {
@@ -194,7 +194,7 @@ func (c *Client) SearchIssuesSet(jql string) (*IssuesSet, error) {
 	if err != nil {
 		return nil, err
 	}
-	is := NewIssuesSet(&c.Config)
+	is := NewIssuesSet(c.Config)
 	err = is.Add(ii...)
 	return is, err
 }
@@ -209,7 +209,7 @@ func (c *Client) GetIssuesSetForKeys(keys []string) (*IssuesSet, error) {
 		if len(keysIter) == 0 {
 			continue
 		}
-		jqlInfo := gojira.JQL{KeysIncl: keysIter}
+		jqlInfo := gojira.JQL{KeysIncl: [][]string{keysIter}}
 		// jql := KeysJQL(keys)
 		if jql := jqlInfo.String(); jql == "" {
 			return is, nil
