@@ -58,6 +58,17 @@ func (is *IssuesSet) Add(issues ...jira.Issue) error {
 	return nil
 }
 
+func (is *IssuesSet) IssueFirst() (jira.Issue, error) {
+	keys := is.Keys()
+	if len(keys) == 0 {
+		return jira.Issue{}, errors.New("no issues present")
+	} else if iss, ok := is.IssuesMap[keys[0]]; ok {
+		return iss, nil
+	} else {
+		panic(fmt.Sprintf("issue key from map not found (%s)", keys[0]))
+	}
+}
+
 func (is *IssuesSet) Keys() []string {
 	return maputil.Keys(is.IssuesMap)
 }
@@ -441,7 +452,7 @@ func (is *IssuesSet) Table(customCols *CustomTableCols, inclEpic bool, initiativ
 
 		timeRemainingSecs := iss.Fields.TimeEstimate - iss.Fields.TimeSpent
 		if timeRemainingSecs < 0 ||
-			issMore.Status() == gojira.StatusClosed ||
+			// issMore.Status() == gojira.StatusClosed ||
 			issMore.Status() == gojira.StatusDone {
 			timeRemainingSecs = 0
 		}
