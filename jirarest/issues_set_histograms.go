@@ -125,6 +125,7 @@ func (is *IssuesSet) ExportWorkstreamXfieldStatusHistogramSets(
 		}
 	}
 	for _, iss := range is.IssuesMap {
+		iss := iss
 		im := IssueMore{Issue: &iss}
 		key := im.Key()
 		if key == "" {
