@@ -10,6 +10,12 @@ func NewProjectsMeta() ProjectsMeta {
 	return pm
 }
 
+func (pm *ProjectsMeta) init() {
+	if pm.Projects == nil {
+		pm.Projects = map[string]ProjectMeta{}
+	}
+}
+
 func (pm *ProjectsMeta) AddMap(info map[string]float32) {
 	pm.init()
 	for key, teamSize := range info {
@@ -22,10 +28,17 @@ func (pm *ProjectsMeta) AddMap(info map[string]float32) {
 	}
 }
 
-func (pm *ProjectsMeta) init() {
-	if pm.Projects == nil {
-		pm.Projects = map[string]ProjectMeta{}
+func (pm *ProjectsMeta) FTEs() float32 {
+	sum := float32(0)
+	for _, projMeta := range pm.Projects {
+		sum += projMeta.TeamSize
 	}
+	return sum
+}
+
+func (pm *ProjectsMeta) CapacitySimple(itemsPerWeekPerFTE, weekCount float32) float32 {
+	ftes := pm.FTEs()
+	return ftes * itemsPerWeekPerFTE * weekCount
 }
 
 type ProjectMeta struct {
