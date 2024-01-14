@@ -25,10 +25,16 @@ func (ss *StatusesSet) Add(status, statusCategory string) {
 	ss.Map[status] = statusCategory
 }
 
-func (ss *StatusesSet) StatusesOpen() []string {
-	var statuses []string
+func (ss *StatusesSet) StatusCategory(status string) string {
+	if cat, ok := ss.Map[status]; ok {
+		return cat
+	} else {
+		return ""
+	}
+}
 
-	return statuses
+func (ss *StatusesSet) StatusesOpen() []string {
+	return ss.StatusesForCategory(StatusOpen)
 }
 
 func (ss *StatusesSet) StatusesInProgress() []string {
