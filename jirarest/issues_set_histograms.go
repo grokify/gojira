@@ -1,6 +1,8 @@
 package jirarest
 
 import (
+	"errors"
+
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/gocharts/v2/data/histogram"
 	"github.com/grokify/gocharts/v2/data/table"
@@ -91,6 +93,100 @@ func (is *IssuesSet) HistogramSetsProjectTypeStatus() *histogram.HistogramSets {
 func (is *IssuesSet) HistogramMap(stdKeys []string, calcFields []IssueCalcField) (*histogram.Histogram, error) {
 	h := histogram.NewHistogram("")
 	return h, nil
+}
+
+func (is *IssuesSet) ExportWorkstreamXfieldStatusHistogramSets(
+	wsFuncMake WorkstreamFuncMake,
+	wsFuncIncl WorkstreamFuncIncl,
+	xfieldSlug string,
+	useStatusCategory bool) (*histogram.HistogramSets, error) {
+	if wsFuncMake == nil {
+		return nil, errors.New("workstream func not supplied")
+	}
+	if wsFuncIncl == nil {
+		wsFuncIncl = func(ws string) bool { return true }
+	}
+	xfieldSlugs := map[string]int{
+		FieldSlugProjectkey: 1,
+		FieldSlugType:       1,
+	}
+	if _, ok := xfieldSlugs[xfieldSlug]; !ok {
+		return nil, errors.New("xfieldSlug not known")
+	}
+	hss := histogram.NewHistogramSets("issues")
+	statusCategoryFunc := func(s string) string { return s }
+	if useStatusCategory {
+		if is.Config == nil {
+			return nil, errors.New("config not set")
+		} else if is.Config.StatusesSet == nil {
+			return nil, errors.New("statusesSet not set")
+		} else {
+			statusCategoryFunc = is.Config.StatusesSet.StatusCategory
+		}
+	}
+	for _, iss := range is.IssuesMap {
+		im := IssueMore{Issue: &iss}
+		key := im.Key()
+		if key == "" {
+			return nil, errors.New("issue key cannot be empty")
+		}
+		ws, err := wsFuncMake(key)
+		if err != nil {
+			return nil, err
+		}
+		if wsFuncIncl != nil && !wsFuncIncl(ws) {
+			continue
+		}
+		status := im.Status()
+		if useStatusCategory {
+			statusCategory := statusCategoryFunc(status)
+			if statusCategory != "" {
+				status = statusCategory
+			}
+		}
+		xfield := ""
+		switch xfieldSlug {
+		case FieldSlugProjectkey:
+			xfield = im.ProjectKey()
+		case FieldSlugType:
+			xfield = im.Type()
+		}
+
+		hss.Add(ws, xfield, status, 1, true)
+	}
+	return hss, nil
+}
+
+type (
+	WorkstreamFuncMake func(issueKey string) (string, error)
+	WorkstreamFuncIncl func(ws string) bool
+)
+
+func (is *IssuesSet) ExportWorkstreamXfieldStatusTablePivot(wsFuncMake WorkstreamFuncMake, wsFuncIncl WorkstreamFuncIncl, xfieldSlug, xfieldName string, useStatusCategory bool) (*table.Table, error) {
+	hss, err := is.ExportWorkstreamXfieldStatusHistogramSets(wsFuncMake, wsFuncIncl, xfieldSlug, useStatusCategory)
+	if err != nil {
+		return nil, err
+	}
+	tbl := hss.TablePivot("issues", "Workstream", xfieldName, "Status: ", "")
+	return &tbl, nil
+}
+
+func (is *IssuesSet) ExportWorkstreamProjectkeyStatusTablePivot(wsFuncMake WorkstreamFuncMake, wsFuncIncl WorkstreamFuncIncl, useStatusCategory bool) (*table.Table, error) {
+	hss, err := is.ExportWorkstreamXfieldStatusHistogramSets(wsFuncMake, wsFuncIncl, FieldSlugProjectkey, useStatusCategory)
+	if err != nil {
+		return nil, err
+	}
+	tbl := hss.TablePivot("issues", "Workstream", "Project Key", "Status: ", "")
+	return &tbl, nil
+}
+
+func (is *IssuesSet) ExportWorkstreamTypeStatusTablePivot(wsFuncMake WorkstreamFuncMake, wsFuncIncl WorkstreamFuncIncl, useStatusCategory bool) (*table.Table, error) {
+	hss, err := is.ExportWorkstreamXfieldStatusHistogramSets(wsFuncMake, wsFuncIncl, FieldSlugType, useStatusCategory)
+	if err != nil {
+		return nil, err
+	}
+	tbl := hss.TablePivot("issues", "Workstream", "Type", "Status: ", "")
+	return &tbl, nil
 }
 
 // Workstream | Story|Bug|Spike | Status | Team

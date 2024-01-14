@@ -18,6 +18,9 @@ const (
 	TimeAggregateTimeEstimate         = "Aggregate Time Estimate"
 	TimeTimeRemaining                 = "Time Remaining"
 	TimeTimeRemainingOriginal         = "Time Remaining Original"
+
+	FieldSlugType       = "type"
+	FieldSlugProjectkey = "projectkey"
 )
 
 type Status struct {
