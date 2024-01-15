@@ -6,7 +6,7 @@ go 1.21
 
 require (
 	github.com/andygrunwald/go-jira v1.16.0
-	github.com/grokify/goauth v0.20.8
+	github.com/grokify/goauth v0.20.9
 	github.com/grokify/gocharts/v2 v2.17.0
 	github.com/grokify/mogo v0.62.7
 	github.com/jessevdk/go-flags v1.5.0
