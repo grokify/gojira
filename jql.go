@@ -16,6 +16,8 @@ type JQL struct {
 	IssuesExcl   [][]string
 	KeysIncl     [][]string
 	KeysExcl     [][]string
+	ParentsIncl  [][]string
+	ParentsExcl  [][]string
 	ProjectsIncl [][]string
 	ProjectsExcl [][]string
 	StatusesIncl [][]string
@@ -41,6 +43,8 @@ func (j JQL) String() string {
 		{Field: FieldIssue, Values: j.IssuesExcl, Exclude: true},
 		{Field: FieldKey, Values: j.KeysIncl, Exclude: false},
 		{Field: FieldKey, Values: j.KeysExcl, Exclude: true},
+		{Field: FieldParent, Values: j.ParentsIncl, Exclude: false},
+		{Field: FieldParent, Values: j.ParentsExcl, Exclude: true},
 		{Field: FieldProject, Values: j.ProjectsIncl, Exclude: false},
 		{Field: FieldProject, Values: j.ProjectsExcl, Exclude: true},
 		{Field: FieldStatus, Values: j.StatusesIncl, Exclude: false},

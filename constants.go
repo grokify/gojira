@@ -6,6 +6,7 @@ const (
 	FieldFilter  = "filter"
 	FieldIssue   = "issue" // issue keys
 	FieldKey     = "key"
+	FieldParent  = "parent"
 	FieldProject = "project" // project keys
 	FieldStatus  = "status"
 	FieldType    = "type"

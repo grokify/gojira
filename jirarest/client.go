@@ -15,6 +15,8 @@ import (
 	"github.com/rs/zerolog"
 )
 
+var ErrClientCannotBeNil = errors.New("client cannot be nil")
+
 func NewClientGoauthBasicAuthFile(filename, credsKey string) (*Client, error) {
 	c := &Client{}
 	hclient, serverURL, err := NewClientHTTPBasicAuthFile(filename, credsKey)
@@ -102,6 +104,15 @@ func (c *Client) Issue(key string) (*jira.Issue, error) {
 		return nil, fmt.Errorf("too many issues (%d) found for (%s)", len(iss), key)
 	} else {
 		return &iss[0], nil
+	}
+}
+
+func (c *Client) SearchChildrenIssues(parentKeys ...string) (Issues, error) {
+	if parentKeys = stringsutil.SliceCondenseSpace(parentKeys, true, true); len(parentKeys) == 0 {
+		return Issues{}, errors.New("parentKeys cannot be empty")
+	} else {
+		jqlInfo := gojira.JQL{ParentsIncl: [][]string{parentKeys}}
+		return c.SearchIssues(jqlInfo.String())
 	}
 }
 
