@@ -9,6 +9,7 @@ import (
 	"github.com/grokify/gocharts/v2/data/histogram"
 	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/encoding/jsonutil"
+	"github.com/grokify/mogo/type/stringsutil"
 )
 
 type Issues []jira.Issue
@@ -55,6 +56,16 @@ func (ii Issues) IssuesSet(cfg *gojira.Config) (*IssuesSet, error) {
 	is := NewIssuesSet(cfg)
 	err := is.Add(ii...)
 	return is, err
+}
+
+func (ii Issues) Keys() []string {
+	var keys []string
+	for _, iss := range ii {
+		iss := iss
+		im := IssueMore{Issue: &iss}
+		keys = append(keys, im.Key())
+	}
+	return stringsutil.SliceCondenseSpace(keys, true, true)
 }
 
 func (ii Issues) Metas(baseURL string) IssueMetas {
