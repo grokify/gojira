@@ -69,25 +69,22 @@ func (is *IssuesSet) IssueFirst() (jira.Issue, error) {
 	}
 }
 
-func (is *IssuesSet) Keys() []string {
-	return maputil.Keys(is.IssuesMap)
+// KeyExists returns a boolean representing the existence of an issue key.
+func (is *IssuesSet) KeyExists(key string, inclParents bool) bool {
+	if _, ok := is.IssuesMap[key]; ok {
+		return true
+	} else if !inclParents || is.Parents == nil {
+		return false
+	} else {
+		return is.Parents.KeyExists(key, inclParents)
+	}
 }
 
-func (is *IssuesSet) Len() uint {
-	return uint(len(is.IssuesMap))
-}
-
-func (is *IssuesSet) LenParents() uint {
-	return uint(len(is.KeysParents()))
-}
-
-func (is *IssuesSet) LenParentsPopulated() uint {
-	return uint(len(is.KeysParentsPopulated()))
-}
-
-func (is *IssuesSet) LenParentsUnpopulated() uint {
-	return uint(len(is.KeysParentsUnpopulated()))
-}
+func (is *IssuesSet) Keys() []string              { return maputil.Keys(is.IssuesMap) }
+func (is *IssuesSet) Len() uint                   { return uint(len(is.IssuesMap)) }
+func (is *IssuesSet) LenParents() uint            { return uint(len(is.KeysParents())) }
+func (is *IssuesSet) LenParentsPopulated() uint   { return uint(len(is.KeysParentsPopulated())) }
+func (is *IssuesSet) LenParentsUnpopulated() uint { return uint(len(is.KeysParentsUnpopulated())) }
 
 func (is *IssuesSet) LenLineageTopKeysPopulated() uint {
 	if linPopIDs, err := is.LineageTopKeysPopulated(); err != nil {
