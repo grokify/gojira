@@ -4,6 +4,7 @@
 [![Go Report Card][goreport-svg]][goreport-url]
 [![CodeClimate][codeclimate-status-svg]][codeclimate-status-url]
 [![Docs][docs-godoc-svg]][docs-godoc-url]
+[![LOC][loc-svg]][loc-url]
 [![License][license-svg]][license-url]
 
  [build-status-svg]: https://github.com/grokify/gojira/workflows/build/badge.svg
@@ -14,6 +15,8 @@
  [codeclimate-status-url]: https://codeclimate.com/github/grokify/gojira
  [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/grokify/gojira
  [docs-godoc-url]: https://pkg.go.dev/github.com/grokify/gojira
+ [loc-svg]: https://tokei.rs/b1/github/grokify/gojira
+ [loc-url]: https://github.com/grokify/gojira
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
  [license-url]: https://github.com/grokify/gojira/blob/master/LICENSE
 
