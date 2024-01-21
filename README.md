@@ -2,6 +2,7 @@
 
 [![Build Status][build-status-svg]][build-status-url]
 [![Go Report Card][goreport-svg]][goreport-url]
+[![CodeClimate][codeclimate-status-svg]][codeclimate-status-url]
 [![Docs][docs-godoc-svg]][docs-godoc-url]
 [![License][license-svg]][license-url]
 
@@ -9,6 +10,8 @@
  [build-status-url]: https://github.com/grokify/gojira/actions
  [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/gojira
  [goreport-url]: https://goreportcard.com/report/github.com/grokify/gojira
+ [codeclimate-status-svg]: https://codeclimate.com/github/grokify/gojira/badges/gpa.svg
+ [codeclimate-status-url]: https://codeclimate.com/github/grokify/gojira
  [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/grokify/gojira
  [docs-godoc-url]: https://pkg.go.dev/github.com/grokify/gojira
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
