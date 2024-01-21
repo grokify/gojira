@@ -5,6 +5,7 @@ import (
 
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/gojira"
+	"github.com/grokify/mogo/errors/errorsutil"
 	"github.com/grokify/mogo/pointer"
 	"github.com/grokify/mogo/type/slicesutil"
 	"github.com/grokify/mogo/type/stringsutil"
@@ -30,6 +31,9 @@ func (is *IssuesSet) RetrieveParentsIssuesSet(client *Client) (*IssuesSet, error
 */
 
 func (is *IssuesSet) RetrieveParents(client *Client) error {
+	if client == nil {
+		return errorsutil.Wrap(ErrClientCannotBeNil, "called in IssuesSet.RetrieveParents")
+	}
 	parIDs := is.KeysParentsUnpopulated()
 	i := 0
 	for len(parIDs) > 0 {
@@ -48,7 +52,7 @@ func (is *IssuesSet) RetrieveParents(client *Client) error {
 
 func (is *IssuesSet) RetrieveIssues(client *Client, ids []string) error {
 	if client == nil {
-		return errors.New("client cannot be nil")
+		return errorsutil.Wrap(ErrClientCannotBeNil, "called in IssuesSet.RetrieveIssues")
 	}
 	ids = stringsutil.SliceCondenseSpace(ids, true, true)
 	if len(ids) == 0 {
