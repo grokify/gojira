@@ -3,11 +3,15 @@ package gojira
 import "github.com/grokify/mogo/type/stringsutil"
 
 type StatusesSet struct {
-	Map map[string]string
+	Map   map[string]string
+	Order []string
 }
 
 func NewStatusesSet() StatusesSet {
-	return StatusesSet{Map: map[string]string{}}
+	return StatusesSet{
+		Map:   map[string]string{},
+		Order: []string{},
+	}
 }
 
 func (ss *StatusesSet) AddMapSlice(m map[string][]string) {
@@ -23,6 +27,17 @@ func (ss *StatusesSet) Add(status, statusCategory string) {
 		ss.Map = map[string]string{}
 	}
 	ss.Map[status] = statusCategory
+}
+
+func (ss *StatusesSet) DedupeOrder() {
+	if ss.Order == nil {
+		ss.Order = []string{}
+		return
+	} else if len(ss.Order) == 0 || len(ss.Order) == 1 {
+		return
+	} else {
+		ss.Order = stringsutil.SliceCondenseSpace(ss.Order, true, false)
+	}
 }
 
 func (ss *StatusesSet) StatusCategory(status string) string {

@@ -36,6 +36,15 @@ func NewIssuesSet(cfg *gojira.Config) *IssuesSet {
 	}
 }
 
+func (is *IssuesSet) StatusesOrder() []string {
+	if is.Config != nil && is.Config.StatusesSet != nil {
+		is.Config.StatusesSet.DedupeOrder()
+		return is.Config.StatusesSet.Order
+	} else {
+		return []string{}
+	}
+}
+
 func (is *IssuesSet) AddIssuesFile(filename string) error {
 	if ii, err := IssuesReadFileJSON(filename); err != nil {
 		return err
