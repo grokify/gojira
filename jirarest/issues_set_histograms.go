@@ -168,7 +168,7 @@ func (is *IssuesSet) ExportWorkstreamXfieldStatusTablePivot(wsFuncMake Workstrea
 	if err != nil {
 		return nil, err
 	}
-	tbl := hss.TablePivot("issues", "Workstream", xfieldName, "Status: ", "")
+	tbl := hss.TablePivot("issues", "Workstream", xfieldName, "Status: ", "", is.StatusesOrder(), true)
 	return &tbl, nil
 }
 
@@ -177,7 +177,7 @@ func (is *IssuesSet) ExportWorkstreamProjectkeyStatusTablePivot(wsFuncMake Works
 	if err != nil {
 		return nil, err
 	}
-	tbl := hss.TablePivot("issues", "Workstream", "Project Key", "Status: ", "")
+	tbl := hss.TablePivot("issues", "Workstream", "Project Key", "Status: ", "", is.StatusesOrder(), true)
 	return &tbl, nil
 }
 
@@ -186,7 +186,7 @@ func (is *IssuesSet) ExportWorkstreamTypeStatusTablePivot(wsFuncMake WorkstreamF
 	if err != nil {
 		return nil, err
 	}
-	tbl := hss.TablePivot("issues", "Workstream", "Type", "Status: ", "")
+	tbl := hss.TablePivot("issues", "Workstream", "Type", "Status: ", "", is.StatusesOrder(), true)
 	return &tbl, nil
 }
 
