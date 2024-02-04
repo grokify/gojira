@@ -168,7 +168,18 @@ func (is *IssuesSet) ExportWorkstreamXfieldStatusTablePivot(wsFuncMake Workstrea
 	if err != nil {
 		return nil, err
 	}
-	tbl := hss.TablePivot("issues", "Workstream", xfieldName, "Status: ", "", is.StatusesOrder(), true)
+	// tbl := hss.TablePivot("issues", "Workstream", xfieldName, "Status: ", "", is.StatusesOrder(), true)
+	tbl := hss.TablePivot(histogram.TablePivotOpts{
+		TableName:           "issues",
+		ColNameHistogramSet: "Workstream",
+		ColNameHistogram:    xfieldName,
+		ColNameBinPrefix:    "Status: ",
+		BinNamesOrder:       is.StatusesOrder(),
+		InclBinsUnordered:   true,
+		InclBinCounts:       true,
+		InclBinCountsSum:    true,
+		InclBinPercentages:  true,
+	})
 	return &tbl, nil
 }
 
@@ -177,7 +188,19 @@ func (is *IssuesSet) ExportWorkstreamProjectkeyStatusTablePivot(wsFuncMake Works
 	if err != nil {
 		return nil, err
 	}
-	tbl := hss.TablePivot("issues", "Workstream", "Project Key", "Status: ", "", is.StatusesOrder(), true)
+	// tbl := hss.TablePivot("issues", "Workstream", "Project Key", "Status: ", "", is.StatusesOrder(), true)
+	tbl := hss.TablePivot(histogram.TablePivotOpts{
+		TableName:           "issues",
+		ColNameHistogramSet: "Workstream",
+		ColNameHistogram:    "Project Key",
+		ColNameBinPrefix:    "Status: ",
+		BinNamesOrder:       is.StatusesOrder(),
+		InclBinsUnordered:   true,
+		InclBinCounts:       true,
+		InclBinCountsSum:    true,
+		InclBinPercentages:  true,
+	})
+
 	return &tbl, nil
 }
 
@@ -186,7 +209,18 @@ func (is *IssuesSet) ExportWorkstreamTypeStatusTablePivot(wsFuncMake WorkstreamF
 	if err != nil {
 		return nil, err
 	}
-	tbl := hss.TablePivot("issues", "Workstream", "Type", "Status: ", "", is.StatusesOrder(), true)
+	// tbl := hss.TablePivot("issues", "Workstream", "Type", "Status: ", "", is.StatusesOrder(), true)
+	tbl := hss.TablePivot(histogram.TablePivotOpts{
+		TableName:           "issues",
+		ColNameHistogramSet: "Workstream",
+		ColNameHistogram:    "Type",
+		ColNameBinPrefix:    "Status: ",
+		BinNamesOrder:       is.StatusesOrder(),
+		InclBinsUnordered:   true,
+		InclBinCounts:       true,
+		InclBinCountsSum:    true,
+		InclBinPercentages:  true,
+	})
 	return &tbl, nil
 }
 
