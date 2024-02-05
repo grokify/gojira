@@ -99,4 +99,15 @@ Meta Status uses the following statuses (from [Asana](https://asana.com/resource
 
 Not all the stages need to be used, however, the stages that are used can be understood in a canonical way.
 
-![](agile-methodology-asana.png)
+![](agile-methodology_asana.png)
+**image courtesy of Asana**
+
+An alternate, but related agile methodology is avialable from [eSparkBiz](https://www.esparkinfo.com/blog/difference-between-product-backlog-grooming-and-sprint-planning.html):
+
+![](agile-methodology_esparkbiz.png)
+**image courtesy of AsaeSparkBizna**
+
+As well as from [BISS](https://handbook.bosphorusiss.com/way-of-working/process-design/agile-software-development-lifecycle/):
+
+![](agile-methodology_biss.png)
+**image courtesy of BISS**
