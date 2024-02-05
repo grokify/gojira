@@ -24,7 +24,6 @@ This module contains code to access Jira, parsing both the JSON API via [`github
 
 Various aggregate staticstics and reports are calculated/generated.
 
-
 ## URL Formats
 
 Accessing a list of issues by JQL is avialable via the UI and API:
@@ -81,7 +80,7 @@ Ref: https://community.atlassian.com/t5/Jira-Software-questions/Time-Tracking-Ho
 
 https://community.atlassian.com/t5/Jira-questions/How-to-search-all-linked-issues-with-issues-from-specific/qaq-p/1027269
 
-# Backlog
+## Backlog
 
 Downloading the project backlog view appears to be challenging. Here is some info on attempts to do this.
 
@@ -91,3 +90,11 @@ Downloading the project backlog view appears to be challenging. Here is some inf
 Roughly:
 
 `project = <project_name> AND resolution = Unresolved AND status!=Closed AND (Sprint not in openSprints() OR Sprint is EMPTY) AND type not in (Epic, Sub-Task) ORDER BY Rank ASC`
+
+## Meta Status
+
+Meta Status is a common way to understand the stages of development given that many companies can use different statuses and workflows.
+
+Meta Status uses the following statuses and will provide a grouping capability for implementation-specific workflows into these standard meta statuses for consistent and canonical understanding of the process.
+
+![](agile-methodology-asana.png)
