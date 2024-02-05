@@ -4,6 +4,7 @@ import (
 	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/pointer"
 	"github.com/grokify/mogo/time/timeutil"
+	"github.com/grokify/mogo/type/stringsutil"
 )
 
 func (is *IssuesSet) Counts() map[string]map[string]uint {
@@ -61,6 +62,65 @@ func (is *IssuesSet) CountsByStatus() map[string]uint {
 	return m
 }
 
+func (is *IssuesSet) CountsByMetaStage(inclTypeFilter []string) map[string]uint {
+	inclTypeFilter = stringsutil.SliceCondenseSpace(inclTypeFilter, true, true)
+	inclTypeFilterMap := map[string]int{}
+	for _, filter := range inclTypeFilter {
+		inclTypeFilterMap[filter]++
+	}
+	out := map[string]uint{}
+	count := uint(0)
+	unknownStatus := map[string]uint{}
+	for _, iss := range is.IssuesMap {
+		im := IssueMore{Issue: pointer.Pointer(iss)}
+		if len(inclTypeFilterMap) > 0 {
+			if _, ok := inclTypeFilterMap[im.Type()]; !ok {
+				continue
+			}
+		}
+		metaStage := ""
+		if is.Config != nil && is.Config.StatusesSet != nil {
+			metaStage = is.Config.StatusesSet.MetaStage(im.Status())
+		}
+		if metaStage == "" {
+			unknownStatus[im.Status()]++
+		}
+		out[metaStage]++
+		count++
+	}
+	if msuCount(out) != count {
+		panic("count mismatch")
+	}
+	return out
+}
+
+func msuCount(m map[string]uint) uint {
+	c := uint(0)
+	for _, v := range m {
+		c += v
+	}
+	return c
+}
+
+func (is *IssuesSet) CountWithTypeFilter(inclTypeFilter []string) uint {
+	inclTypeFilter = stringsutil.SliceCondenseSpace(inclTypeFilter, true, true)
+	inclTypeFilterMap := map[string]int{}
+	for _, filter := range inclTypeFilter {
+		inclTypeFilterMap[filter]++
+	}
+	count := uint(0)
+	for _, iss := range is.IssuesMap {
+		im := IssueMore{Issue: pointer.Pointer(iss)}
+		if len(inclTypeFilterMap) > 0 {
+			if _, ok := inclTypeFilterMap[im.Type()]; !ok {
+				continue
+			}
+		}
+		count++
+	}
+	return count
+}
+
 func (is *IssuesSet) CountsByType(inclLeafs, inclParents bool) map[string]uint {
 	m := map[string]uint{}
 	if inclLeafs {
@@ -81,23 +141,23 @@ func (is *IssuesSet) CountsByType(inclLeafs, inclParents bool) map[string]uint {
 }
 
 func (is *IssuesSet) CountsByTime() map[string]uint {
-	m := map[string]uint{}
+	out := map[string]uint{}
 	for _, iss := range is.IssuesMap {
 		if iss.Fields == nil {
 			continue
 		}
 		if iss.Fields.TimeEstimate <= 0 {
-			m["TimeEstimateLTEZ"]++
+			out["TimeEstimateLTEZ"]++
 		} else {
-			m["TimeEstimateGTZ"]++
+			out["TimeEstimateGTZ"]++
 		}
 		if iss.Fields.TimeOriginalEstimate <= 0 {
-			m["TimeOriginalEstimateLTEZ"]++
+			out["TimeOriginalEstimateLTEZ"]++
 		} else {
-			m["TimeOriginalEstimateGTZ"]++
+			out["TimeOriginalEstimateGTZ"]++
 		}
 		/*
-					TimeTimeSpent                     = "Time Spent"
+			TimeTimeSpent                     = "Time Spent"
 			TimeTimeEstimate                  = "Time Estimate"
 			TimeTimeOriginalEstimate          = "Time Original Estimate"
 			TimeAggregateTimeOriginalEstimate = "Aggregate Time Original Estimate"
@@ -107,7 +167,30 @@ func (is *IssuesSet) CountsByTime() map[string]uint {
 			TimeTimeRemainingOriginal         = "Time Remaining Original"
 		*/
 	}
-	return m
+	return out
+}
+
+func (is *IssuesSet) CountsByWorkstream(wsFuncMake WorkstreamFuncMake, inclTypeFilter []string) (map[string]uint, error) {
+	inclTypeFilter = stringsutil.SliceCondenseSpace(inclTypeFilter, true, true)
+	inclTypeFilterMap := map[string]int{}
+	for _, filter := range inclTypeFilter {
+		inclTypeFilterMap[filter]++
+	}
+	out := map[string]uint{}
+	for _, iss := range is.IssuesMap {
+		im := IssueMore{Issue: pointer.Pointer(iss)}
+		if len(inclTypeFilterMap) > 0 {
+			if _, ok := inclTypeFilterMap[im.Type()]; !ok {
+				continue
+			}
+		}
+		if ws, err := wsFuncMake(im.Key()); err != nil {
+			return nil, err
+		} else {
+			out[ws]++
+		}
+	}
+	return out, nil
 }
 
 func (is *IssuesSet) TimeStats() gojira.TimeStats {
