@@ -11,7 +11,7 @@ import (
 
 var ErrLineageNotFound = errors.New("lineage not found")
 
-// Lineage returns a slice of `IssueMeta` where the suppied key is in index 0 and the most senior
+// Lineage returns a slice of `IssueMeta` where the supplied key is in index 0 and the most senior
 // parent is the last element of the slice. If a parent is not found in the set, an error is returned.
 func (is *IssuesSet) Lineage(key string) (IssueMetas, error) {
 	if key == "Epic" {

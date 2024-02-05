@@ -3,44 +3,46 @@ package gojira
 import "github.com/grokify/mogo/type/stringsutil"
 
 type StatusesSet struct {
-	Map   map[string]string
-	Order []string
+	Map            map[string]string
+	MetaStageOrder []string
 }
 
 func NewStatusesSet() StatusesSet {
 	return StatusesSet{
-		Map:   map[string]string{},
-		Order: []string{},
+		Map:            map[string]string{}, // status to metastatus
+		MetaStageOrder: MetaStageOrder(),
 	}
 }
 
+// AddMapSlice should be a map where the keys are meta statuses and the values are slices of Jira statuses.
 func (ss *StatusesSet) AddMapSlice(m map[string][]string) {
-	for category, vals := range m {
+	for metaStatus, vals := range m {
 		for _, status := range vals {
-			ss.Add(status, category)
+			ss.Add(status, metaStatus)
 		}
 	}
 }
 
-func (ss *StatusesSet) Add(status, statusCategory string) {
+func (ss *StatusesSet) Add(status, metaStatus string) {
 	if ss.Map == nil {
 		ss.Map = map[string]string{}
 	}
-	ss.Map[status] = statusCategory
+	ss.Map[status] = metaStatus
 }
 
-func (ss *StatusesSet) DedupeOrder() {
-	if ss.Order == nil {
-		ss.Order = []string{}
+func (ss *StatusesSet) DedupeMetaStageOrder() {
+	if ss.MetaStageOrder == nil {
+		ss.MetaStageOrder = []string{}
 		return
-	} else if len(ss.Order) == 0 || len(ss.Order) == 1 {
+	} else if len(ss.MetaStageOrder) == 0 || len(ss.MetaStageOrder) == 1 {
 		return
 	} else {
-		ss.Order = stringsutil.SliceCondenseSpace(ss.Order, true, false)
+		ss.MetaStageOrder = stringsutil.SliceCondenseSpace(ss.MetaStageOrder, true, false)
 	}
 }
 
-func (ss *StatusesSet) StatusCategory(status string) string {
+// MetaStage returns the metastatus for a status. If there is no metastatus, an empty string is returned.
+func (ss *StatusesSet) MetaStage(status string) string {
 	if cat, ok := ss.Map[status]; ok {
 		return cat
 	} else {
@@ -48,31 +50,40 @@ func (ss *StatusesSet) StatusCategory(status string) string {
 	}
 }
 
-func (ss *StatusesSet) StatusesOpen() []string {
-	return ss.StatusesForCategory(StatusOpen)
+// MetaStageOrderMap returns a `map[string]uint` where the key is the meta status and the value is the index.
+func (ss *StatusesSet) MetaStageOrderMap() map[string]uint {
+	out := map[string]uint{}
+	for i, ms := range ss.MetaStageOrder {
+		out[ms] = uint(i)
+	}
+	return out
 }
 
-func (ss *StatusesSet) StatusesInProgress() []string {
-	return ss.StatusesForCategory(StatusInProgress)
+func (ss *StatusesSet) StatusesReadyForPlanning() []string {
+	return ss.StatusesForMetaStage(MetaStageReadyForPlanning)
+}
+
+func (ss *StatusesSet) StatusesInDevelopment() []string {
+	return ss.StatusesForMetaStage(MetaStageInDevelopment)
 }
 
 func (ss *StatusesSet) StatusesDone() []string { // not backlog
-	return ss.StatusesForCategory(StatusDone)
+	return ss.StatusesForMetaStage(StatusDone)
 }
 
-func (ss *StatusesSet) StatusesForCategory(category string) []string {
+func (ss *StatusesSet) StatusesForMetaStage(metaStatus string) []string {
 	var statuses []string
 	for k, v := range ss.Map {
-		if v == category {
+		if v == metaStatus {
 			statuses = append(statuses, k)
 		}
 	}
 	return stringsutil.SliceCondenseSpace(statuses, true, true)
 }
 
-func (ss *StatusesSet) StatusesInProgressAndDone() []string { // not backlog
+func (ss *StatusesSet) StatusesInDevelopmentAndDone() []string { // not backlog
 	var statuses []string
-	statuses = append(statuses, ss.StatusesInProgress()...)
+	statuses = append(statuses, ss.StatusesInDevelopment()...)
 	statuses = append(statuses, ss.StatusesDone()...)
 	return stringsutil.SliceCondenseSpace(statuses, true, true)
 }

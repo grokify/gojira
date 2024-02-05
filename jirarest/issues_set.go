@@ -33,13 +33,17 @@ func NewIssuesSet(cfg *gojira.Config) *IssuesSet {
 	return &IssuesSet{
 		Config:    cfg,
 		IssuesMap: map[string]jira.Issue{},
+		Parents: &IssuesSet{
+			Config:    cfg,
+			IssuesMap: map[string]jira.Issue{},
+		},
 	}
 }
 
 func (is *IssuesSet) StatusesOrder() []string {
 	if is.Config != nil && is.Config.StatusesSet != nil {
-		is.Config.StatusesSet.DedupeOrder()
-		return is.Config.StatusesSet.Order
+		is.Config.StatusesSet.DedupeMetaStageOrder()
+		return is.Config.StatusesSet.MetaStageOrder
 	} else {
 		return []string{}
 	}
