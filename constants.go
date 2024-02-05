@@ -1,8 +1,9 @@
 package gojira
 
 import (
-	"slices"
 	"time"
+
+	"golang.org/x/exp/slices"
 )
 
 const (
