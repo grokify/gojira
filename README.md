@@ -114,5 +114,5 @@ As well as from [BISS](https://handbook.bosphorusiss.com/way-of-working/process-
 
 This is described as ["The 5 Stages of the Agile Software Development Lifecycle"](https://www.mendix.com/blog/agile-software-development-lifecycle-stages/) by Mendix.
 
-![](agile-methodology_mendix.png)
+![](docs/agile-methodology_mendix.png)
 *image courtesy of Mendix*
