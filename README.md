@@ -95,6 +95,8 @@ Roughly:
 
 Meta Status is a common way to understand the stages of development given that many companies can use different statuses and workflows.
 
-Meta Status uses the following statuses and will provide a grouping capability for implementation-specific workflows into these standard meta statuses for consistent and canonical understanding of the process.
+Meta Status uses the following statuses (from [Asana](https://asana.com/resources/agile-methodology)) and will provide a grouping capability for implementation-specific workflows into these standard meta statuses for consistent and canonical understanding of the process.
+
+Not all the stages need to be used, however, the stages that are used can be understood in a canonical way.
 
 ![](agile-methodology-asana.png)
