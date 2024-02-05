@@ -95,6 +95,37 @@ func (is *IssuesSet) HistogramMap(stdKeys []string, calcFields []IssueCalcField)
 	return h, nil
 }
 
+func (is *IssuesSet) ExportWorkstremaFilter(wsFuncMake WorkstreamFuncMake, wsFuncIncl WorkstreamFuncIncl) (*IssuesSet, error) {
+	out := NewIssuesSet(is.Config)
+	for _, iss := range is.IssuesMap {
+		iss := iss
+		im := IssueMore{Issue: &iss}
+		key := im.Key()
+		if key == "" {
+			return nil, ErrIssueKeyCannotBeEmpty
+		} else if ws, err := wsFuncMake(key); err != nil {
+			return nil, err
+		} else if wsFuncIncl != nil && !wsFuncIncl(ws) {
+			continue
+		} else if err = out.Add(iss); err != nil {
+			return nil, err
+		} else if lineages, err := is.Lineage(key); err != nil {
+			return nil, err
+		} else {
+			for _, im := range lineages {
+				if im.Key == key {
+					continue
+				} else if iss, err := is.Get(im.Key); err != nil {
+					return nil, err
+				} else if err = out.Parents.Add(iss); err != nil {
+					return nil, err
+				}
+			}
+		}
+	}
+	return out, nil
+}
+
 func (is *IssuesSet) ExportWorkstreamXfieldStatusHistogramSets(
 	wsFuncMake WorkstreamFuncMake,
 	wsFuncIncl WorkstreamFuncIncl,
@@ -121,7 +152,7 @@ func (is *IssuesSet) ExportWorkstreamXfieldStatusHistogramSets(
 		} else if is.Config.StatusesSet == nil {
 			return nil, errors.New("statusesSet not set")
 		} else {
-			statusCategoryFunc = is.Config.StatusesSet.StatusCategory
+			statusCategoryFunc = is.Config.StatusesSet.MetaStage
 		}
 	}
 	for _, iss := range is.IssuesMap {
@@ -129,7 +160,7 @@ func (is *IssuesSet) ExportWorkstreamXfieldStatusHistogramSets(
 		im := IssueMore{Issue: &iss}
 		key := im.Key()
 		if key == "" {
-			return nil, errors.New("issue key cannot be empty")
+			return nil, ErrIssueKeyCannotBeEmpty
 		}
 		ws, err := wsFuncMake(key)
 		if err != nil {
