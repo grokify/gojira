@@ -91,23 +91,28 @@ Roughly:
 
 `project = <project_name> AND resolution = Unresolved AND status!=Closed AND (Sprint not in openSprints() OR Sprint is EMPTY) AND type not in (Epic, Sub-Task) ORDER BY Rank ASC`
 
-## Meta Status
+## Agile Life Cycle Stages
 
-Meta Status is a common way to understand the stages of development given that many companies can use different statuses and workflows.
+Stage is a common way to understand the stages of development given that many companies can use different statuses and workflows.
 
-Meta Status uses the following statuses (from [Asana](https://asana.com/resources/agile-methodology)) and will provide a grouping capability for implementation-specific workflows into these standard meta statuses for consistent and canonical understanding of the process.
+Stage the following stages (from [Asana](https://asana.com/resources/agile-methodology)) and will provide a grouping capability for implementation-specific workflows into these standard meta statuses for consistent and canonical understanding of the process.
 
 Not all the stages need to be used, however, the stages that are used can be understood in a canonical way.
 
 ![](docs/agile-methodology_asana.png)
-**image courtesy of Asana**
+*image courtesy of Asana*
 
 An alternate, but related agile methodology is avialable from [eSparkBiz](https://www.esparkinfo.com/blog/difference-between-product-backlog-grooming-and-sprint-planning.html):
 
 ![](docs/agile-methodology_esparkbiz.png)
-**image courtesy of AsaeSparkBizna**
+*image courtesy of eSparkBiz*
 
 As well as from [BISS](https://handbook.bosphorusiss.com/way-of-working/process-design/agile-software-development-lifecycle/):
 
 ![](docs/agile-methodology_biss.png)
-**image courtesy of BISS**
+*image courtesy of BISS*
+
+This is described as ["The 5 Stages of the Agile Software Development Lifecycle"](https://www.mendix.com/blog/agile-software-development-lifecycle-stages/) by Mendix.
+
+![](agile-methodology_mendix.png)
+*image courtesy of Mendix*
