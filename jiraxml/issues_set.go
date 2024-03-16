@@ -102,9 +102,9 @@ func (is *IssuesSet) Table(baseURL string) table.Table {
 			ix.Resolution.DisplayName,
 			strconv.Itoa(int(ix.AggregateTimeOriginalEstimate.Seconds)),
 			strconv.Itoa(int(ix.TimeOriginalEstimate.Seconds)),
-			strconvutil.FormatFloat64Simple(float64(ix.TimeOriginalEstimate.Days(is.Config.WorkingHoursPerDay))),
-			strconvutil.FormatFloat64Simple(float64(ix.TimeEstimate.Days(is.Config.WorkingHoursPerDay))),
-			strconvutil.FormatFloat64Simple(float64(ix.TimeSpent.Days(is.Config.WorkingHoursPerDay))),
+			strconvutil.Ftoa(float64(ix.TimeOriginalEstimate.Days(is.Config.WorkingHoursPerDay))),
+			strconvutil.Ftoa(float64(ix.TimeEstimate.Days(is.Config.WorkingHoursPerDay))),
+			strconvutil.Ftoa(float64(ix.TimeSpent.Days(is.Config.WorkingHoursPerDay))),
 			// strconvutil.FormatFloat64Simple(float64(ix.TimeRemainingEstimate.Days(is.Config.WorkingHoursPerDay))),
 		})
 	}

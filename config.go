@@ -24,7 +24,7 @@ func (c *Config) SecondsToDays(sec int) float32 {
 }
 
 func (c *Config) SecondsToDaysString(sec int) string {
-	return strconvutil.FormatFloat64Simple(float64(c.SecondsToDays(sec)))
+	return strconvutil.Ftoa(float64(c.SecondsToDays(sec)))
 }
 
 func (c *Config) CapacityForDaysPeople(days, people float32) time.Duration {
