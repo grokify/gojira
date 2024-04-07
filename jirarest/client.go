@@ -166,12 +166,12 @@ func (c *Client) SearchChildrenIssuesSet(recursive bool, parentKeys ...string) (
 }
 
 func searchChildrenIssuesSetInternal(c *Client, is *IssuesSet, parentKeys []string, seen map[string]int) (map[string]int, error) {
-	ii, err := c.SearchChildrenIssues(parentKeys...)
-	if err != nil {
+	if ii, err := c.SearchChildrenIssues(parentKeys...); err != nil {
 		return seen, err
-	}
-	if len(ii) > 0 {
-		is.Add(ii...)
+	} else if len(ii) > 0 {
+		if err := is.Add(ii...); err != nil {
+			return seen, err
+		}
 	}
 	for _, pk := range parentKeys {
 		seen[pk]++
