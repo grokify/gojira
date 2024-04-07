@@ -37,6 +37,14 @@ func DefaultHistogramMapTableConfig(projectKeys []string) *histogram.HistogramMa
 	return &histogram.HistogramMapTableSetConfig{
 		Configs: []histogram.HistogramMapTableConfig{
 			{
+				TableName: "Project Type Status",
+				ColumnKeys: []string{
+					gojira.FieldProject,
+					gojira.FieldType,
+					gojira.FieldStatus},
+				ColNameCount: colNameIssueCount,
+			},
+			{
 				TableName: "Meta Type",
 				ColumnKeys: []string{
 					gojira.FieldProject,
@@ -126,11 +134,13 @@ func (is *IssuesSet) ExportWorkstremaFilter(wsFuncMake WorkstreamFuncMake, wsFun
 	return out, nil
 }
 
+type (
+	WorkstreamFuncMake func(issueKey string) (string, error)
+	WorkstreamFuncIncl func(ws string) bool
+)
+
 func (is *IssuesSet) ExportWorkstreamXfieldStatusHistogramSets(
-	wsFuncMake WorkstreamFuncMake,
-	wsFuncIncl WorkstreamFuncIncl,
-	xfieldSlug string,
-	useStatusCategory bool) (*histogram.HistogramSets, error) {
+	wsFuncMake WorkstreamFuncMake, wsFuncIncl WorkstreamFuncIncl, xfieldSlug string, useStatusCategory bool) (*histogram.HistogramSets, error) {
 	if wsFuncMake == nil {
 		return nil, errors.New("workstream func not supplied")
 	}
@@ -188,11 +198,6 @@ func (is *IssuesSet) ExportWorkstreamXfieldStatusHistogramSets(
 	}
 	return hss, nil
 }
-
-type (
-	WorkstreamFuncMake func(issueKey string) (string, error)
-	WorkstreamFuncIncl func(ws string) bool
-)
 
 func (is *IssuesSet) ExportWorkstreamXfieldStatusTablePivot(wsFuncMake WorkstreamFuncMake, wsFuncIncl WorkstreamFuncIncl, xfieldSlug, xfieldName string, useStatusCategory bool) (*table.Table, error) {
 	hss, err := is.ExportWorkstreamXfieldStatusHistogramSets(wsFuncMake, wsFuncIncl, xfieldSlug, useStatusCategory)
