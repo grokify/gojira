@@ -1,85 +1,104 @@
 package jirarest
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"strings"
 
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/goauth"
+	"github.com/grokify/goauth/authutil"
+	"github.com/grokify/goauth/oidc"
 	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/errors/errorsutil"
+	"github.com/grokify/mogo/type/maputil"
 	"github.com/grokify/mogo/type/slicesutil"
 	"github.com/grokify/mogo/type/stringsutil"
 	"github.com/rs/zerolog"
 )
 
-var ErrClientCannotBeNil = errors.New("client cannot be nil")
+var (
+	ErrClientCannotBeNil     = errors.New("client cannot be nil")
+	ErrJiraClientCannotBeNil = errors.New("jira client cannot be nil")
+)
+
+func NewClientBasicAuth(serverURL, username, password string) (*Client, error) {
+	if hclient, err := authutil.NewClientBasicAuth(username, password, false); err != nil {
+		return nil, err
+	} else if jclient, err := JiraClientBasicAuth(serverURL, username, password); err != nil {
+		return nil, err
+	} else {
+		c := &Client{
+			HTTPClient: hclient,
+			JiraClient: jclient}
+		cfg := gojira.NewConfigDefault()
+		cfg.ServerURL = serverURL
+		c.Config = cfg
+		return c, nil
+	}
+}
 
 func NewClientGoauthBasicAuthFile(filename, credsKey string) (*Client, error) {
-	c := &Client{}
-	hclient, serverURL, err := NewClientHTTPBasicAuthFile(filename, credsKey)
-	if err != nil {
+	if hclient, serverURL, err := NewClientHTTPBasicAuthFile(filename, credsKey); err != nil {
 		return nil, errorsutil.Wrapf(err, `jirarest.ClientsBasicAuthFile() (%s)`, filename)
+	} else if jclient, err := NewClientJiraBasicAuthFile(filename, credsKey); err != nil {
+		return nil, errorsutil.Wrap(err, `jirarest.ClientsBasicAuthFile()..JiraClientBasicAuthFile()`)
+	} else {
+		c := &Client{
+			HTTPClient: hclient,
+			JiraClient: jclient}
+		cfg := gojira.NewConfigDefault()
+		cfg.ServerURL = serverURL
+		c.Config = cfg
+		return c, nil
 	}
-	c.HTTPClient = hclient
-	cfg := gojira.NewConfigDefault()
-	cfg.ServerURL = serverURL
-	c.Config = cfg
-	jclient, err := NewClientJiraBasicAuthFile(filename, credsKey)
-	if err != nil {
-		return c, errorsutil.Wrap(err, `jirarest.ClientsBasicAuthFile()..JiraClientBasicAuthFile()`)
-	}
-	c.JiraClient = jclient
-	return c, nil
 }
 
 func NewCredentialsBasicAuthGoauthFile(filename, credsKey string) (*goauth.CredentialsBasicAuth, error) {
 	// func UserPassCredsBasic(filename, credsKey string) (*goauth.CredentialsBasicAuth, error) {
-	cs, err := goauth.ReadFileCredentialsSet(filename, true)
-	if err != nil {
+	if cs, err := goauth.ReadFileCredentialsSet(filename, true); err != nil {
 		return nil, err
-	}
-
-	creds, err := cs.Get(credsKey)
-	if err != nil {
+	} else if creds, err := cs.Get(credsKey); err != nil {
 		return nil, err
+	} else {
+		return creds.Basic, nil
 	}
-
-	return creds.Basic, nil
 }
 
 func NewClientHTTPBasicAuthFile(filename, credsKey string) (hclient *http.Client, serverURL string, err error) {
-	creds, err := NewCredentialsBasicAuthGoauthFile(filename, credsKey)
-	if err != nil {
+	if creds, err := NewCredentialsBasicAuthGoauthFile(filename, credsKey); err != nil {
 		return nil, "", err
-	}
-	hclient, err = creds.NewClient()
-	if err != nil {
+	} else if hclient, err = creds.NewClient(); err != nil {
 		return hclient, "", err
+	} else {
+		serverURL = creds.ServerURL
 	}
-	serverURL = creds.ServerURL
 	return
 }
 
 func NewClientJiraBasicAuthFile(filename, credsKey string) (*jira.Client, error) {
-	creds, err := NewCredentialsBasicAuthGoauthFile(filename, credsKey)
-	if err != nil {
+	if creds, err := NewCredentialsBasicAuthGoauthFile(filename, credsKey); err != nil {
 		return nil, err
+	} else {
+		return JiraClientBasicAuthGoauth(creds)
 	}
-	return JiraClientBasicAuth(creds)
 }
 
-func JiraClientBasicAuth(creds *goauth.CredentialsBasicAuth) (*jira.Client, error) {
+func JiraClientBasicAuth(serverURL, username, password string) (*jira.Client, error) {
+	tp := jira.BasicAuthTransport{
+		Username: username,
+		Password: password}
+	return jira.NewClient(tp.Client(), serverURL)
+}
+
+func JiraClientBasicAuthGoauth(creds *goauth.CredentialsBasicAuth) (*jira.Client, error) {
 	if creds == nil {
 		return nil, errors.New("goauth.CredentialsBasicAuth cannot be nil")
 	}
-	tp := jira.BasicAuthTransport{
-		Username: creds.Username,
-		Password: creds.Password,
-	}
-	return jira.NewClient(tp.Client(), creds.ServerURL)
+	return JiraClientBasicAuth(creds.ServerURL, creds.Username, creds.Password)
 }
 
 type Client struct {
@@ -114,6 +133,50 @@ func (c *Client) SearchChildrenIssues(parentKeys ...string) (Issues, error) {
 		jqlInfo := gojira.JQL{ParentsIncl: [][]string{parentKeys}}
 		return c.SearchIssues(jqlInfo.String())
 	}
+}
+
+func (c *Client) SearchChildrenIssuesSet(recursive bool, parentKeys ...string) (*IssuesSet, error) {
+	is := NewIssuesSet(c.Config)
+	seen := map[string]int{}
+	seen, err := searchChildrenIssuesSetInternal(c, is, parentKeys, seen)
+	if err != nil {
+		return nil, err
+	}
+	i := 0
+	recurseLimit := 1000
+	for {
+		if slices.Equal(maputil.Keys(seen), maputil.Keys(is.IssuesMap)) {
+			break
+		}
+		unseen := slicesutil.Sub(maputil.Keys(is.IssuesMap), maputil.Keys(seen))
+		if len(unseen) == 0 {
+			break
+		}
+		seen, err = searchChildrenIssuesSetInternal(c, is, unseen, seen)
+		if err != nil {
+			return nil, err
+		}
+		i++
+		if i >= recurseLimit {
+			break
+		}
+	}
+
+	return is, nil
+}
+
+func searchChildrenIssuesSetInternal(c *Client, is *IssuesSet, parentKeys []string, seen map[string]int) (map[string]int, error) {
+	ii, err := c.SearchChildrenIssues(parentKeys...)
+	if err != nil {
+		return seen, err
+	}
+	if len(ii) > 0 {
+		is.Add(ii...)
+	}
+	for _, pk := range parentKeys {
+		seen[pk]++
+	}
+	return seen, nil
 }
 
 func (c *Client) SearchIssuesMulti(jqls ...string) (Issues, error) {
@@ -201,13 +264,13 @@ func (c *Client) SearchIssues(jql string) (Issues, error) {
 }
 
 func (c *Client) SearchIssuesSet(jql string) (*IssuesSet, error) {
-	ii, err := c.SearchIssues(jql)
-	if err != nil {
+	if ii, err := c.SearchIssues(jql); err != nil {
 		return nil, err
+	} else {
+		is := NewIssuesSet(c.Config)
+		err = is.Add(ii...)
+		return is, err
 	}
-	is := NewIssuesSet(c.Config)
-	err = is.Add(ii...)
-	return is, err
 }
 
 func (c *Client) GetIssuesSetForKeys(keys []string) (*IssuesSet, error) {
@@ -274,11 +337,35 @@ func (c *Client) SearchIssuesSetParents(is *IssuesSet) (*IssuesSet, error) {
 func (c *Client) IssuesSetAddParents(is *IssuesSet) error {
 	if is == nil {
 		return errors.New("issues set is nil")
-	}
-	parents, err := c.SearchIssuesSetParents(is)
-	if err != nil {
+	} else if parents, err := c.SearchIssuesSetParents(is); err != nil {
 		return err
+	} else {
+		is.Parents = parents
+		return nil
 	}
-	is.Parents = parents
-	return nil
+}
+
+func (c *Client) UserInfo(ctx context.Context) (*oidc.UserInfo, error) {
+	if c.JiraClient == nil {
+		return nil, ErrJiraClientCannotBeNil
+	} else if u, resp, err := c.JiraClient.User.GetSelfWithContext(ctx); err != nil {
+		return nil, err
+	} else if resp.StatusCode > 299 {
+		return nil, fmt.Errorf("bad status code [%d]", resp.StatusCode)
+	} else {
+		return UserJiraToOIDC(u, c.Config.ServerURL), nil
+	}
+}
+
+func UserJiraToOIDC(u *jira.User, serverURL string) *oidc.UserInfo {
+	if u == nil {
+		return nil
+	} else {
+		ui := &oidc.UserInfo{
+			Issuer:  serverURL,
+			Picture: u.AvatarUrls.Four8X48}
+		ui.AddEmail(u.EmailAddress, true)
+		ui.AddName(u.DisplayName, true)
+		return ui
+	}
 }
