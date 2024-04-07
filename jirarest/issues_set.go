@@ -530,13 +530,12 @@ func (is *IssuesSet) Table(customCols *CustomTableCols, inclEpic bool, initiativ
 }
 
 func IssuesSetReadFileJSON(filename string) (*IssuesSet, error) {
-	b, err := os.ReadFile(filename)
-	if err != nil {
+	if b, err := os.ReadFile(filename); err != nil {
 		return nil, err
+	} else {
+		is := &IssuesSet{}
+		return is, json.Unmarshal(b, is)
 	}
-	is := &IssuesSet{}
-	err = json.Unmarshal(b, is)
-	return is, err
 }
 
 func (is *IssuesSet) WriteFileJSON(name, prefix, indent string) error {
