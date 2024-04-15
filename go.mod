@@ -8,11 +8,11 @@ require (
 	github.com/andygrunwald/go-jira v1.16.0
 	github.com/grokify/goauth v0.20.13
 	github.com/grokify/gocharts/v2 v2.18.4
-	github.com/grokify/mogo v0.63.7
+	github.com/grokify/mogo v0.63.8
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/rs/zerolog v1.32.0
-	golang.org/x/exp v0.0.0-20240404231335-c0f41cb1a7a0
+	golang.org/x/exp v0.0.0-20240409090435-93d18d7e34b8
 )
 
 require (
