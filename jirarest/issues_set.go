@@ -417,6 +417,7 @@ func (is *IssuesSet) TableSet(customCols *CustomTableCols, inclEpic bool, initia
 	return ts, nil
 }
 
+// Table returns a `table.Table` where each record is a Jira issue starting with a linked issue key.
 func (is *IssuesSet) Table(customCols *CustomTableCols, inclEpic bool, initiativeType string) (*table.Table, error) {
 	if is.Config == nil {
 		is.Config = gojira.NewConfigDefault()
@@ -457,7 +458,7 @@ func (is *IssuesSet) Table(customCols *CustomTableCols, inclEpic bool, initiativ
 
 		lineage, err := is.Lineage(key)
 		if err != nil {
-			return nil, err
+			return nil, errorsutil.Wrapf(err, "is.Lineage(key) key=\"%s\"", key)
 		}
 
 		timeRemainingSecs := iss.Fields.TimeEstimate - iss.Fields.TimeSpent
