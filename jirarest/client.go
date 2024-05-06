@@ -126,6 +126,22 @@ func (c *Client) Issue(key string) (*jira.Issue, error) {
 	}
 }
 
+func (c *Client) Issues(keys ...string) (Issues, error) {
+	keys = stringsutil.SliceCondenseSpace(keys, true, true)
+	iss := Issues{}
+	if len(keys) == 0 {
+		return iss, nil
+	}
+	for _, key := range keys {
+		is, err := c.Issue(key)
+		if err != nil {
+			return iss, err
+		}
+		iss = append(iss, *is)
+	}
+	return iss, nil
+}
+
 func (c *Client) SearchChildrenIssues(parentKeys ...string) (Issues, error) {
 	if parentKeys = stringsutil.SliceCondenseSpace(parentKeys, true, true); len(parentKeys) == 0 {
 		return Issues{}, errors.New("parentKeys cannot be empty")
