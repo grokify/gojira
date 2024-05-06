@@ -133,11 +133,11 @@ func (c *Client) Issues(keys ...string) (Issues, error) {
 		return iss, nil
 	}
 	for _, key := range keys {
-		is, err := c.Issue(key)
-		if err != nil {
+		if is, err := c.Issue(key); err != nil {
 			return iss, err
+		} else {
+			iss = append(iss, *is)
 		}
-		iss = append(iss, *is)
 	}
 	return iss, nil
 }
