@@ -7,6 +7,7 @@ import (
 	"os"
 	"sort"
 	"strings"
+	"time"
 
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/gocharts/v2/data/table"
@@ -335,6 +336,7 @@ func DefaultIssuesSetTableColumns(inclInitiative, inclEpic bool) *table.ColumnDe
 		{Name: "Estimate Days", Format: table.FormatFloat},
 		{Name: "Time Spent Days", Format: table.FormatFloat},
 		{Name: "Time Remaining Days", Format: table.FormatFloat},
+		{Name: "Created", Format: table.FormatString},
 	}
 	defs = append(defs, stdCols...)
 
@@ -506,6 +508,7 @@ func (is *IssuesSet) Table(customCols *CustomTableCols, inclEpic bool, initiativ
 			is.Config.SecondsToDaysString(iss.Fields.TimeEstimate),
 			is.Config.SecondsToDaysString(iss.Fields.TimeSpent),
 			is.Config.SecondsToDaysString(timeRemainingSecs),
+			issMore.CreateTime().Format(time.RFC3339),
 			// time.Time(iss.Fields.Created).Format(time.RFC3339),
 			// strconvutil.FormatFloat64Simple(float64(ix.TimeRemainingEstimate.Days(is.Config.WorkingHoursPerDay))),
 		}

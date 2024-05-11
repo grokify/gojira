@@ -14,6 +14,7 @@ import (
 	"github.com/grokify/goauth/oidc"
 	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/errors/errorsutil"
+	"github.com/grokify/mogo/net/http/httpsimple"
 	"github.com/grokify/mogo/type/maputil"
 	"github.com/grokify/mogo/type/slicesutil"
 	"github.com/grokify/mogo/type/stringsutil"
@@ -52,6 +53,8 @@ func NewClientGoauthBasicAuthFile(filename, credsKey string) (*Client, error) {
 			JiraClient: jclient}
 		cfg := gojira.NewConfigDefault()
 		cfg.ServerURL = serverURL
+		sc := httpsimple.NewClient(hclient, serverURL)
+		c.simpleClient = &sc
 		c.Config = cfg
 		return c, nil
 	}
@@ -102,10 +105,11 @@ func JiraClientBasicAuthGoauth(creds *goauth.CredentialsBasicAuth) (*jira.Client
 }
 
 type Client struct {
-	Config     *gojira.Config
-	HTTPClient *http.Client
-	JiraClient *jira.Client
-	Logger     *zerolog.Logger
+	Config       *gojira.Config
+	HTTPClient   *http.Client
+	JiraClient   *jira.Client
+	simpleClient *httpsimple.Client
+	Logger       *zerolog.Logger
 }
 
 func (c *Client) Issue(key string) (*jira.Issue, error) {
