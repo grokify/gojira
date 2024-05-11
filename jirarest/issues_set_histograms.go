@@ -6,8 +6,23 @@ import (
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/gocharts/v2/data/histogram"
 	"github.com/grokify/gocharts/v2/data/table"
+	"github.com/grokify/gocharts/v2/data/timeseries"
 	"github.com/grokify/gojira"
+	"github.com/grokify/mogo/time/timeutil"
 )
+
+// TimeSeriesCreatedMonth provides issue counts by month by create date
+func (is *IssuesSet) TimeSeriesCreatedMonth() *timeseries.TimeSeries {
+	ts := timeseries.NewTimeSeries("by month")
+	ts.Interval = timeutil.IntervalMonth
+	for _, iss := range is.IssuesMap {
+		iss := iss
+		im := IssueMore{Issue: &iss}
+		ts.AddInt64(im.CreateTime(), 1)
+	}
+	ts2 := ts.ToMonth(true)
+	return &ts2
+}
 
 // HistogramMapProjectTypeStatus provides issue counts by: Project, Type, and Status.
 func (is *IssuesSet) HistogramMapProjectTypeStatus() *histogram.Histogram {
