@@ -3,13 +3,16 @@ package gojira
 import (
 	"fmt"
 	"strings"
+	"time"
 
+	"github.com/grokify/mogo/time/timeutil"
 	"github.com/grokify/mogo/type/stringsutil"
 	"github.com/grokify/mogo/type/stringsutil/join"
 )
 
 // JQL is a JQL builder. It will create a JQL string using `JQL.String()` from the supplied infomration.
 type JQL struct {
+	CreatedGTE   time.Time
 	FiltersIncl  [][]string // outer level is `AND`, inner level is `IN`.
 	FiltersExcl  [][]string
 	IssuesIncl   [][]string
@@ -24,15 +27,15 @@ type JQL struct {
 	StatusesExcl [][]string
 	TypesIncl    [][]string
 	TypesExcl    [][]string
+	Raw          []string
 }
 
 func (j JQL) String() string {
 	var parts []string
 
 	type inclExclProc struct {
-		Field  string
-		Values [][]string
-		//ValuesMore [][]string
+		Field   string
+		Values  [][]string
 		Exclude bool
 	}
 
@@ -71,6 +74,13 @@ func (j JQL) String() string {
 				// parts = append(parts, clause)
 			}
 		*/
+	}
+
+	if !j.CreatedGTE.IsZero() {
+		parts = append(parts, fmt.Sprintf("created >= %s", j.CreatedGTE.Format(timeutil.RFC3339FullDate)))
+	}
+	for _, r := range j.Raw {
+		parts = append(parts, r)
 	}
 
 	if len(parts) > 0 {
