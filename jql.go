@@ -79,9 +79,7 @@ func (j JQL) String() string {
 	if !j.CreatedGTE.IsZero() {
 		parts = append(parts, fmt.Sprintf("created >= %s", j.CreatedGTE.Format(timeutil.RFC3339FullDate)))
 	}
-	for _, r := range j.Raw {
-		parts = append(parts, r)
-	}
+	parts = append(parts, j.Raw...)
 
 	if len(parts) > 0 {
 		return strings.Join(parts, " AND ")
