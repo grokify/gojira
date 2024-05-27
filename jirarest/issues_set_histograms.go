@@ -155,7 +155,10 @@ type (
 )
 
 func (is *IssuesSet) ExportWorkstreamXfieldStatusHistogramSets(
-	wsFuncMake WorkstreamFuncMake, wsFuncIncl WorkstreamFuncIncl, xfieldSlug string, useStatusCategory bool) (*histogram.HistogramSets, error) {
+	wsFuncMake WorkstreamFuncMake,
+	wsFuncIncl WorkstreamFuncIncl,
+	xfieldSlug string,
+	useStatusCategory bool) (*histogram.HistogramSets, error) {
 	if wsFuncMake == nil {
 		return nil, errors.New("workstream func not supplied")
 	}
@@ -174,10 +177,10 @@ func (is *IssuesSet) ExportWorkstreamXfieldStatusHistogramSets(
 	if useStatusCategory {
 		if is.Config == nil {
 			return nil, errors.New("config not set")
-		} else if is.Config.StatusesSet == nil {
+		} else if is.Config.StatusConfig == nil {
 			return nil, errors.New("statusesSet not set")
 		} else {
-			statusCategoryFunc = is.Config.StatusesSet.MetaStage
+			statusCategoryFunc = is.Config.StatusConfig.MetaStage
 		}
 	}
 	for _, iss := range is.IssuesMap {

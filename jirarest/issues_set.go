@@ -16,6 +16,7 @@ import (
 	"github.com/grokify/mogo/errors/errorsutil"
 	"github.com/grokify/mogo/net/urlutil"
 	"github.com/grokify/mogo/pointer"
+	"github.com/grokify/mogo/strconv/strconvutil"
 	"github.com/grokify/mogo/type/maputil"
 	"github.com/grokify/mogo/type/slicesutil"
 	"golang.org/x/exp/slices"
@@ -42,9 +43,9 @@ func NewIssuesSet(cfg *gojira.Config) *IssuesSet {
 }
 
 func (is *IssuesSet) StatusesOrder() []string {
-	if is.Config != nil && is.Config.StatusesSet != nil {
-		is.Config.StatusesSet.DedupeMetaStageOrder()
-		return is.Config.StatusesSet.MetaStageOrder
+	if is.Config != nil && is.Config.StatusConfig != nil {
+		// is.Config.StatusesSet.DedupeMetaStageOrder()
+		return is.Config.StatusConfig.StageConfig.Order()
 	} else {
 		return []string{}
 	}
@@ -504,10 +505,10 @@ func (is *IssuesSet) Table(customCols *CustomTableCols, inclEpic bool, initiativ
 			issMore.Resolution(),
 			// strconv.Itoa(iss.Fields.AggregateTimeOriginalEstimate),
 			// strconv.Itoa(iss.Fields.TimeOriginalEstimate),
-			is.Config.SecondsToDaysString(iss.Fields.TimeOriginalEstimate),
-			is.Config.SecondsToDaysString(iss.Fields.TimeEstimate),
-			is.Config.SecondsToDaysString(iss.Fields.TimeSpent),
-			is.Config.SecondsToDaysString(timeRemainingSecs),
+			strconvutil.Ftoa(is.Config.SecondsToDays(iss.Fields.TimeOriginalEstimate)),
+			strconvutil.Ftoa(is.Config.SecondsToDays(iss.Fields.TimeEstimate)),
+			strconvutil.Ftoa(is.Config.SecondsToDays(iss.Fields.TimeSpent)),
+			strconvutil.Ftoa(is.Config.SecondsToDays(timeRemainingSecs)),
 			issMore.CreateTime().Format(time.RFC3339),
 			// time.Time(iss.Fields.Created).Format(time.RFC3339),
 			// strconvutil.FormatFloat64Simple(float64(ix.TimeRemainingEstimate.Days(is.Config.WorkingHoursPerDay))),
