@@ -2,7 +2,9 @@ module github.com/grokify/gojira
 
 go 1.22.0
 
-toolchain go1.22.2
+toolchain go1.22.3
+
+// toolchain go1.21.1
 
 require (
 	github.com/andygrunwald/go-jira v1.16.0
@@ -18,6 +20,7 @@ require (
 require (
 	cloud.google.com/go/auth v0.4.2 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.2 // indirect
+	cloud.google.com/go/compute v1.27.0 // indirect
 	cloud.google.com/go/compute/metadata v0.3.0 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
@@ -64,6 +67,7 @@ require (
 	golang.org/x/text v0.15.0 // indirect
 	gonum.org/v1/gonum v0.15.0 // indirect
 	google.golang.org/api v0.181.0 // indirect
+	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240521202816-d264139d666e // indirect
 	google.golang.org/grpc v1.64.0 // indirect
 	google.golang.org/protobuf v1.34.1 // indirect
