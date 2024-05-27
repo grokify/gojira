@@ -1,36 +1,58 @@
 package gojira
 
-import "github.com/grokify/mogo/type/stringsutil"
+import (
+	"errors"
+	"net/url"
 
-type StatusesSet struct {
-	Map            map[string]string
-	MetaStageOrder []string
+	"github.com/grokify/mogo/type/stringsutil"
+)
+
+type StatusConfig struct {
+	Map         map[string]string
+	StageConfig StageConfig
+	// MetaStageOrder []string
 }
 
-func NewStatusesSet() StatusesSet {
-	return StatusesSet{
-		Map:            map[string]string{}, // status to metastatus
-		MetaStageOrder: MetaStageOrder(),
+func NewStatusConfig(stageConfig StageConfig) StatusConfig {
+	return StatusConfig{
+		Map:         map[string]string{}, // status to metastatus
+		StageConfig: stageConfig,
 	}
 }
 
 // AddMapSlice should be a map where the keys are meta statuses and the values are slices of Jira statuses.
-func (ss *StatusesSet) AddMapSlice(m map[string][]string) {
+func (ss *StatusConfig) AddMapSlice(m map[string][]string) error {
 	for metaStatus, vals := range m {
 		for _, status := range vals {
-			ss.Add(status, metaStatus)
+			if err := ss.Add(status, metaStatus); err != nil {
+				return err
+			}
 		}
 	}
+	return nil
 }
 
-func (ss *StatusesSet) Add(status, metaStatus string) {
+func (ss *StatusConfig) Add(status, metaStage string) error {
 	if ss.Map == nil {
 		ss.Map = map[string]string{}
 	}
-	ss.Map[status] = metaStatus
+	if !ss.StageConfig.Exists(metaStage) {
+		return errors.New("metaStage is not configured")
+	}
+	ss.Map[status] = metaStage
+	return nil
 }
 
-func (ss *StatusesSet) DedupeMetaStageOrder() {
+func (ss *StatusConfig) MapMetaStageToStatuses() map[string][]string {
+	out := url.Values{}
+	for status, metaStage := range ss.Map {
+		out.Add(metaStage, status)
+	}
+	return out
+}
+
+/*
+func (ss *StatusConfig) DedupeMetaStageOrder() {
 	if ss.MetaStageOrder == nil {
 		ss.MetaStageOrder = []string{}
 		return
@@ -40,9 +62,10 @@ func (ss *StatusesSet) DedupeMetaStageOrder() {
 		ss.MetaStageOrder = stringsutil.SliceCondenseSpace(ss.MetaStageOrder, true, false)
 	}
 }
+*/
 
 // MetaStage returns the metastatus for a status. If there is no metastatus, an empty string is returned.
-func (ss *StatusesSet) MetaStage(status string) string {
+func (ss *StatusConfig) MetaStage(status string) string {
 	if cat, ok := ss.Map[status]; ok {
 		return cat
 	} else {
@@ -50,28 +73,42 @@ func (ss *StatusesSet) MetaStage(status string) string {
 	}
 }
 
+/*
 // MetaStageOrderMap returns a `map[string]uint` where the key is the meta status and the value is the index.
-func (ss *StatusesSet) MetaStageOrderMap() map[string]uint {
+func (ss *StatusConfig) MetaStageOrderMap() map[string]uint {
 	out := map[string]uint{}
 	for i, ms := range ss.MetaStageOrder {
 		out[ms] = uint(i)
 	}
 	return out
 }
+*/
 
-func (ss *StatusesSet) StatusesReadyForPlanning() []string {
-	return ss.StatusesForMetaStage(MetaStageReadyForPlanning)
+func (ss *StatusConfig) StatusesReadyForPlanning() []string {
+	if metaStageName := ss.StageConfig.ReadyforPlanningName(); metaStageName == "" {
+		return []string{}
+	} else {
+		return ss.StatusesForMetaStage(metaStageName)
+	}
 }
 
-func (ss *StatusesSet) StatusesInDevelopment() []string {
-	return ss.StatusesForMetaStage(MetaStageInDevelopment)
+func (ss *StatusConfig) StatusesInDevelopment() []string {
+	if metaStageName := ss.StageConfig.InDevelopmentName(); metaStageName == "" {
+		return []string{}
+	} else {
+		return ss.StatusesForMetaStage(metaStageName)
+	}
 }
 
-func (ss *StatusesSet) StatusesDone() []string { // not backlog
-	return ss.StatusesForMetaStage(StatusDone)
+func (ss *StatusConfig) StatusesDone() []string { // not backlog
+	if metaStageName := ss.StageConfig.DoneName(); metaStageName == "" {
+		return []string{}
+	} else {
+		return ss.StatusesForMetaStage(metaStageName)
+	}
 }
 
-func (ss *StatusesSet) StatusesForMetaStage(metaStatus string) []string {
+func (ss *StatusConfig) StatusesForMetaStage(metaStatus string) []string {
 	var statuses []string
 	for k, v := range ss.Map {
 		if v == metaStatus {
@@ -81,13 +118,14 @@ func (ss *StatusesSet) StatusesForMetaStage(metaStatus string) []string {
 	return stringsutil.SliceCondenseSpace(statuses, true, true)
 }
 
-func (ss *StatusesSet) StatusesInDevelopmentAndDone() []string { // not backlog
+func (ss *StatusConfig) StatusesInDevelopmentAndDone() []string { // not backlog
 	var statuses []string
 	statuses = append(statuses, ss.StatusesInDevelopment()...)
 	statuses = append(statuses, ss.StatusesDone()...)
 	return stringsutil.SliceCondenseSpace(statuses, true, true)
 }
 
+/*
 func DefaultStatusesMapSlice() map[string][]string {
 	return map[string][]string{
 		StatusOpen:       {StatusOpen},
@@ -95,3 +133,4 @@ func DefaultStatusesMapSlice() map[string][]string {
 		StatusDone:       {StatusDone},
 	}
 }
+*/

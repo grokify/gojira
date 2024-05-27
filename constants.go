@@ -46,21 +46,21 @@ const (
 	StageDeployment  = "Deployment"
 	StageReview      = "Review"
 
-	metaStagePrefixReadyFor = "Ready for "
-	metaStagePrefixIn       = "In "
+	MetaStagePrefixReadyFor = "Ready for "
+	MetaStagePrefixIn       = "In "
 
-	MetaStageReadyForPlanning    = metaStagePrefixReadyFor + StagePlanning
-	MetaStageInPlanning          = metaStagePrefixIn + StagePlanning
-	MetaStageReadyForDesign      = metaStagePrefixReadyFor + StageDesign
-	MetaStageInDesign            = metaStagePrefixIn + StageDesign
-	MetaStageReadyForDevelopment = metaStagePrefixReadyFor + StageDevelopment
-	MetaStageInDevelopment       = metaStagePrefixIn + StageDevelopment
-	MetaStageReadyForTesting     = metaStagePrefixReadyFor + StageTesting
-	MetaStageInTesting           = metaStagePrefixIn + StageTesting
-	MetaStageReadyForDeployment  = metaStagePrefixReadyFor + StageDeployment
-	MetaStageInDeployment        = metaStagePrefixIn + StageDeployment
-	MetaStageReadyForReview      = metaStagePrefixReadyFor + StageReview
-	MetaStageInReview            = metaStagePrefixIn + StageReview
+	MetaStageReadyForPlanning    = MetaStagePrefixReadyFor + StagePlanning
+	MetaStageInPlanning          = MetaStagePrefixIn + StagePlanning
+	MetaStageReadyForDesign      = MetaStagePrefixReadyFor + StageDesign
+	MetaStageInDesign            = MetaStagePrefixIn + StageDesign
+	MetaStageReadyForDevelopment = MetaStagePrefixReadyFor + StageDevelopment
+	MetaStageInDevelopment       = MetaStagePrefixIn + StageDevelopment
+	MetaStageReadyForTesting     = MetaStagePrefixReadyFor + StageTesting
+	MetaStageInTesting           = MetaStagePrefixIn + StageTesting
+	MetaStageReadyForDeployment  = MetaStagePrefixReadyFor + StageDeployment
+	MetaStageInDeployment        = MetaStagePrefixIn + StageDeployment
+	MetaStageReadyForReview      = MetaStagePrefixReadyFor + StageReview
+	MetaStageInReview            = MetaStagePrefixIn + StageReview
 	MetaStageDone                = StatusDone
 
 	WorkingHoursPerDayDefault float32 = 8.0

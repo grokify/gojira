@@ -2,15 +2,13 @@ package gojira
 
 import (
 	"time"
-
-	"github.com/grokify/mogo/strconv/strconvutil"
 )
 
 type Config struct {
 	ServerURL          string
 	WorkingHoursPerDay float32
 	WorkingDaysPerWeek float32
-	StatusesSet        *StatusesSet
+	StatusConfig       *StatusConfig
 }
 
 func NewConfigDefault() *Config {
@@ -23,8 +21,8 @@ func (c *Config) SecondsToDays(sec int) float32 {
 	return float32(sec) / 60 / 60 / c.WorkingHoursPerDay
 }
 
-func (c *Config) SecondsToDaysString(sec int) string {
-	return strconvutil.Ftoa(float64(c.SecondsToDays(sec)))
+func (c *Config) SecondsToWeeks(sec int) float32 {
+	return c.SecondsToDays(sec) / c.WorkingDaysPerWeek
 }
 
 func (c *Config) CapacityForDaysPeople(days, people float32) time.Duration {
