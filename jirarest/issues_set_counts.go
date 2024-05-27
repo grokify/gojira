@@ -1,6 +1,7 @@
 package jirarest
 
 import (
+	"github.com/grokify/gocharts/v2/data/histogram"
 	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/pointer"
 	"github.com/grokify/mogo/time/timeutil"
@@ -79,8 +80,8 @@ func (is *IssuesSet) CountsByMetaStage(inclTypeFilter []string) map[string]uint 
 			}
 		}
 		metaStage := ""
-		if is.Config != nil && is.Config.StatusesSet != nil {
-			metaStage = is.Config.StatusesSet.MetaStage(im.Status())
+		if is.Config != nil && is.Config.StatusConfig != nil {
+			metaStage = is.Config.StatusConfig.MetaStage(im.Status())
 		}
 		if metaStage == "" {
 			unknownStatus[im.Status()]++
@@ -89,6 +90,35 @@ func (is *IssuesSet) CountsByMetaStage(inclTypeFilter []string) map[string]uint 
 		count++
 	}
 	if msuCount(out) != count {
+		panic("count mismatch")
+	}
+	return out
+}
+
+func (is *IssuesSet) CountsByProjectAndMetaStage(inclTypeFilter []string) *histogram.HistogramSet {
+	out := histogram.NewHistogramSet("")
+	inclTypeFilter = stringsutil.SliceCondenseSpace(inclTypeFilter, true, true)
+	inclTypeFilterMap := map[string]int{}
+	for _, filter := range inclTypeFilter {
+		inclTypeFilterMap[filter]++
+	}
+	count := int(0)
+	for _, iss := range is.IssuesMap {
+		im := IssueMore{Issue: pointer.Pointer(iss)}
+		if len(inclTypeFilterMap) > 0 {
+			if _, ok := inclTypeFilterMap[im.Type()]; !ok {
+				continue
+			}
+		}
+		projectName := im.Project()
+		metaStage := ""
+		if is.Config != nil && is.Config.StatusConfig != nil {
+			metaStage = is.Config.StatusConfig.MetaStage(im.Status())
+		}
+		out.Add(projectName, metaStage, 1)
+		count++
+	}
+	if count != out.Sum() {
 		panic("count mismatch")
 	}
 	return out
