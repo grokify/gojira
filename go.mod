@@ -9,7 +9,7 @@ require (
 	github.com/grokify/goauth v0.21.3
 	github.com/grokify/gocharts/v2 v2.19.2
 	github.com/grokify/mogo v0.64.4
-	github.com/jessevdk/go-flags v1.5.0
+	github.com/jessevdk/go-flags v1.6.1
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/rs/zerolog v1.33.0
 	golang.org/x/exp v0.0.0-20240604190554-fc45aab8b7f8
