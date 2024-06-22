@@ -7,12 +7,12 @@ toolchain go1.22.3
 require (
 	github.com/andygrunwald/go-jira v1.16.0
 	github.com/grokify/goauth v0.21.3
-	github.com/grokify/gocharts/v2 v2.19.2
-	github.com/grokify/mogo v0.64.4
+	github.com/grokify/gocharts/v2 v2.19.4
+	github.com/grokify/mogo v0.64.5
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/rs/zerolog v1.33.0
-	golang.org/x/exp v0.0.0-20240604190554-fc45aab8b7f8
+	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8
 )
 
 require (
@@ -66,7 +66,7 @@ require (
 	google.golang.org/api v0.182.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240528184218-531527333157 // indirect
 	google.golang.org/grpc v1.64.0 // indirect
-	google.golang.org/protobuf v1.34.1 // indirect
+	google.golang.org/protobuf v1.34.2 // indirect
 )
 
 // replace github.com/grokify/goauth => ../goauth
