@@ -6,19 +6,19 @@ toolchain go1.22.3
 
 require (
 	github.com/andygrunwald/go-jira v1.16.0
-	github.com/grokify/goauth v0.21.4
-	github.com/grokify/gocharts/v2 v2.19.4
-	github.com/grokify/mogo v0.64.5
+	github.com/grokify/goauth v0.21.5
+	github.com/grokify/gocharts/v2 v2.19.5
+	github.com/grokify/mogo v0.64.6
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/rs/zerolog v1.33.0
-	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8
+	golang.org/x/exp v0.0.0-20240707233637-46b078467d37
 )
 
 require (
-	cloud.google.com/go/auth v0.6.1 // indirect
-	cloud.google.com/go/auth/oauth2adapt v0.2.2 // indirect
-	cloud.google.com/go/compute/metadata v0.4.0 // indirect
+	cloud.google.com/go/auth v0.7.1 // indirect
+	cloud.google.com/go/auth/oauth2adapt v0.2.3 // indirect
+	cloud.google.com/go/compute/metadata v0.5.0 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
@@ -63,8 +63,8 @@ require (
 	golang.org/x/sys v0.22.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	gonum.org/v1/gonum v0.15.0 // indirect
-	google.golang.org/api v0.187.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240701130421-f6361c86f094 // indirect
+	google.golang.org/api v0.188.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240711142825-46eb208f015d // indirect
 	google.golang.org/grpc v1.65.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 )
