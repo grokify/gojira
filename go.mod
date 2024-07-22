@@ -6,13 +6,13 @@ toolchain go1.22.3
 
 require (
 	github.com/andygrunwald/go-jira v1.16.0
-	github.com/grokify/goauth v0.21.5
+	github.com/grokify/goauth v0.21.7
 	github.com/grokify/gocharts/v2 v2.19.5
 	github.com/grokify/mogo v0.64.6
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/rs/zerolog v1.33.0
-	golang.org/x/exp v0.0.0-20240707233637-46b078467d37
+	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56
 )
 
 require (
