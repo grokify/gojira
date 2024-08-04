@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"slices"
 	"strings"
+	"time"
 
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/goauth"
@@ -13,6 +14,7 @@ import (
 	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/errors/errorsutil"
 	"github.com/grokify/mogo/net/http/httpsimple"
+	"github.com/grokify/mogo/time/month"
 	"github.com/grokify/mogo/type/maputil"
 	"github.com/grokify/mogo/type/slicesutil"
 	"github.com/grokify/mogo/type/stringsutil"
@@ -279,6 +281,35 @@ func (c *Client) SearchIssues(jql string) (Issues, error) {
 	// In this example, we'll search for all the issues in the target project
 	err := c.JiraClient.Issue.SearchPages(jql, &jira.SearchOptions{Expand: "epic"}, appendFunc)
 	return issues, err
+}
+
+func (c *Client) SearchIssuesByMonth(jql gojira.JQL, createdGTE, createdLT time.Time, fnExec func(ii Issues, start time.Time) error) error {
+	if createdGTE.IsZero() {
+		createdGTE = month.MonthStart(time.Now(), 0)
+	}
+	if createdLT.IsZero() {
+		createdLT = month.MonthStart(time.Now(), 1)
+	}
+	if createdGTE.Equal(createdLT) {
+		createdLT = month.MonthStart(createdLT, 1)
+	} else if createdLT.Before(createdGTE) {
+		timeSwap := createdGTE
+		createdGTE = createdLT
+		createdLT = timeSwap
+	}
+	for createdGTE.Before(createdLT) {
+		jql.CreatedGTE = createdGTE
+		jql.CreatedLT = month.MonthStart(createdGTE, 1)
+		// fmt.Printf("JQL [%s]\n", jql.String())
+		if ii, err := c.SearchIssues(jql.String()); err != nil {
+			return err
+		} else if err := fnExec(ii, createdGTE); err != nil {
+			return err
+		} else {
+			createdGTE = month.MonthStart(createdGTE, 1)
+		}
+	}
+	return nil
 }
 
 func (c *Client) SearchIssuesSet(jql string) (*IssuesSet, error) {
