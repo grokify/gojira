@@ -12,22 +12,25 @@ import (
 
 // JQL is a JQL builder. It will create a JQL string using `JQL.String()` from the supplied infomration.
 type JQL struct {
-	CreatedGTE   time.Time
-	FiltersIncl  [][]string // outer level is `AND`, inner level is `IN`.
-	FiltersExcl  [][]string
-	IssuesIncl   [][]string
-	IssuesExcl   [][]string
-	KeysIncl     [][]string
-	KeysExcl     [][]string
-	ParentsIncl  [][]string
-	ParentsExcl  [][]string
-	ProjectsIncl [][]string
-	ProjectsExcl [][]string
-	StatusesIncl [][]string
-	StatusesExcl [][]string
-	TypesIncl    [][]string
-	TypesExcl    [][]string
-	Raw          []string
+	CreatedGTE     time.Time
+	CreatedLT      time.Time
+	FiltersIncl    [][]string // outer level is `AND`, inner level is `IN`.
+	FiltersExcl    [][]string
+	IssuesIncl     [][]string
+	IssuesExcl     [][]string
+	KeysIncl       [][]string
+	KeysExcl       [][]string
+	ParentsIncl    [][]string
+	ParentsExcl    [][]string
+	ProjectsIncl   [][]string
+	ProjectsExcl   [][]string
+	ResolutionIncl [][]string
+	ResolutionExcl [][]string
+	StatusesIncl   [][]string
+	StatusesExcl   [][]string
+	TypesIncl      [][]string
+	TypesExcl      [][]string
+	Raw            []string
 }
 
 func (j JQL) String() string {
@@ -77,7 +80,10 @@ func (j JQL) String() string {
 	}
 
 	if !j.CreatedGTE.IsZero() {
-		parts = append(parts, fmt.Sprintf("created >= %s", j.CreatedGTE.Format(timeutil.RFC3339FullDate)))
+		parts = append(parts, fmt.Sprintf("%s >= %s", FieldCreated, j.CreatedGTE.Format(timeutil.RFC3339FullDate)))
+	}
+	if !j.CreatedLT.IsZero() {
+		parts = append(parts, fmt.Sprintf("%s < %s", FieldCreated, j.CreatedLT.Format(timeutil.RFC3339FullDate)))
 	}
 	parts = append(parts, j.Raw...)
 

@@ -7,6 +7,7 @@ import (
 )
 
 const (
+	FieldCreated = "createdDate"
 	FieldFilter  = "filter"
 	FieldIssue   = "issue" // issue keys
 	FieldKey     = "key"
