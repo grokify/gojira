@@ -276,7 +276,7 @@ func (is *IssuesSet) Table(cols CustomTableCols) (*table.Table, error) {
 			colSlug := strings.ToLower(strings.TrimSpace(col.Slug))
 			if val, ok := issMore.Value(colSlug); ok {
 				row = append(row, val)
-			} else if canonicalCustomKey, ok := IsCustomFieldKey(col.Slug); ok {
+			} else if canonicalCustomKey, ok := gojira.IsCustomFieldKey(col.Slug); ok {
 				row = append(row, issMore.CustomFieldStringOrDefault(canonicalCustomKey, ""))
 			} else {
 				row = append(row, "")

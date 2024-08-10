@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"regexp"
 	"sort"
 	"strings"
 
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/gocharts/v2/data/table"
+	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/encoding/jsonutil"
 	"github.com/grokify/mogo/net/urlutil"
 	"github.com/grokify/mogo/type/slicesutil"
@@ -204,45 +204,12 @@ func GetCustomValueString(iss jira.Issue, customFieldKey string) (string, error)
 func GetUnmarshalCustomValue(iss jira.Issue, customFieldKey string, v *IssueCustomField) error {
 	if iss.Fields == nil {
 		return nil
-	} else if key, err := CustomFieldKeyCanonical(customFieldKey); err != nil {
+	} else if key, err := gojira.CustomFieldKeyCanonical(customFieldKey); err != nil {
 		return err
 	} else if unv, ok := iss.Fields.Unknowns[key]; !ok {
 		return nil
 	} else {
 		return jsonutil.UnmarshalAny(unv, v)
-	}
-}
-
-const customfieldPrefix = "customfield_"
-
-var (
-	ErrInvalidCustomFieldFormat = errors.New("invalid customfield format")
-	rxCustomFieldBrackets       = regexp.MustCompile(`^cf\[([0-9]+)\]$`)
-	rxCustomFieldCanonical      = regexp.MustCompile(`^customfield_[0-9]+$`)
-	rxCustomFieldDigits         = regexp.MustCompile(`^[0-9]+$`)
-)
-
-// CustomFieldKeyCanonical converts a custom field string to `customfield_12345`.
-func CustomFieldKeyCanonical(key string) (string, error) {
-	key = strings.ToLower(strings.TrimSpace(key))
-	if rxCustomFieldCanonical.MatchString(key) {
-		return key, nil
-	} else if rxCustomFieldDigits.MatchString(key) {
-		return customfieldPrefix + key, nil
-	} else if m := rxCustomFieldBrackets.FindAllStringSubmatch(key, -1); len(m) > 0 {
-		n := m[0]
-		if len(n) > 1 {
-			return customfieldPrefix + n[1], nil
-		}
-	}
-	return "", ErrInvalidCustomFieldFormat
-}
-
-func IsCustomFieldKey(key string) (string, bool) {
-	if can, err := CustomFieldKeyCanonical(key); err != nil {
-		return key, false
-	} else {
-		return can, true
 	}
 }
 

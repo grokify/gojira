@@ -220,7 +220,7 @@ func (im *IssueMore) Value(fieldSlug string) (string, bool) {
 	case gojira.FieldSummary:
 		return im.Summary(), true
 	default:
-		if canonicalCustomKey, ok := IsCustomFieldKey(fieldSlug); ok {
+		if canonicalCustomKey, ok := gojira.IsCustomFieldKey(fieldSlug); ok {
 			return im.CustomFieldStringOrDefault(canonicalCustomKey, ""), true
 		}
 	}
