@@ -2,6 +2,8 @@ package jirarest
 
 import (
 	"errors"
+	"fmt"
+	"time"
 
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/gocharts/v2/data/histogram"
@@ -17,11 +19,81 @@ func (is *IssuesSet) TimeSeriesCreatedMonth() *timeseries.TimeSeries {
 	ts.Interval = timeutil.IntervalMonth
 	for _, iss := range is.IssuesMap {
 		iss := iss
-		im := IssueMore{Issue: &iss}
+		im := NewIssueMore(&iss)
 		ts.AddInt64(im.CreateTime(), 1)
 	}
 	ts2 := ts.ToMonth(true)
 	return &ts2
+}
+
+// TimeSeriesSetCreatedMonthByCustomField provides issue counts by custom field and month by create date.
+// `customFieldID` is aunit for the integer part of `customfield_12345` or `cf[12345]`.
+func (is *IssuesSet) TimeSeriesSetCreatedMonthByCustomField(cumulative, inflate, popLast bool, monthsFilter []time.Month, customFieldID uint) (*timeseries.TimeSeriesSet, error) {
+	customFieldLabel := fmt.Sprintf("customfield_%d", customFieldID)
+	return is.TimeSeriesSetCreatedMonthByKey(
+		cumulative, inflate, popLast, monthsFilter,
+		func(iss jira.Issue) (string, error) {
+			im := NewIssueMore(&iss)
+			icf, err := im.CustomField(customFieldLabel)
+			if err != nil {
+				return "", err
+			}
+			return icf.Value, nil
+		},
+	)
+}
+
+// TimeSeriesSetCreatedMonthByProject provides issue counts by project and month by create date
+func (is *IssuesSet) TimeSeriesSetCreatedMonthByProject(cumulative, inflate, popLast bool, monthsFilter []time.Month) (*timeseries.TimeSeriesSet, error) {
+	return is.TimeSeriesSetCreatedMonthByKey(
+		cumulative, inflate, popLast, monthsFilter,
+		func(iss jira.Issue) (string, error) {
+			im := NewIssueMore(&iss)
+			return im.ProjectKey(), nil
+		},
+	)
+}
+
+// TimeSeriesSetCreatedMonthByResolution provides issue counts by resolution and month by create date
+func (is *IssuesSet) TimeSeriesSetCreatedMonthByResolution(cumulative, inflate, popLast bool, monthsFilter []time.Month) (*timeseries.TimeSeriesSet, error) {
+	return is.TimeSeriesSetCreatedMonthByKey(
+		cumulative, inflate, popLast, monthsFilter,
+		func(iss jira.Issue) (string, error) {
+			im := NewIssueMore(&iss)
+			return im.Resolution(), nil
+		},
+	)
+}
+
+// TimeSeriesSetCreatedMonthByStatus provides issue counts by status and month by create date
+func (is *IssuesSet) TimeSeriesSetCreatedMonthByStatus(cumulative, inflate, popLast bool, monthsFilter []time.Month) (*timeseries.TimeSeriesSet, error) {
+	return is.TimeSeriesSetCreatedMonthByKey(
+		cumulative, inflate, popLast, monthsFilter,
+		func(iss jira.Issue) (string, error) {
+			im := NewIssueMore(&iss)
+			return im.Status(), nil
+		},
+	)
+}
+
+// TimeSeriesCreatedMonth provides issue counts by month by create date
+func (is *IssuesSet) TimeSeriesSetCreatedMonthByKey(cumulative, inflate, popLast bool, monthsFilter []time.Month, fnKey func(iss jira.Issue) (string, error)) (*timeseries.TimeSeriesSet, error) {
+	if fnKey == nil {
+		return nil, errors.New("fnKey cannot be nil")
+	}
+	tss := timeseries.NewTimeSeriesSet("By Project By Month")
+	tss.Interval = timeutil.IntervalMonth
+	for _, iss := range is.IssuesMap {
+		iss := iss
+		tssKey, err := fnKey(iss)
+		if err != nil {
+			return nil, err
+		}
+		im := NewIssueMore(&iss)
+		tss.AddInt64(tssKey, im.CreateTime(), 1)
+	}
+	tssm, err := tss.ToMonth(cumulative, inflate, popLast, monthsFilter)
+	return &tssm, err
 }
 
 // HistogramMapProjectTypeStatus provides issue counts by: Project, Type, and Status.
@@ -29,7 +101,7 @@ func (is *IssuesSet) HistogramMapProjectTypeStatus() *histogram.Histogram {
 	h := histogram.NewHistogram(gojira.FieldIssuePlural)
 	for _, iss := range is.IssuesMap {
 		iss := iss
-		im := IssueMore{Issue: &iss}
+		im := NewIssueMore(&iss)
 		h.AddMap(map[string]string{
 			gojira.FieldProject: im.ProjectKey(),
 			gojira.FieldType:    im.Type(),
@@ -91,7 +163,7 @@ func (is *IssuesSet) HistogramSetProjectType() *histogram.HistogramSet {
 	hset := histogram.NewHistogramSet(gojira.FieldIssuePlural)
 	for _, iss := range is.IssuesMap {
 		iss := iss
-		im := IssueMore{Issue: &iss}
+		im := NewIssueMore(&iss)
 		hset.Add(im.ProjectKey(), im.Type(), 1)
 	}
 	return hset
@@ -102,7 +174,7 @@ func (is *IssuesSet) HistogramSetsProjectTypeStatus() *histogram.HistogramSets {
 	hsets := histogram.NewHistogramSets(gojira.FieldIssuePlural)
 	for _, iss := range is.IssuesMap {
 		iss := iss
-		im := IssueMore{Issue: &iss}
+		im := NewIssueMore(&iss)
 		hsets.Add(
 			im.ProjectKey(),
 			im.Type(),
@@ -122,7 +194,7 @@ func (is *IssuesSet) ExportWorkstremaFilter(wsFuncMake WorkstreamFuncMake, wsFun
 	out := NewIssuesSet(is.Config)
 	for _, iss := range is.IssuesMap {
 		iss := iss
-		im := IssueMore{Issue: &iss}
+		im := NewIssueMore(&iss)
 		key := im.Key()
 		if key == "" {
 			return nil, ErrIssueKeyCannotBeEmpty
@@ -185,7 +257,7 @@ func (is *IssuesSet) ExportWorkstreamXfieldStatusHistogramSets(
 	}
 	for _, iss := range is.IssuesMap {
 		iss := iss
-		im := IssueMore{Issue: &iss}
+		im := NewIssueMore(&iss)
 		key := im.Key()
 		if key == "" {
 			return nil, ErrIssueKeyCannotBeEmpty
