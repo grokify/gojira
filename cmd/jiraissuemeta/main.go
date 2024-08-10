@@ -24,9 +24,9 @@ func main() {
 	iss, err := jrClient.Issue(opts.IssueKey)
 	logutil.FatalErr(err)
 
-	im := jirarest.IssueMore{Issue: iss}
+	im := jirarest.NewIssueMore(iss)
 
-	fmtutil.MustPrintJSON(im.Issue)
+	fmtutil.MustPrintJSON(im.Meta(""))
 	fmtutil.MustPrintJSON(im.Meta(jrClient.Config.ServerURL))
 
 	fmt.Println("DONE")

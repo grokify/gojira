@@ -22,7 +22,7 @@ func (is *IssuesSet) Lineage(key string) (IssueMetas, error) {
 	if err != nil {
 		return ims, errorsutil.Wrapf(err, "key not found (%s)", key)
 	}
-	im := IssueMore{Issue: &iss}
+	im := NewIssueMore(&iss)
 	imeta := im.Meta(is.Config.ServerURL)
 	ims = append(ims, imeta)
 	parKey := im.ParentKey()
@@ -36,7 +36,7 @@ func (is *IssuesSet) Lineage(key string) (IssueMetas, error) {
 		if err != nil {
 			return ims, errorsutil.Wrap(err, "parent not found")
 		}
-		parIM := IssueMore{Issue: &parIss}
+		parIM := NewIssueMore(&parIss)
 		parM := parIM.Meta(is.Config.ServerURL)
 		ims = append(ims, parM)
 		parKey = parIM.ParentKey()
@@ -128,7 +128,7 @@ func (is *IssuesSet) LineageValidateKey(key string) ([]string, error) {
 	if !ok {
 		return lineage, fmt.Errorf("key not found for (%s)", key)
 	}
-	im := IssueMore{Issue: iss}
+	im := NewIssueMore(iss)
 	issKey := im.Key()
 	if issKey != key {
 		return lineage, fmt.Errorf("found key (%s) did not match request (%s)", issKey, key)
@@ -145,7 +145,7 @@ func (is *IssuesSet) LineageValidateKey(key string) ([]string, error) {
 		if !ok {
 			return lineage, errorsutil.Wrapf(ErrLineageNotFound, "parent key not found (%s)", parKey)
 		}
-		parIssMore := IssueMore{Issue: parIss}
+		parIssMore := NewIssueMore(parIss)
 		parIssKey := parIssMore.Key()
 		if parIssKey != parKey {
 			return lineage, fmt.Errorf("found key (%s) did not match request (%s)", parIssKey, parKey)

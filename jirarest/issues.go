@@ -62,7 +62,7 @@ func (ii Issues) Keys() []string {
 	var keys []string
 	for _, iss := range ii {
 		iss := iss
-		im := IssueMore{Issue: &iss}
+		im := NewIssueMore(&iss)
 		keys = append(keys, im.Key())
 	}
 	return stringsutil.SliceCondenseSpace(keys, true, true)
@@ -72,7 +72,7 @@ func (ii Issues) Metas(baseURL string) IssueMetas {
 	metas := IssueMetas{}
 	for _, iss := range ii {
 		iss := iss
-		im := IssueMore{Issue: &iss}
+		im := NewIssueMore(&iss)
 		metas = append(metas, im.Meta(baseURL))
 	}
 	return metas

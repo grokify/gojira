@@ -90,7 +90,7 @@ func (is *IssuesSet) IssueOrParent(key string) (*jira.Issue, bool) {
 func (is *IssuesSet) KeysParents() []string {
 	var parKeys []string
 	for _, iss := range is.IssuesMap {
-		im := IssueMore{Issue: pointer.Pointer(iss)}
+		im := NewIssueMore(pointer.Pointer(iss))
 		if parKey := im.ParentKey(); parKey != "" {
 			parKeys = append(parKeys, parKey)
 		}

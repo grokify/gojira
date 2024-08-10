@@ -23,7 +23,7 @@ func (is *IssuesSet) types() []string {
 	types := map[string]int{}
 	for _, iss := range is.IssuesMap {
 		iss := iss
-		im := IssueMore{Issue: &iss}
+		im := NewIssueMore(&iss)
 		types[im.Type()]++
 	}
 	return maputil.Keys(types)
@@ -61,7 +61,7 @@ func (is *IssuesSet) keysForTypes(types []string) []string {
 	var keys []string
 	for _, iss := range is.IssuesMap {
 		iss := iss
-		im := IssueMore{Issue: &iss}
+		im := NewIssueMore(&iss)
 		t := im.Type()
 		if _, ok := typeMap[t]; ok {
 			keys = append(keys, im.Key())

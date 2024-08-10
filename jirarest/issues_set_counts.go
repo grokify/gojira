@@ -19,13 +19,25 @@ func (is *IssuesSet) Counts() map[string]map[string]uint {
 	return mm
 }
 
+/*
+func (is *IssuesSet) TimeSeriesCreated() (timeseries.TimeSeries, error) {
+	ts := timeseries.NewTimeSeries("")
+	for _, iss := range is.IssuesMap {
+		iss := iss
+		im := IssueMore{Issue: &iss}
+		ts.AddInt64(im.CreateTime().UTC(), 1)
+	}
+	return ts, nil
+}
+*/
+
 // CountsByCustomFieldValues returns a list of custom field value counts where `customField` is in
 // the format `customfield_12345`.
 func (is *IssuesSet) CountsByCustomFieldValues(customField string) (map[string]uint, error) {
 	out := map[string]uint{}
 	for _, iss := range is.IssuesMap {
 		iss := iss
-		im := IssueMore{Issue: &iss}
+		im := NewIssueMore(&iss)
 		cfInfo, err := im.CustomField(customField)
 		if err != nil {
 			return out, err
@@ -38,7 +50,7 @@ func (is *IssuesSet) CountsByCustomFieldValues(customField string) (map[string]u
 func (is *IssuesSet) CountsByProject() map[string]uint {
 	m := map[string]uint{}
 	for _, iss := range is.IssuesMap {
-		im := IssueMore{Issue: pointer.Pointer(iss)}
+		im := NewIssueMore(pointer.Pointer(iss))
 		m[im.Project()]++
 	}
 	return m
@@ -47,7 +59,7 @@ func (is *IssuesSet) CountsByProject() map[string]uint {
 func (is *IssuesSet) CountsByProjectKey() map[string]uint {
 	m := map[string]uint{}
 	for _, iss := range is.IssuesMap {
-		im := IssueMore{Issue: pointer.Pointer(iss)}
+		im := NewIssueMore(pointer.Pointer(iss))
 		m[im.ProjectKey()]++
 	}
 	return m
@@ -56,7 +68,7 @@ func (is *IssuesSet) CountsByProjectKey() map[string]uint {
 func (is *IssuesSet) CountsByStatus() map[string]uint {
 	m := map[string]uint{}
 	for _, iss := range is.IssuesMap {
-		im := IssueMore{Issue: pointer.Pointer(iss)}
+		im := NewIssueMore(pointer.Pointer(iss))
 		//ifs := IssueFieldsSimple{Fields: iss.Fields}
 		m[im.Status()]++
 	}
@@ -73,7 +85,7 @@ func (is *IssuesSet) CountsByMetaStage(inclTypeFilter []string) map[string]uint 
 	count := uint(0)
 	unknownStatus := map[string]uint{}
 	for _, iss := range is.IssuesMap {
-		im := IssueMore{Issue: pointer.Pointer(iss)}
+		im := NewIssueMore(pointer.Pointer(iss))
 		if len(inclTypeFilterMap) > 0 {
 			if _, ok := inclTypeFilterMap[im.Type()]; !ok {
 				continue
@@ -104,7 +116,7 @@ func (is *IssuesSet) CountsByProjectAndMetaStage(inclTypeFilter []string) *histo
 	}
 	count := int(0)
 	for _, iss := range is.IssuesMap {
-		im := IssueMore{Issue: pointer.Pointer(iss)}
+		im := NewIssueMore(pointer.Pointer(iss))
 		if len(inclTypeFilterMap) > 0 {
 			if _, ok := inclTypeFilterMap[im.Type()]; !ok {
 				continue
@@ -140,7 +152,7 @@ func (is *IssuesSet) CountWithTypeFilter(inclTypeFilter []string) uint {
 	}
 	count := uint(0)
 	for _, iss := range is.IssuesMap {
-		im := IssueMore{Issue: pointer.Pointer(iss)}
+		im := NewIssueMore(pointer.Pointer(iss))
 		if len(inclTypeFilterMap) > 0 {
 			if _, ok := inclTypeFilterMap[im.Type()]; !ok {
 				continue
@@ -156,14 +168,14 @@ func (is *IssuesSet) CountsByType(inclLeafs, inclParents bool) map[string]uint {
 	if inclLeafs {
 		for _, iss := range is.IssuesMap {
 			iss := iss
-			im := IssueMore{Issue: &iss}
+			im := NewIssueMore(&iss)
 			m[im.Type()]++
 		}
 	}
 	if inclParents && is.Parents != nil {
 		for _, iss := range is.Parents.IssuesMap {
 			iss := iss
-			im := IssueMore{Issue: &iss}
+			im := NewIssueMore(&iss)
 			m[im.Type()]++
 		}
 	}
@@ -208,7 +220,7 @@ func (is *IssuesSet) CountsByWorkstream(wsFuncMake WorkstreamFuncMake, inclTypeF
 	}
 	out := map[string]uint{}
 	for _, iss := range is.IssuesMap {
-		im := IssueMore{Issue: pointer.Pointer(iss)}
+		im := NewIssueMore(pointer.Pointer(iss))
 		if len(inclTypeFilterMap) > 0 {
 			if _, ok := inclTypeFilterMap[im.Type()]; !ok {
 				continue

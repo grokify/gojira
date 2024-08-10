@@ -31,7 +31,7 @@ func (is *IssuesSet) RetrieveChildrenOfType(client *Client, parentTypes, baseTyp
 		var unknownChildrenKeys []string
 		for _, c := range children {
 			c := c
-			im := IssueMore{Issue: &c}
+			im := NewIssueMore(&c)
 			childKey := im.Key()
 			if childKey == "" || is.KeyExists(childKey, true) {
 				continue

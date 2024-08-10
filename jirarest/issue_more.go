@@ -3,83 +3,105 @@ package jirarest
 import (
 	"errors"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
 	jira "github.com/andygrunwald/go-jira"
+	"github.com/grokify/gojira"
+	"github.com/grokify/mogo/time/timeutil"
 	"golang.org/x/exp/slices"
 )
 
 type IssueMore struct {
-	Issue *jira.Issue
+	issue *jira.Issue
 }
 
-func (im *IssueMore) AsigneeName() string {
-	if im.Issue == nil || im.Issue.Fields == nil || im.Issue.Fields.Assignee == nil {
+func NewIssueMore(iss *jira.Issue) IssueMore {
+	return IssueMore{issue: iss}
+}
+
+func (im *IssueMore) AssigneeName() string {
+	if im.issue == nil || im.issue.Fields == nil || im.issue.Fields.Assignee == nil {
 		return ""
 	}
-	return im.Issue.Fields.Assignee.DisplayName
+	return im.issue.Fields.Assignee.DisplayName
 }
 
 func (im *IssueMore) CreateTime() time.Time {
-	if im.Issue == nil || im.Issue.Fields == nil {
+	if im.issue == nil || im.issue.Fields == nil {
 		return time.Time{}
 	}
-	return time.Time(im.Issue.Fields.Created)
+	return time.Time(im.issue.Fields.Created)
 }
 
 func (im *IssueMore) CreatorName() string {
-	if im.Issue == nil || im.Issue.Fields == nil || im.Issue.Fields.Creator == nil {
+	if im.issue == nil || im.issue.Fields == nil || im.issue.Fields.Creator == nil {
 		return ""
 	}
-	return im.Issue.Fields.Creator.DisplayName
+	return im.issue.Fields.Creator.DisplayName
 }
 
 // CustomField takes a custom value key such as `customfield_12345`.`
 func (im *IssueMore) CustomField(customFieldLabel string) (IssueCustomField, error) {
 	cf := IssueCustomField{}
-	if im.Issue == nil {
+	if im.issue == nil {
 		return cf, errors.New("issue not set")
 	}
-	err := GetUnmarshalCustomValue(*im.Issue, customFieldLabel, &cf)
+	err := GetUnmarshalCustomValue(*im.issue, customFieldLabel, &cf)
 	return cf, err
 }
 
+// CustomFieldString takes a custom value key such as `customfield_12345`.`
+func (im *IssueMore) CustomFieldString(customFieldLabel string) (string, error) {
+	cf, err := im.CustomField(customFieldLabel)
+	return cf.Value, err
+}
+
+// CustomFieldStringOrEmpty takes a custom value key such as `customfield_12345`.`
+func (im *IssueMore) CustomFieldStringOrDefault(customFieldLabel, def string) string {
+	if cf, err := im.CustomField(customFieldLabel); err != nil {
+		return def
+	} else {
+		return cf.Value
+	}
+}
+
 func (im *IssueMore) EpicKey() string {
-	if im.Issue == nil || im.Issue.Fields == nil || im.Issue.Fields.Epic == nil {
+	if im.issue == nil || im.issue.Fields == nil || im.issue.Fields.Epic == nil {
 		return ""
 	} else {
-		return im.Issue.Fields.Epic.Key
+		return im.issue.Fields.Epic.Key
 	}
 }
 
 func (im *IssueMore) EpicName() string {
-	if im.Issue == nil || im.Issue.Fields == nil || im.Issue.Fields.Epic == nil {
+	if im.issue == nil || im.issue.Fields == nil || im.issue.Fields.Epic == nil {
 		return ""
-	} else if strings.TrimSpace(im.Issue.Fields.Epic.Name) != "" {
-		return im.Issue.Fields.Epic.Name
+	} else if strings.TrimSpace(im.issue.Fields.Epic.Name) != "" {
+		return im.issue.Fields.Epic.Name
 	} else {
 		return ""
 	}
 }
 
 func (im *IssueMore) EpicNameOrSummary() string {
-	if im.Issue == nil || im.Issue.Fields == nil || im.Issue.Fields.Epic == nil {
+	if im.issue == nil || im.issue.Fields == nil || im.issue.Fields.Epic == nil {
 		return ""
-	} else if strings.TrimSpace(im.Issue.Fields.Epic.Name) != "" {
-		return im.Issue.Fields.Epic.Name
-	} else if strings.TrimSpace(im.Issue.Fields.Epic.Summary) != "" {
-		return im.Issue.Fields.Epic.Summary
+	} else if strings.TrimSpace(im.issue.Fields.Epic.Name) != "" {
+		return im.issue.Fields.Epic.Name
+	} else if strings.TrimSpace(im.issue.Fields.Epic.Summary) != "" {
+		return im.issue.Fields.Epic.Summary
 	} else {
 		return ""
 	}
 }
 
 func (im *IssueMore) Key() string {
-	if im.Issue == nil {
+	if im.issue == nil {
 		return ""
 	}
-	return strings.TrimSpace(im.Issue.Key)
+	return strings.TrimSpace(im.issue.Key)
 }
 
 func (im *IssueMore) KeyURL(baseURL string) string {
@@ -94,12 +116,12 @@ func (im *IssueMore) KeyURL(baseURL string) string {
 }
 
 func (im *IssueMore) Labels(sortAsc bool) []string {
-	if im.Issue == nil || im.Issue.Fields == nil || len(im.Issue.Fields.Labels) == 0 {
+	if im.issue == nil || im.issue.Fields == nil || len(im.issue.Fields.Labels) == 0 {
 		return []string{}
-	} else if !sortAsc || len(im.Issue.Fields.Labels) == 1 {
-		return im.Issue.Fields.Labels
+	} else if !sortAsc || len(im.issue.Fields.Labels) == 1 {
+		return im.issue.Fields.Labels
 	} else {
-		labels := im.Issue.Fields.Labels
+		labels := im.issue.Fields.Labels
 		sort.Strings(labels)
 		return labels
 	}
@@ -111,59 +133,98 @@ func (im *IssueMore) LabelExists(label string) bool {
 }
 
 func (im *IssueMore) ParentKey() string {
-	if im.Issue == nil || im.Issue.Fields == nil || im.Issue.Fields.Parent == nil {
+	if im.issue == nil || im.issue.Fields == nil || im.issue.Fields.Parent == nil {
 		return ""
 	}
-	return strings.TrimSpace(im.Issue.Fields.Parent.Key)
+	return strings.TrimSpace(im.issue.Fields.Parent.Key)
 }
 
 func (im *IssueMore) Project() string {
-	if im.Issue == nil || im.Issue.Fields == nil {
+	if im.issue == nil || im.issue.Fields == nil {
 		return ""
 	}
-	return im.Issue.Fields.Project.Name
+	return im.issue.Fields.Project.Name
 }
 
 func (im *IssueMore) ProjectKey() string {
-	if im.Issue == nil || im.Issue.Fields == nil {
+	if im.issue == nil || im.issue.Fields == nil {
 		return ""
 	}
-	return im.Issue.Fields.Project.Key
+	return im.issue.Fields.Project.Key
 }
 
 func (im *IssueMore) Resolution() string {
-	if im.Issue == nil || im.Issue.Fields == nil || im.Issue.Fields.Resolution == nil {
+	if im.issue == nil || im.issue.Fields == nil || im.issue.Fields.Resolution == nil {
 		return ""
 	}
-	return im.Issue.Fields.Resolution.Name
+	return im.issue.Fields.Resolution.Name
 }
 
 func (im *IssueMore) Status() string {
-	if im.Issue == nil || im.Issue.Fields == nil || im.Issue.Fields.Status == nil {
+	if im.issue == nil || im.issue.Fields == nil || im.issue.Fields.Status == nil {
 		return ""
 	}
-	return im.Issue.Fields.Status.Name
+	return im.issue.Fields.Status.Name
 }
 
 func (im *IssueMore) Summary() string {
-	if im.Issue == nil {
+	if im.issue == nil {
 		return ""
 	}
-	return im.Issue.Fields.Summary
+	return im.issue.Fields.Summary
 }
 
 func (im *IssueMore) Type() string {
-	if im.Issue == nil {
+	if im.issue == nil {
 		return ""
 	}
-	return im.Issue.Fields.Type.Name
+	return im.issue.Fields.Type.Name
 }
 
 func (im *IssueMore) UpdateTime() time.Time {
-	if im.Issue == nil || im.Issue.Fields == nil {
+	if im.issue == nil || im.issue.Fields == nil {
 		return time.Time{}
 	}
-	return time.Time(im.Issue.Fields.Updated)
+	return time.Time(im.issue.Fields.Updated)
+}
+
+func (im *IssueMore) Value(fieldSlug string) (string, bool) {
+	fieldSlug = strings.ToLower(strings.TrimSpace(fieldSlug))
+	switch fieldSlug {
+	case gojira.FieldKey:
+		return im.Key(), true
+	case gojira.AliasIssueKey:
+		return im.Key(), true
+	case gojira.FieldProjectKey:
+		return im.ProjectKey(), true
+	case gojira.CalcCreatedAgeDays:
+		t := im.CreateTime()
+		tm := timeutil.NewTimeMore(t, 0)
+		if tm.IsZeroAny() {
+			return "0", true
+		} else {
+			dur := time.Now().Sub(t)
+			days := timeutil.DurationDays(dur)
+			return strconv.Itoa(int(days)), true
+		}
+	case gojira.FieldCreatedDate:
+		t := im.CreateTime()
+		return t.Format(time.RFC3339), true
+	case gojira.CalcCreatedMonth:
+		tm := timeutil.NewTimeMore(im.CreateTime().UTC(), 0)
+		return tm.MonthStart().Format(time.RFC3339), true
+	case gojira.FieldResolution:
+		return im.Resolution(), true
+	case gojira.FieldStatus:
+		return im.Status(), true
+	case gojira.FieldSummary:
+		return im.Summary(), true
+	default:
+		if canonicalCustomKey, ok := IsCustomFieldKey(fieldSlug); ok {
+			return im.CustomFieldStringOrDefault(canonicalCustomKey, ""), true
+		}
+	}
+	return "", false
 }
 
 func (im *IssueMore) Meta(serverURL string) IssueMeta {
@@ -179,7 +240,7 @@ func (im *IssueMore) Meta(serverURL string) IssueMeta {
 	}
 
 	return IssueMeta{
-		AssigneeName: im.AsigneeName(),
+		AssigneeName: im.AssigneeName(),
 		CreateTime:   createdPtr,
 		CreatorName:  im.CreatorName(),
 		EpicName:     im.EpicName(),

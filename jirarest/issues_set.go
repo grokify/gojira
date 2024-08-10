@@ -1,22 +1,18 @@
 package jirarest
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
 	"sort"
 	"strings"
-	"time"
 
 	jira "github.com/andygrunwald/go-jira"
-	"github.com/grokify/gocharts/v2/data/table"
 	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/encoding/jsonutil"
 	"github.com/grokify/mogo/errors/errorsutil"
 	"github.com/grokify/mogo/net/urlutil"
 	"github.com/grokify/mogo/pointer"
-	"github.com/grokify/mogo/strconv/strconvutil"
 	"github.com/grokify/mogo/type/maputil"
 	"github.com/grokify/mogo/type/slicesutil"
 	"golang.org/x/exp/slices"
@@ -145,7 +141,7 @@ func (is *IssuesSet) FilterByStatus(inclStatuses, exclStatuses []string) (*Issue
 		exclStatusesMap[s]++
 	}
 	for _, iss := range is.IssuesMap {
-		im := IssueMore{Issue: pointer.Pointer(iss)}
+		im := NewIssueMore(pointer.Pointer(iss))
 		// ifs := IssueFieldsSimple{Fields: iss.Fields}
 		statusName := im.Status()
 		_, inclStatusOk := inclStatusesMap[statusName]
@@ -252,7 +248,7 @@ func (is *IssuesSet) FilterStatus(inclStatuses ...string) (*IssuesSet, error) {
 		return n, nil
 	}
 	for _, iss := range is.IssuesMap {
-		im := IssueMore{Issue: pointer.Pointer(iss)}
+		im := NewIssueMore(pointer.Pointer(iss))
 		if slices.Index(inclStatuses, im.Status()) >= 0 {
 			err := n.Add(iss)
 			if err != nil {
@@ -269,7 +265,7 @@ func (is *IssuesSet) FilterType(inclTypes ...string) (*IssuesSet, error) {
 		return n, nil
 	}
 	for _, iss := range is.IssuesMap {
-		im := IssueMore{Issue: pointer.Pointer(iss)}
+		im := NewIssueMore(pointer.Pointer(iss))
 		if slices.Index(inclTypes, im.Type()) >= 0 {
 			err := n.Add(iss)
 			if err != nil {
@@ -292,60 +288,11 @@ func (is *IssuesSet) IssueMetas() IssueMetas {
 	var imetas IssueMetas
 	for _, iss := range is.IssuesMap {
 		iss := iss
-		issMore := IssueMore{Issue: &iss}
+		issMore := NewIssueMore(&iss)
 		issMeta := issMore.Meta(is.Config.ServerURL)
 		imetas = append(imetas, issMeta)
 	}
 	return imetas
-}
-
-type CustomTableCols struct {
-	Cols []CustomCol
-}
-
-type CustomCol struct {
-	Name       string
-	Type       string
-	Func       func(iss jira.Issue) (string, error)
-	RenderSkip bool
-}
-
-func DefaultIssuesSetTableColumns(inclInitiative, inclEpic bool) *table.ColumnDefinitions {
-	var defs []table.ColumnDefinition
-	if inclInitiative {
-		initiativeCols := []table.ColumnDefinition{
-			{Name: "Initiative Key", Format: table.FormatURL},
-			{Name: "Initiative Name"}}
-		defs = append(defs, initiativeCols...)
-	}
-	if inclEpic {
-		epicCols := []table.ColumnDefinition{
-			{Name: "Epic Key", Format: table.FormatURL},
-			{Name: "Epic Name"}}
-		defs = append(defs, epicCols...)
-	}
-	stdCols := []table.ColumnDefinition{
-		{Name: "Issue Key", Format: table.FormatURL},
-		{Name: "Issue Type"},
-		{Name: "Project"},
-		{Name: "Summary"},
-		{Name: "Status"},
-		{Name: "Resolution"},
-		// {Name: "Aggregate Original Time Estimate Seconds", Format: table.FormatInt},
-		// {Name: "Original Estimate Seconds", Format: table.FormatInt},
-		{Name: "Original Estimate Days", Format: table.FormatFloat},
-		{Name: "Estimate Days", Format: table.FormatFloat},
-		{Name: "Time Spent Days", Format: table.FormatFloat},
-		{Name: "Time Remaining Days", Format: table.FormatFloat},
-		{Name: "Created", Format: table.FormatString},
-	}
-	defs = append(defs, stdCols...)
-
-	// defs = append(defs, {Name: "Epic Key", Format: table.FormatURL},
-
-	return &table.ColumnDefinitions{
-		Definitions: defs,
-	}
 }
 
 func BuildJiraIssueURL(baseURL, issueKey string) string {
@@ -357,7 +304,7 @@ func (is *IssuesSet) IssuesSetHighestType(issueType string) (*IssuesSet, error) 
 	new := NewIssuesSet(is.Config)
 	for _, iss := range is.IssuesMap {
 		iss := iss
-		issMore := IssueMore{Issue: &iss}
+		issMore := NewIssueMore(&iss)
 		issMeta := issMore.Meta(is.Config.ServerURL)
 		issKey := strings.TrimSpace(issMeta.Key)
 		if issKey != "" {
@@ -378,169 +325,6 @@ func (is *IssuesSet) IssuesSetHighestType(issueType string) (*IssuesSet, error) 
 	}
 	new.Parents = is.Parents
 	return new, nil
-}
-
-// TableSet is designed to return a `table.TableSet` where the tables include a list of issues and optionally, epics, and/or initiatives.
-func (is *IssuesSet) TableSet(customCols *CustomTableCols, inclEpic bool, initiativeType string) (*table.TableSet, error) {
-	ts := table.NewTableSet("Jira Issues")
-	tbl1Issues, err := is.Table(customCols, inclEpic, initiativeType)
-	if err != nil {
-		return nil, err
-	}
-	tbl1Issues.Name = gojira.TypeIssue
-	ts.TableMap[tbl1Issues.Name] = tbl1Issues
-	ts.Order = append(ts.Order, tbl1Issues.Name)
-	if inclEpic {
-		isEpic, err := is.IssuesSetHighestType(gojira.TypeEpic)
-		if err != nil {
-			return nil, errorsutil.Wrapf(err, "error on `is.IssuesSetHighestType(%s)`", gojira.TypeEpic)
-		}
-		tbl2Epics, err := isEpic.Table(customCols, false, initiativeType)
-		if err != nil {
-			return nil, err
-		}
-		tbl2Epics.Name = gojira.TypeEpic
-		ts.TableMap[tbl2Epics.Name] = tbl2Epics
-		ts.Order = append(ts.Order, tbl2Epics.Name)
-	}
-
-	if initiativeType != "" {
-		isInit, err := is.IssuesSetHighestType(initiativeType)
-		if err != nil {
-			return nil, err
-		}
-		tbl3Initiatives, err := isInit.Table(customCols, false, "")
-		if err != nil {
-			return nil, err
-		}
-		tbl3Initiatives.Name = initiativeType
-		ts.TableMap[tbl3Initiatives.Name] = tbl3Initiatives
-		ts.Order = append(ts.Order, tbl3Initiatives.Name)
-	}
-	return ts, nil
-}
-
-// Table returns a `table.Table` where each record is a Jira issue starting with a linked issue key.
-func (is *IssuesSet) Table(customCols *CustomTableCols, inclEpic bool, initiativeType string) (*table.Table, error) {
-	if is.Config == nil {
-		is.Config = gojira.NewConfigDefault()
-	}
-	initiativeType = strings.TrimSpace(initiativeType)
-	inclInitiative := false
-	if initiativeType != "" {
-		inclInitiative = true
-	}
-	baseURL := strings.TrimSpace(is.Config.ServerURL)
-
-	tbl := table.NewTable("issues")
-
-	tbl.LoadColumnDefinitions(DefaultIssuesSetTableColumns(inclInitiative, inclEpic))
-
-	if customCols != nil {
-		lenCols := len(tbl.Columns)
-		for i, customCol := range customCols.Cols {
-			if customCol.RenderSkip {
-				continue
-			}
-			j := lenCols + i
-			customCol.Type = strings.TrimSpace(customCol.Type)
-			if customCol.Type != "" {
-				tbl.FormatMap[j] = customCol.Type
-			}
-			if name := strings.TrimSpace(customCol.Name); name != "" {
-				tbl.Columns = append(tbl.Columns, name)
-			} else {
-				tbl.Columns = append(tbl.Columns, fmt.Sprintf("Column %d", j+1))
-			}
-		}
-	}
-
-	for key, iss := range is.IssuesMap {
-		issMore := IssueMore{Issue: pointer.Pointer(iss)}
-		issMeta := issMore.Meta(baseURL)
-
-		lineage, err := is.Lineage(key)
-		if err != nil {
-			return nil, errorsutil.Wrapf(err, "is.Lineage(key) key=\"%s\"", key)
-		}
-
-		timeRemainingSecs := iss.Fields.TimeEstimate - iss.Fields.TimeSpent
-		if timeRemainingSecs < 0 ||
-			// issMore.Status() == gojira.StatusClosed ||
-			issMore.Status() == gojira.StatusDone {
-			timeRemainingSecs = 0
-		}
-
-		var row []string
-
-		if inclInitiative {
-			initKeyDispplay := ""
-			initName := ""
-			if initiative := lineage.HighestType(initiativeType); initiative != nil {
-				initiative.BuildKeyURL(baseURL) // should not be needed.
-				initKeyDispplay = initiative.KeyLinkMarkdown()
-				initName = initiative.Summary
-			}
-			row = append(row, initKeyDispplay, initName)
-		}
-
-		if inclEpic {
-			epicKeyDisplay := issMore.EpicKey()
-			epicName := ""
-			epic := lineage.HighestEpic()
-			if epic != nil {
-				epic.BuildKeyURL(baseURL) // should not be needed.
-				epicKeyDisplay = epic.KeyLinkMarkdown()
-				epicName = epic.Summary
-			}
-			row = append(row, epicKeyDisplay, epicName)
-		}
-
-		stdCells := []string{
-			issMeta.KeyLinkMarkdown(),
-			issMore.Type(),
-			issMore.Project(),
-			issMore.Summary(),
-			issMore.Status(),
-			issMore.Resolution(),
-			// strconv.Itoa(iss.Fields.AggregateTimeOriginalEstimate),
-			// strconv.Itoa(iss.Fields.TimeOriginalEstimate),
-			strconvutil.Ftoa(is.Config.SecondsToDays(iss.Fields.TimeOriginalEstimate), -1),
-			strconvutil.Ftoa(is.Config.SecondsToDays(iss.Fields.TimeEstimate), -1),
-			strconvutil.Ftoa(is.Config.SecondsToDays(iss.Fields.TimeSpent), -1),
-			strconvutil.Ftoa(is.Config.SecondsToDays(timeRemainingSecs), -1),
-			issMore.CreateTime().Format(time.RFC3339),
-			// time.Time(iss.Fields.Created).Format(time.RFC3339),
-			// strconvutil.FormatFloat64Simple(float64(ix.TimeRemainingEstimate.Days(is.Config.WorkingHoursPerDay))),
-		}
-		row = append(row, stdCells...)
-
-		if customCols != nil {
-			for _, cc := range customCols.Cols {
-				if cc.RenderSkip {
-					continue
-				} else if cc.Func == nil {
-					row = append(row, "")
-				} else if val, err := cc.Func(iss); err != nil {
-					return nil, err
-				} else {
-					row = append(row, val)
-				}
-			}
-		}
-
-		tbl.Rows = append(tbl.Rows, row)
-	}
-	return &tbl, nil
-}
-
-func IssuesSetReadFileJSON(filename string) (*IssuesSet, error) {
-	if b, err := os.ReadFile(filename); err != nil {
-		return nil, err
-	} else {
-		is := &IssuesSet{}
-		return is, json.Unmarshal(b, is)
-	}
 }
 
 func (is *IssuesSet) WriteFileJSON(name, prefix, indent string) error {
