@@ -12,25 +12,26 @@ import (
 
 // JQL is a JQL builder. It will create a JQL string using `JQL.String()` from the supplied infomration.
 type JQL struct {
-	CreatedGTE     time.Time
-	CreatedLT      time.Time
-	FiltersIncl    [][]string // outer level is `AND`, inner level is `IN`.
-	FiltersExcl    [][]string
-	IssuesIncl     [][]string
-	IssuesExcl     [][]string
-	KeysIncl       [][]string
-	KeysExcl       [][]string
-	ParentsIncl    [][]string
-	ParentsExcl    [][]string
-	ProjectsIncl   [][]string
-	ProjectsExcl   [][]string
-	ResolutionIncl [][]string
-	ResolutionExcl [][]string
-	StatusesIncl   [][]string
-	StatusesExcl   [][]string
-	TypesIncl      [][]string
-	TypesExcl      [][]string
-	Raw            []string
+	CreatedGTE      time.Time
+	CreatedLT       time.Time
+	FiltersIncl     [][]string // outer level is `AND`, inner level is `IN`.
+	FiltersExcl     [][]string
+	IssuesIncl      [][]string
+	IssuesExcl      [][]string
+	KeysIncl        [][]string
+	KeysExcl        [][]string
+	ParentsIncl     [][]string
+	ParentsExcl     [][]string
+	ProjectsIncl    [][]string
+	ProjectsExcl    [][]string
+	ResolutionIncl  [][]string
+	ResolutionExcl  [][]string
+	StatusesIncl    [][]string
+	StatusesExcl    [][]string
+	TypesIncl       [][]string
+	TypesExcl       [][]string
+	Raw             []string
+	CustomFieldIncl map[string][]string // slice is `IN`
 }
 
 func (j JQL) String() string {
@@ -53,6 +54,8 @@ func (j JQL) String() string {
 		{Field: FieldParent, Values: j.ParentsExcl, Exclude: true},
 		{Field: FieldProject, Values: j.ProjectsIncl, Exclude: false},
 		{Field: FieldProject, Values: j.ProjectsExcl, Exclude: true},
+		{Field: FieldResolution, Values: j.ResolutionIncl, Exclude: false},
+		{Field: FieldResolution, Values: j.ResolutionExcl, Exclude: true},
 		{Field: FieldStatus, Values: j.StatusesIncl, Exclude: false},
 		{Field: FieldStatus, Values: j.StatusesExcl, Exclude: true},
 		{Field: FieldType, Values: j.TypesIncl, Exclude: false},
@@ -80,10 +83,22 @@ func (j JQL) String() string {
 	}
 
 	if !j.CreatedGTE.IsZero() {
-		parts = append(parts, fmt.Sprintf("%s >= %s", FieldCreated, j.CreatedGTE.Format(timeutil.RFC3339FullDate)))
+		parts = append(parts, fmt.Sprintf("%s >= %s", FieldCreatedDate, j.CreatedGTE.Format(timeutil.RFC3339FullDate)))
 	}
 	if !j.CreatedLT.IsZero() {
-		parts = append(parts, fmt.Sprintf("%s < %s", FieldCreated, j.CreatedLT.Format(timeutil.RFC3339FullDate)))
+		parts = append(parts, fmt.Sprintf("%s < %s", FieldCreatedDate, j.CreatedLT.Format(timeutil.RFC3339FullDate)))
+	}
+	for cfk, cfv := range j.CustomFieldIncl {
+		cfv = stringsutil.SliceCondenseSpace(cfv, true, false)
+		if len(cfv) == 0 {
+			continue
+		}
+		if cfkCanonicalID, err := CustomFieldLabelToID(cfk); err == nil {
+			cfk = cfkCanonicalID.StringBrackets()
+		}
+		if clause := inClause(cfk, cfv, false); clause != "" {
+			parts = append(parts, clause)
+		}
 	}
 	parts = append(parts, j.Raw...)
 
@@ -164,4 +179,14 @@ func JQLStringsSimple(field string, exclude bool, vals []string, jqlMaxLength ui
 		jqls = append(jqls, fmt.Sprintf("%s %s (%s)", field, operator, valsString))
 	}
 	return jqls
+}
+
+type JQLs []JQL
+
+func (j JQLs) JoinString(keyword string) string {
+	var parts []string
+	for _, jql := range j {
+		parts = append(parts, "("+jql.String()+")")
+	}
+	return strings.Join(parts, " "+keyword+" ")
 }
