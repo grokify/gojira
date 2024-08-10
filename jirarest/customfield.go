@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -200,15 +201,49 @@ func GetCustomValueString(iss jira.Issue, customFieldKey string) (string, error)
 }
 
 // GetUnmarshalCustomValue can be used to unmarshal a value to `IssueCustomField{}`.
-func GetUnmarshalCustomValue(iss jira.Issue, customFieldKey string, v any) error {
+func GetUnmarshalCustomValue(iss jira.Issue, customFieldKey string, v *IssueCustomField) error {
 	if iss.Fields == nil {
 		return nil
-	}
-	unv, ok := iss.Fields.Unknowns[customFieldKey]
-	if !ok {
+	} else if key, err := CustomFieldKeyCanonical(customFieldKey); err != nil {
+		return err
+	} else if unv, ok := iss.Fields.Unknowns[key]; !ok {
 		return nil
+	} else {
+		return jsonutil.UnmarshalAny(unv, v)
 	}
-	return jsonutil.UnmarshalAny(unv, v)
+}
+
+const customfieldPrefix = "customfield_"
+
+var (
+	ErrInvalidCustomFieldFormat = errors.New("invalid customfield format")
+	rxCustomFieldBrackets       = regexp.MustCompile(`^cf\[([0-9]+)\]$`)
+	rxCustomFieldCanonical      = regexp.MustCompile(`^customfield_[0-9]+$`)
+	rxCustomFieldDigits         = regexp.MustCompile(`^[0-9]+$`)
+)
+
+// CustomFieldKeyCanonical converts a custom field string to `customfield_12345`.
+func CustomFieldKeyCanonical(key string) (string, error) {
+	key = strings.ToLower(strings.TrimSpace(key))
+	if rxCustomFieldCanonical.MatchString(key) {
+		return key, nil
+	} else if rxCustomFieldDigits.MatchString(key) {
+		return customfieldPrefix + key, nil
+	} else if m := rxCustomFieldBrackets.FindAllStringSubmatch(key, -1); len(m) > 0 {
+		n := m[0]
+		if len(n) > 1 {
+			return customfieldPrefix + n[1], nil
+		}
+	}
+	return "", ErrInvalidCustomFieldFormat
+}
+
+func IsCustomFieldKey(key string) (string, bool) {
+	if can, err := CustomFieldKeyCanonical(key); err != nil {
+		return key, false
+	} else {
+		return can, true
+	}
 }
 
 type IssueCustomField struct {
