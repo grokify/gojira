@@ -7,14 +7,22 @@ import (
 )
 
 const (
-	FieldCreated = "createdDate"
-	FieldFilter  = "filter"
-	FieldIssue   = "issue" // issue keys
-	FieldKey     = "key"
-	FieldParent  = "parent"
-	FieldProject = "project" // project keys
-	FieldStatus  = "status"
-	FieldType    = "type"
+	// These are used by "GoJira" but not necessarily "Jira"
+	FieldCreatedDate = "createddate"
+	FieldFilter      = "filter"
+	FieldIssue       = "issue" // issue keys
+	FieldKey         = "key"
+	FieldParent      = "parent"
+	FieldProject     = "project" // project keys
+	FieldProjectKey  = "projectkey"
+	FieldResolution  = "resolution"
+	FieldStatus      = "status"
+	FieldSummary     = "summary"
+	FieldType        = "type"
+
+	CalcCreatedAgeDays = "createdagedays"
+	CalcCreatedMonth   = "createdmonth"
+	AliasIssueKey      = "issuekey"
 
 	FieldIssuePlural = "issues"
 
