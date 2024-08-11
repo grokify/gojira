@@ -274,7 +274,13 @@ func (is *IssuesSet) Table(cols CustomTableCols) (*table.Table, error) {
 		var row []string
 		for _, col := range cols.Cols {
 			colSlug := strings.ToLower(strings.TrimSpace(col.Slug))
-			if val, ok := issMore.Value(colSlug); ok {
+			if col.Func != nil {
+				if val, err := col.Func(issMore); err != nil {
+					return nil, err
+				} else {
+					row = append(row, val)
+				}
+			} else if val, ok := issMore.Value(colSlug); ok {
 				row = append(row, val)
 			} else if canonicalCustomKey, ok := gojira.IsCustomFieldKey(col.Slug); ok {
 				row = append(row, issMore.CustomFieldStringOrDefault(canonicalCustomKey, ""))
