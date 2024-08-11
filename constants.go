@@ -27,13 +27,16 @@ const (
 	FieldIssuePlural = "issues"
 
 	// Statuses: https://support.atlassian.com/jira-cloud-administration/docs/what-are-issue-statuses-priorities-and-resolutions/
-	StatusOpen        = "Open"
-	StatusInProgress  = "In Progress"
-	StatusDone        = "Done"
-	StatusToDo        = "To Do"
-	StatusInReview    = "In Review"
-	StatusUnderReview = "Under review"
 	StatusApproved    = "Approved" // Done
+	StatusBuilding    = "Building"
+	StatusClosed      = "Closed"
+	StatusDone        = "Done"
+	StatusInProgress  = "In Progress"
+	StatusInReview    = "In Review"
+	StatusOpen        = "Open"
+	StatusRequested   = "Requested"
+	StatusToDo        = "To Do"
+	StatusUnderReview = "Under review"
 
 	TypeIssue           = "Issue"
 	TypeIssuePlural     = "Issues"
