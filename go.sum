@@ -72,8 +72,8 @@ github.com/googleapis/gax-go/v2 v2.13.0 h1:yitjD5f7jQHhyDsnhKEBU52NdvvdSeGzlAnDP
 github.com/googleapis/gax-go/v2 v2.13.0/go.mod h1:Z/fvTZXF8/uw7Xu5GuslPw+bplx6SS338j1Is2S+B7A=
 github.com/grokify/base36 v1.0.5 h1:iUgnt40hrPtn3M2gjU4Darow5ikf8xWXrTuMWTLziCk=
 github.com/grokify/base36 v1.0.5/go.mod h1:L+1aaUBGfp5Ctar7KCS5G9uPABo1Ccu1Ct2iQAuhOJ4=
-github.com/grokify/goauth v0.21.8 h1:zfP9s4qubSnRiRGW2ZucmEnrLVuJ8gFB7g6b3xVPmbA=
-github.com/grokify/goauth v0.21.8/go.mod h1:CjcRb2l/JamulDeqbWRLLg1Yf93B081Ehhfmww4+dQw=
+github.com/grokify/goauth v0.21.9 h1:+//SQI5bQn1/2jTqR08whR+X7UZRmhWDCnACj4fFjLk=
+github.com/grokify/goauth v0.21.9/go.mod h1:CjcRb2l/JamulDeqbWRLLg1Yf93B081Ehhfmww4+dQw=
 github.com/grokify/gocharts/v2 v2.19.6 h1:cgYLUcuJGFCO3Yztum6iHRN1Uun5ktyZC7rlSaVBi48=
 github.com/grokify/gocharts/v2 v2.19.6/go.mod h1:CjHDnrXJPd4agL+DM7ZHW0D2pUMLEeiy4sQhA7Sf6yo=
 github.com/grokify/mogo v0.64.7 h1:J8m0hDM5/27FqOTInisVcTTJL4lIMKxa5L/z05tctRg=
