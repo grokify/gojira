@@ -203,8 +203,7 @@ func (im *IssueMore) Value(fieldSlug string) (string, bool) {
 		if tm.IsZeroAny() {
 			return "0", true
 		} else {
-			dur := time.Now().Sub(t)
-			days := timeutil.DurationDays(dur)
+			days := timeutil.DurationDays(time.Since(t))
 			return strconv.Itoa(int(days)), true
 		}
 	case gojira.FieldCreatedDate:
