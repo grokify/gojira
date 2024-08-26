@@ -218,6 +218,8 @@ func (im *IssueMore) Value(fieldSlug string) (string, bool) {
 		return im.Status(), true
 	case gojira.FieldSummary:
 		return im.Summary(), true
+	case gojira.FieldType:
+		return im.Type(), true
 	default:
 		if canonicalCustomKey, ok := gojira.IsCustomFieldKey(fieldSlug); ok {
 			return im.CustomFieldStringOrDefault(canonicalCustomKey, ""), true
