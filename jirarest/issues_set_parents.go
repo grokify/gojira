@@ -30,18 +30,18 @@ func (is *IssuesSet) RetrieveParentsIssuesSet(client *Client) (*IssuesSet, error
 }
 */
 
-func (is *IssuesSet) RetrieveParents(client *Client) error {
+func (set *IssuesSet) RetrieveParents(client *Client) error {
 	if client == nil {
 		return errorsutil.Wrap(ErrClientCannotBeNil, "called in IssuesSet.RetrieveParents")
 	}
-	parIDs := is.KeysParentsUnpopulated()
+	parIDs := set.KeysParentsUnpopulated()
 	i := 0
 	for len(parIDs) > 0 {
-		err := is.RetrieveIssues(client, parIDs)
+		err := set.RetrieveIssues(client, parIDs)
 		if err != nil {
 			return err
 		}
-		parIDs = is.KeysParentsUnpopulated()
+		parIDs = set.KeysParentsUnpopulated()
 		i++
 		if i > 10 {
 			return errors.New("exceeded max retrieve parent iterations")
@@ -50,7 +50,7 @@ func (is *IssuesSet) RetrieveParents(client *Client) error {
 	return nil
 }
 
-func (is *IssuesSet) RetrieveIssues(client *Client, ids []string) error {
+func (set *IssuesSet) RetrieveIssues(client *Client, ids []string) error {
 	if client == nil {
 		return errorsutil.Wrap(ErrClientCannotBeNil, "called in IssuesSet.RetrieveIssues")
 	}
@@ -68,28 +68,28 @@ func (is *IssuesSet) RetrieveIssues(client *Client, ids []string) error {
 			if iss, err := client.IssueAPI.SearchIssuesPages(jql, 0, 0, 0); err != nil {
 				return err
 			} else {
-				return is.Add(iss...)
+				return set.Add(iss...)
 			}
 		}
 	}
 	return nil
 }
 
-func (is *IssuesSet) IssueOrParent(key string) (*jira.Issue, bool) {
-	if iss, ok := is.IssuesMap[key]; ok {
+func (set *IssuesSet) IssueOrParent(key string) (*jira.Issue, bool) {
+	if iss, ok := set.IssuesMap[key]; ok {
 		return &iss, true
-	} else if is.Parents == nil {
+	} else if set.Parents == nil {
 		return nil, false
-	} else if iss, ok := is.Parents.IssuesMap[key]; ok {
+	} else if iss, ok := set.Parents.IssuesMap[key]; ok {
 		return &iss, true
 	} else {
 		return nil, false
 	}
 }
 
-func (is *IssuesSet) KeysParents() []string {
+func (set *IssuesSet) KeysParents() []string {
 	var parKeys []string
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		im := NewIssueMore(pointer.Pointer(iss))
 		if parKey := im.ParentKey(); parKey != "" {
 			parKeys = append(parKeys, parKey)
@@ -99,11 +99,11 @@ func (is *IssuesSet) KeysParents() []string {
 }
 
 // ParentsPopulated returns issue ids that are in the current set or current parent set.
-func (is *IssuesSet) KeysParentsPopulated() []string {
+func (set *IssuesSet) KeysParentsPopulated() []string {
 	var parKeysPop []string
-	parKeysAll := is.KeysParents()
+	parKeysAll := set.KeysParents()
 	for _, parKey := range parKeysAll {
-		parIss, ok := is.IssueOrParent(parKey)
+		parIss, ok := set.IssueOrParent(parKey)
 		if ok && parIss != nil {
 			parKeysPop = append(parKeysPop, parKey)
 		}
@@ -113,11 +113,11 @@ func (is *IssuesSet) KeysParentsPopulated() []string {
 }
 
 // ParentsUnpopulated returns issue ids that are not in the current set or current parent set.
-func (is *IssuesSet) KeysParentsUnpopulated() []string {
+func (set *IssuesSet) KeysParentsUnpopulated() []string {
 	var parKeysUnpop []string
-	parKeysAll := is.KeysParents()
+	parKeysAll := set.KeysParents()
 	for _, parKey := range parKeysAll {
-		parIss, ok := is.IssueOrParent(parKey)
+		parIss, ok := set.IssueOrParent(parKey)
 		if !ok || parIss == nil {
 			parKeysUnpop = append(parKeysUnpop, parKey)
 		}

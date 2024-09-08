@@ -8,13 +8,13 @@ import (
 	"github.com/grokify/mogo/type/stringsutil"
 )
 
-func (is *IssuesSet) Counts() map[string]map[string]uint {
+func (set *IssuesSet) Counts() map[string]map[string]uint {
 	mm := map[string]map[string]uint{
-		"byProject":    is.CountsByProject(),
-		"byProjectKey": is.CountsByProjectKey(),
-		"byStatus":     is.CountsByStatus(),
-		"byType":       is.CountsByType(true, false),
-		"byTime":       is.CountsByTime(),
+		"byProject":    set.CountsByProject(),
+		"byProjectKey": set.CountsByProjectKey(),
+		"byStatus":     set.CountsByStatus(),
+		"byType":       set.CountsByType(true, false),
+		"byTime":       set.CountsByTime(),
 	}
 	return mm
 }
@@ -33,9 +33,9 @@ func (is *IssuesSet) TimeSeriesCreated() (timeseries.TimeSeries, error) {
 
 // CountsByCustomFieldValues returns a list of custom field value counts where `customField` is in
 // the format `customfield_12345`.
-func (is *IssuesSet) CountsByCustomFieldValues(customField string) (map[string]uint, error) {
+func (set *IssuesSet) CountsByCustomFieldValues(customField string) (map[string]uint, error) {
 	out := map[string]uint{}
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		iss := iss
 		im := NewIssueMore(&iss)
 		cfInfo, err := im.CustomField(customField)
@@ -47,27 +47,27 @@ func (is *IssuesSet) CountsByCustomFieldValues(customField string) (map[string]u
 	return out, nil
 }
 
-func (is *IssuesSet) CountsByProject() map[string]uint {
+func (set *IssuesSet) CountsByProject() map[string]uint {
 	m := map[string]uint{}
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		im := NewIssueMore(pointer.Pointer(iss))
 		m[im.Project()]++
 	}
 	return m
 }
 
-func (is *IssuesSet) CountsByProjectKey() map[string]uint {
+func (set *IssuesSet) CountsByProjectKey() map[string]uint {
 	m := map[string]uint{}
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		im := NewIssueMore(pointer.Pointer(iss))
 		m[im.ProjectKey()]++
 	}
 	return m
 }
 
-func (is *IssuesSet) CountsByStatus() map[string]uint {
+func (set *IssuesSet) CountsByStatus() map[string]uint {
 	m := map[string]uint{}
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		im := NewIssueMore(pointer.Pointer(iss))
 		//ifs := IssueFieldsSimple{Fields: iss.Fields}
 		m[im.Status()]++
@@ -75,7 +75,7 @@ func (is *IssuesSet) CountsByStatus() map[string]uint {
 	return m
 }
 
-func (is *IssuesSet) CountsByMetaStage(inclTypeFilter []string) map[string]uint {
+func (set *IssuesSet) CountsByMetaStage(inclTypeFilter []string) map[string]uint {
 	inclTypeFilter = stringsutil.SliceCondenseSpace(inclTypeFilter, true, true)
 	inclTypeFilterMap := map[string]int{}
 	for _, filter := range inclTypeFilter {
@@ -84,7 +84,7 @@ func (is *IssuesSet) CountsByMetaStage(inclTypeFilter []string) map[string]uint 
 	out := map[string]uint{}
 	count := uint(0)
 	unknownStatus := map[string]uint{}
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		im := NewIssueMore(pointer.Pointer(iss))
 		if len(inclTypeFilterMap) > 0 {
 			if _, ok := inclTypeFilterMap[im.Type()]; !ok {
@@ -92,8 +92,8 @@ func (is *IssuesSet) CountsByMetaStage(inclTypeFilter []string) map[string]uint 
 			}
 		}
 		metaStage := ""
-		if is.Config != nil && is.Config.StatusConfig != nil {
-			metaStage = is.Config.StatusConfig.MetaStage(im.Status())
+		if set.Config != nil && set.Config.StatusConfig != nil {
+			metaStage = set.Config.StatusConfig.MetaStage(im.Status())
 		}
 		if metaStage == "" {
 			unknownStatus[im.Status()]++

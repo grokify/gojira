@@ -14,10 +14,10 @@ import (
 )
 
 // TimeSeriesCreatedMonth provides issue counts by month by create date
-func (is *IssuesSet) TimeSeriesCreatedMonth() *timeseries.TimeSeries {
+func (set *IssuesSet) TimeSeriesCreatedMonth() *timeseries.TimeSeries {
 	ts := timeseries.NewTimeSeries("by month")
 	ts.Interval = timeutil.IntervalMonth
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		iss := iss
 		im := NewIssueMore(&iss)
 		ts.AddInt64(im.CreateTime(), 1)
@@ -28,9 +28,9 @@ func (is *IssuesSet) TimeSeriesCreatedMonth() *timeseries.TimeSeries {
 
 // TimeSeriesSetCreatedMonthByCustomField provides issue counts by custom field and month by create date.
 // `customFieldID` is aunit for the integer part of `customfield_12345` or `cf[12345]`.
-func (is *IssuesSet) TimeSeriesSetCreatedMonthByCustomField(cumulative, inflate, popLast bool, monthsFilter []time.Month, customFieldID uint) (*timeseries.TimeSeriesSet, error) {
+func (set *IssuesSet) TimeSeriesSetCreatedMonthByCustomField(cumulative, inflate, popLast bool, monthsFilter []time.Month, customFieldID uint) (*timeseries.TimeSeriesSet, error) {
 	customFieldLabel := fmt.Sprintf("customfield_%d", customFieldID)
-	return is.TimeSeriesSetCreatedMonthByKey(
+	return set.TimeSeriesSetCreatedMonthByKey(
 		cumulative, inflate, popLast, monthsFilter,
 		func(iss jira.Issue) (string, error) {
 			im := NewIssueMore(&iss)
@@ -44,8 +44,8 @@ func (is *IssuesSet) TimeSeriesSetCreatedMonthByCustomField(cumulative, inflate,
 }
 
 // TimeSeriesSetCreatedMonthByProject provides issue counts by project and month by create date
-func (is *IssuesSet) TimeSeriesSetCreatedMonthByProject(cumulative, inflate, popLast bool, monthsFilter []time.Month) (*timeseries.TimeSeriesSet, error) {
-	return is.TimeSeriesSetCreatedMonthByKey(
+func (set *IssuesSet) TimeSeriesSetCreatedMonthByProject(cumulative, inflate, popLast bool, monthsFilter []time.Month) (*timeseries.TimeSeriesSet, error) {
+	return set.TimeSeriesSetCreatedMonthByKey(
 		cumulative, inflate, popLast, monthsFilter,
 		func(iss jira.Issue) (string, error) {
 			im := NewIssueMore(&iss)
@@ -55,8 +55,8 @@ func (is *IssuesSet) TimeSeriesSetCreatedMonthByProject(cumulative, inflate, pop
 }
 
 // TimeSeriesSetCreatedMonthByResolution provides issue counts by resolution and month by create date
-func (is *IssuesSet) TimeSeriesSetCreatedMonthByResolution(cumulative, inflate, popLast bool, monthsFilter []time.Month) (*timeseries.TimeSeriesSet, error) {
-	return is.TimeSeriesSetCreatedMonthByKey(
+func (set *IssuesSet) TimeSeriesSetCreatedMonthByResolution(cumulative, inflate, popLast bool, monthsFilter []time.Month) (*timeseries.TimeSeriesSet, error) {
+	return set.TimeSeriesSetCreatedMonthByKey(
 		cumulative, inflate, popLast, monthsFilter,
 		func(iss jira.Issue) (string, error) {
 			im := NewIssueMore(&iss)
@@ -66,8 +66,8 @@ func (is *IssuesSet) TimeSeriesSetCreatedMonthByResolution(cumulative, inflate, 
 }
 
 // TimeSeriesSetCreatedMonthByStatus provides issue counts by status and month by create date
-func (is *IssuesSet) TimeSeriesSetCreatedMonthByStatus(cumulative, inflate, popLast bool, monthsFilter []time.Month) (*timeseries.TimeSeriesSet, error) {
-	return is.TimeSeriesSetCreatedMonthByKey(
+func (set *IssuesSet) TimeSeriesSetCreatedMonthByStatus(cumulative, inflate, popLast bool, monthsFilter []time.Month) (*timeseries.TimeSeriesSet, error) {
+	return set.TimeSeriesSetCreatedMonthByKey(
 		cumulative, inflate, popLast, monthsFilter,
 		func(iss jira.Issue) (string, error) {
 			im := NewIssueMore(&iss)
@@ -77,13 +77,13 @@ func (is *IssuesSet) TimeSeriesSetCreatedMonthByStatus(cumulative, inflate, popL
 }
 
 // TimeSeriesCreatedMonth provides issue counts by month by create date
-func (is *IssuesSet) TimeSeriesSetCreatedMonthByKey(cumulative, inflate, popLast bool, monthsFilter []time.Month, fnKey func(iss jira.Issue) (string, error)) (*timeseries.TimeSeriesSet, error) {
+func (set *IssuesSet) TimeSeriesSetCreatedMonthByKey(cumulative, inflate, popLast bool, monthsFilter []time.Month, fnKey func(iss jira.Issue) (string, error)) (*timeseries.TimeSeriesSet, error) {
 	if fnKey == nil {
 		return nil, errors.New("fnKey cannot be nil")
 	}
 	tss := timeseries.NewTimeSeriesSet("By Project By Month")
 	tss.Interval = timeutil.IntervalMonth
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		iss := iss
 		tssKey, err := fnKey(iss)
 		if err != nil {
@@ -97,9 +97,9 @@ func (is *IssuesSet) TimeSeriesSetCreatedMonthByKey(cumulative, inflate, popLast
 }
 
 // HistogramMapProjectTypeStatus provides issue counts by: Project, Type, and Status.
-func (is *IssuesSet) HistogramMapProjectTypeStatus() *histogram.Histogram {
+func (set *IssuesSet) HistogramMapProjectTypeStatus() *histogram.Histogram {
 	h := histogram.NewHistogram(gojira.FieldIssuePlural)
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		iss := iss
 		im := NewIssueMore(&iss)
 		h.AddMap(map[string]string{
@@ -111,8 +111,8 @@ func (is *IssuesSet) HistogramMapProjectTypeStatus() *histogram.Histogram {
 	return h
 }
 
-func (is *IssuesSet) TableSetProjectTypeStatus(tsConfig *histogram.HistogramMapTableSetConfig) (*table.TableSet, error) {
-	hist := is.HistogramMapProjectTypeStatus()
+func (set *IssuesSet) TableSetProjectTypeStatus(tsConfig *histogram.HistogramMapTableSetConfig) (*table.TableSet, error) {
+	hist := set.HistogramMapProjectTypeStatus()
 	if tsConfig == nil {
 		tsConfig = DefaultHistogramMapTableConfig([]string{})
 	}
@@ -159,9 +159,9 @@ func DefaultHistogramMapTableConfig(projectKeys []string) *histogram.HistogramMa
 }
 
 // HistogramSetProjectType returns a list of histograms by Project and Type.
-func (is *IssuesSet) HistogramSetProjectType() *histogram.HistogramSet {
+func (set *IssuesSet) HistogramSetProjectType() *histogram.HistogramSet {
 	hset := histogram.NewHistogramSet(gojira.FieldIssuePlural)
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		iss := iss
 		im := NewIssueMore(&iss)
 		hset.Add(im.ProjectKey(), im.Type(), 1)
@@ -170,9 +170,9 @@ func (is *IssuesSet) HistogramSetProjectType() *histogram.HistogramSet {
 }
 
 // HistogramSetsProjectTypeStatus provides issue counts by: Project, Type, and Status.
-func (is *IssuesSet) HistogramSetsProjectTypeStatus() *histogram.HistogramSets {
+func (set *IssuesSet) HistogramSetsProjectTypeStatus() *histogram.HistogramSets {
 	hsets := histogram.NewHistogramSets(gojira.FieldIssuePlural)
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		iss := iss
 		im := NewIssueMore(&iss)
 		hsets.Add(
@@ -185,14 +185,14 @@ func (is *IssuesSet) HistogramSetsProjectTypeStatus() *histogram.HistogramSets {
 	return hsets
 }
 
-func (is *IssuesSet) HistogramMap(stdKeys []string, calcFields []IssueCalcField) (*histogram.Histogram, error) {
+func (set *IssuesSet) HistogramMap(stdKeys []string, calcFields []IssueCalcField) (*histogram.Histogram, error) {
 	h := histogram.NewHistogram("")
 	return h, nil
 }
 
-func (is *IssuesSet) ExportWorkstremaFilter(wsFuncMake WorkstreamFuncMake, wsFuncIncl WorkstreamFuncIncl, customFieldLabels []string) (*IssuesSet, error) {
-	out := NewIssuesSet(is.Config)
-	for _, iss := range is.IssuesMap {
+func (set *IssuesSet) ExportWorkstremaFilter(wsFuncMake WorkstreamFuncMake, wsFuncIncl WorkstreamFuncIncl, customFieldLabels []string) (*IssuesSet, error) {
+	out := NewIssuesSet(set.Config)
+	for _, iss := range set.IssuesMap {
 		iss := iss
 		im := NewIssueMore(&iss)
 		key := im.Key()
@@ -204,13 +204,13 @@ func (is *IssuesSet) ExportWorkstremaFilter(wsFuncMake WorkstreamFuncMake, wsFun
 			continue
 		} else if err = out.Add(iss); err != nil {
 			return nil, err
-		} else if lineages, err := is.Lineage(key, customFieldLabels); err != nil {
+		} else if lineages, err := set.Lineage(key, customFieldLabels); err != nil {
 			return nil, err
 		} else {
 			for _, im := range lineages {
 				if im.Key == key {
 					continue
-				} else if iss, err := is.Get(im.Key); err != nil {
+				} else if iss, err := set.Get(im.Key); err != nil {
 					return nil, err
 				} else if err = out.Parents.Add(iss); err != nil {
 					return nil, err
@@ -226,7 +226,7 @@ type (
 	WorkstreamFuncIncl func(ws string) bool
 )
 
-func (is *IssuesSet) ExportWorkstreamXfieldStatusHistogramSets(
+func (set *IssuesSet) ExportWorkstreamXfieldStatusHistogramSets(
 	wsFuncMake WorkstreamFuncMake,
 	wsFuncIncl WorkstreamFuncIncl,
 	xfieldSlug string,
@@ -247,15 +247,15 @@ func (is *IssuesSet) ExportWorkstreamXfieldStatusHistogramSets(
 	hss := histogram.NewHistogramSets("issues")
 	statusCategoryFunc := func(s string) string { return s }
 	if useStatusCategory {
-		if is.Config == nil {
+		if set.Config == nil {
 			return nil, errors.New("config not set")
-		} else if is.Config.StatusConfig == nil {
+		} else if set.Config.StatusConfig == nil {
 			return nil, errors.New("statusesSet not set")
 		} else {
-			statusCategoryFunc = is.Config.StatusConfig.MetaStage
+			statusCategoryFunc = set.Config.StatusConfig.MetaStage
 		}
 	}
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		iss := iss
 		im := NewIssueMore(&iss)
 		key := im.Key()
@@ -289,8 +289,8 @@ func (is *IssuesSet) ExportWorkstreamXfieldStatusHistogramSets(
 	return hss, nil
 }
 
-func (is *IssuesSet) ExportWorkstreamXfieldStatusTablePivot(wsFuncMake WorkstreamFuncMake, wsFuncIncl WorkstreamFuncIncl, xfieldSlug, xfieldName string, useStatusCategory bool) (*table.Table, error) {
-	hss, err := is.ExportWorkstreamXfieldStatusHistogramSets(wsFuncMake, wsFuncIncl, xfieldSlug, useStatusCategory)
+func (set *IssuesSet) ExportWorkstreamXfieldStatusTablePivot(wsFuncMake WorkstreamFuncMake, wsFuncIncl WorkstreamFuncIncl, xfieldSlug, xfieldName string, useStatusCategory bool) (*table.Table, error) {
+	hss, err := set.ExportWorkstreamXfieldStatusHistogramSets(wsFuncMake, wsFuncIncl, xfieldSlug, useStatusCategory)
 	if err != nil {
 		return nil, err
 	}
@@ -300,7 +300,7 @@ func (is *IssuesSet) ExportWorkstreamXfieldStatusTablePivot(wsFuncMake Workstrea
 		ColNameHistogramSet: "Workstream",
 		ColNameHistogram:    xfieldName,
 		ColNameBinPrefix:    "Status: ",
-		BinNamesOrder:       is.StatusesOrder(),
+		BinNamesOrder:       set.StatusesOrder(),
 		InclBinsUnordered:   true,
 		InclBinCounts:       true,
 		InclBinCountsSum:    true,

@@ -97,9 +97,9 @@ func DefaultIssuesSetTableColumns(inclInitiative, inclEpic bool) *table.ColumnDe
 }
 
 // TableSet is designed to return a `table.TableSet` where the tables include a list of issues and optionally, epics, and/or initiatives.
-func (is *IssuesSet) TableSet(customCols *CustomTableCols, inclEpic bool, initiativeType string, customFieldLabels []string) (*table.TableSet, error) {
+func (set *IssuesSet) TableSet(customCols *CustomTableCols, inclEpic bool, initiativeType string, customFieldLabels []string) (*table.TableSet, error) {
 	ts := table.NewTableSet("Jira Issues")
-	tbl1Issues, err := is.TableDefault(customCols, inclEpic, initiativeType, customFieldLabels)
+	tbl1Issues, err := set.TableDefault(customCols, inclEpic, initiativeType, customFieldLabels)
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +107,7 @@ func (is *IssuesSet) TableSet(customCols *CustomTableCols, inclEpic bool, initia
 	ts.TableMap[tbl1Issues.Name] = tbl1Issues
 	ts.Order = append(ts.Order, tbl1Issues.Name)
 	if inclEpic {
-		isEpic, err := is.IssuesSetHighestType(gojira.TypeEpic)
+		isEpic, err := set.IssuesSetHighestType(gojira.TypeEpic)
 		if err != nil {
 			return nil, errorsutil.Wrapf(err, "error on `is.IssuesSetHighestType(%s)`", gojira.TypeEpic)
 		}
@@ -121,7 +121,7 @@ func (is *IssuesSet) TableSet(customCols *CustomTableCols, inclEpic bool, initia
 	}
 
 	if initiativeType != "" {
-		isInit, err := is.IssuesSetHighestType(initiativeType)
+		isInit, err := set.IssuesSetHighestType(initiativeType)
 		if err != nil {
 			return nil, err
 		}
@@ -137,16 +137,16 @@ func (is *IssuesSet) TableSet(customCols *CustomTableCols, inclEpic bool, initia
 }
 
 // TableDefault returns a `table.Table` where each record is a Jira issue starting with a linked issue key.
-func (is *IssuesSet) TableDefault(customCols *CustomTableCols, inclEpic bool, initiativeType string, customFieldLabels []string) (*table.Table, error) {
-	if is.Config == nil {
-		is.Config = gojira.NewConfigDefault()
+func (set *IssuesSet) TableDefault(customCols *CustomTableCols, inclEpic bool, initiativeType string, customFieldLabels []string) (*table.Table, error) {
+	if set.Config == nil {
+		set.Config = gojira.NewConfigDefault()
 	}
 	initiativeType = strings.TrimSpace(initiativeType)
 	inclInitiative := false
 	if initiativeType != "" {
 		inclInitiative = true
 	}
-	baseURL := strings.TrimSpace(is.Config.ServerURL)
+	baseURL := strings.TrimSpace(set.Config.ServerURL)
 
 	tbl := table.NewTable("issues")
 
@@ -171,11 +171,11 @@ func (is *IssuesSet) TableDefault(customCols *CustomTableCols, inclEpic bool, in
 		}
 	}
 
-	for key, iss := range is.IssuesMap {
+	for key, iss := range set.IssuesMap {
 		issMore := NewIssueMore(pointer.Pointer(iss))
 		issMeta := issMore.Meta(baseURL, customFieldLabels)
 
-		lineage, err := is.Lineage(key, customFieldLabels)
+		lineage, err := set.Lineage(key, customFieldLabels)
 		if err != nil {
 			return nil, errorsutil.Wrapf(err, "is.Lineage(key) key=\"%s\"", key)
 		}
@@ -221,10 +221,10 @@ func (is *IssuesSet) TableDefault(customCols *CustomTableCols, inclEpic bool, in
 			issMore.Resolution(),
 			// strconv.Itoa(iss.Fields.AggregateTimeOriginalEstimate),
 			// strconv.Itoa(iss.Fields.TimeOriginalEstimate),
-			strconvutil.Ftoa(is.Config.SecondsToDays(iss.Fields.TimeOriginalEstimate), -1),
-			strconvutil.Ftoa(is.Config.SecondsToDays(iss.Fields.TimeEstimate), -1),
-			strconvutil.Ftoa(is.Config.SecondsToDays(iss.Fields.TimeSpent), -1),
-			strconvutil.Ftoa(is.Config.SecondsToDays(timeRemainingSecs), -1),
+			strconvutil.Ftoa(set.Config.SecondsToDays(iss.Fields.TimeOriginalEstimate), -1),
+			strconvutil.Ftoa(set.Config.SecondsToDays(iss.Fields.TimeEstimate), -1),
+			strconvutil.Ftoa(set.Config.SecondsToDays(iss.Fields.TimeSpent), -1),
+			strconvutil.Ftoa(set.Config.SecondsToDays(timeRemainingSecs), -1),
 			issMore.CreateTime().Format(time.RFC3339),
 			// time.Time(iss.Fields.Created).Format(time.RFC3339),
 			// strconvutil.FormatFloat64Simple(float64(ix.TimeRemainingEstimate.Days(is.Config.WorkingHoursPerDay))),
@@ -250,12 +250,12 @@ func (is *IssuesSet) TableDefault(customCols *CustomTableCols, inclEpic bool, in
 	return &tbl, nil
 }
 
-func (is *IssuesSet) TableSimple(cols []string) (*table.Table, error) {
+func (set *IssuesSet) TableSimple(cols []string) (*table.Table, error) {
 	ccols := CustomTableColsFromStrings(cols)
-	return is.Table(ccols)
+	return set.Table(ccols)
 }
 
-func (is *IssuesSet) Table(cols CustomTableCols) (*table.Table, error) {
+func (set *IssuesSet) Table(cols CustomTableCols) (*table.Table, error) {
 	tbl := table.NewTable("issues")
 	tbl.Columns = cols.Names(true)
 	for i, col := range cols.Cols {
@@ -269,7 +269,7 @@ func (is *IssuesSet) Table(cols CustomTableCols) (*table.Table, error) {
 			tbl.FormatMap[i] = table.FormatDate
 		}
 	}
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		issMore := NewIssueMore(pointer.Pointer(iss))
 		var row []string
 		for _, col := range cols.Cols {

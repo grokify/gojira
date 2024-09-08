@@ -13,31 +13,31 @@ var ErrLineageNotFound = errors.New("lineage not found")
 
 // Lineage returns a slice of `IssueMeta` where the supplied key is in index 0 and the most senior
 // parent is the last element of the slice. If a parent is not found in the set, an error is returned.
-func (is *IssuesSet) Lineage(key string, customFieldLabels []string) (IssueMetas, error) {
+func (set *IssuesSet) Lineage(key string, customFieldLabels []string) (IssueMetas, error) {
 	if key == "Epic" {
 		panic("Lineage Epic")
 	}
 	ims := IssueMetas{}
-	iss, err := is.Get(key)
+	iss, err := set.Get(key)
 	if err != nil {
 		return ims, errorsutil.Wrapf(err, "key not found (%s)", key)
 	}
 	im := NewIssueMore(&iss)
-	imeta := im.Meta(is.Config.ServerURL, customFieldLabels)
+	imeta := im.Meta(set.Config.ServerURL, customFieldLabels)
 	ims = append(ims, imeta)
 	parKey := im.ParentKey()
 
-	if parKey != "" && is.Parents == nil {
+	if parKey != "" && set.Parents == nil {
 		return ims, errors.New("parents not set")
 	}
 
 	for parKey != "" {
-		parIss, err := is.Get(parKey)
+		parIss, err := set.Get(parKey)
 		if err != nil {
 			return ims, errorsutil.Wrap(err, "parent not found")
 		}
 		parIM := NewIssueMore(&parIss)
-		parM := parIM.Meta(is.Config.ServerURL, customFieldLabels)
+		parM := parIM.Meta(set.Config.ServerURL, customFieldLabels)
 		ims = append(ims, parM)
 		parKey = parIM.ParentKey()
 	}
@@ -45,10 +45,10 @@ func (is *IssuesSet) Lineage(key string, customFieldLabels []string) (IssueMetas
 	return ims, nil
 }
 
-func (is *IssuesSet) LineageValidateSet() (popLineage []string, unpopLineage []string, allValid bool) {
-	issKeys := is.Keys()
+func (set *IssuesSet) LineageValidateSet() (popLineage []string, unpopLineage []string, allValid bool) {
+	issKeys := set.Keys()
 	for _, issKey := range issKeys {
-		_, err := is.LineageValidateKey(issKey)
+		_, err := set.LineageValidateKey(issKey)
 		if err != nil {
 			unpopLineage = append(unpopLineage, issKey)
 		} else {
@@ -57,22 +57,22 @@ func (is *IssuesSet) LineageValidateSet() (popLineage []string, unpopLineage []s
 	}
 	popLineage = stringsutil.SliceCondenseSpace(popLineage, true, true)
 	unpopLineage = stringsutil.SliceCondenseSpace(unpopLineage, true, true)
-	if len(popLineage) == len(is.IssuesMap) && len(unpopLineage) == 0 {
+	if len(popLineage) == len(set.IssuesMap) && len(unpopLineage) == 0 {
 		allValid = true
 		return popLineage, unpopLineage, allValid
 	}
 	return popLineage, unpopLineage, allValid
 }
 
-func (is *IssuesSet) LineageTopKeysPopulated() ([]string, error) {
+func (set *IssuesSet) LineageTopKeysPopulated() ([]string, error) {
 	var linPop []string
-	issKeys := is.Keys()
+	issKeys := set.Keys()
 	for _, issKey := range issKeys {
 		issKey = strings.TrimSpace(issKey)
 		if issKey == "" {
 			return linPop, errors.New("issue map key is empty string")
 		}
-		lin, err := is.LineageValidateKey(issKey)
+		lin, err := set.LineageValidateKey(issKey)
 		if err != nil {
 			if errors.Is(err, ErrLineageNotFound) {
 				continue
