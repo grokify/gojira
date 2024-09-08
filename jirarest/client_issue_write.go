@@ -10,7 +10,13 @@ import (
 )
 
 type IssuePatchRequestBody struct {
-	Fields map[string]any `json:"fields"`
+	Fields map[string]FieldPatchRequestObject `json:"fields"`
+}
+
+// FieldPatchRequestObject can be used IssuePatchRequestBody.Fields
+type FieldPatchRequestObject struct {
+	Value string                   `json:"value"`
+	Child *FieldPatchRequestObject `json:"child,omitempty"`
 }
 
 // IssuePatch updates fields for an issue. See more here:
