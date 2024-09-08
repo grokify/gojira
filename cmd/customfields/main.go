@@ -22,8 +22,6 @@ func main() {
 	jrClient, err := opts.Client()
 	logutil.FatalErr(err)
 
-	//jrAPI := jirarest.NewAPI(jrClient)
-
 	cfs, err := jrClient.CustomFieldAPI.GetCustomFields()
 	logutil.FatalErr(err)
 	cfs.WriteTable(os.Stdout)
