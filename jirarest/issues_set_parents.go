@@ -65,7 +65,7 @@ func (is *IssuesSet) RetrieveIssues(client *Client, ids []string) error {
 		jqls := gojira.JQLStringsSimple(gojira.FieldKey, false, idsSlice, 0)
 
 		for _, jql := range jqls {
-			if iss, err := client.SearchIssuesPages(jql, 0, 0, 0); err != nil {
+			if iss, err := client.IssueAPI.SearchIssuesPages(jql, 0, 0, 0); err != nil {
 				return err
 			} else {
 				return is.Add(iss...)

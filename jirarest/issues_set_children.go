@@ -20,7 +20,7 @@ func (is *IssuesSet) RetrieveChildrenOfType(client *Client, parentTypes, baseTyp
 		return nil
 	}
 
-	children, err := client.SearchChildrenIssues(parentKeys...)
+	children, err := client.IssueAPI.SearchChildrenIssues(parentKeys...)
 	if err != nil {
 		return err
 	} else if is.Parents == nil {
@@ -47,7 +47,7 @@ func (is *IssuesSet) RetrieveChildrenOfType(client *Client, parentTypes, baseTyp
 		if len(unknownChildrenKeys) == 0 {
 			break
 		} else {
-			children, err = client.SearchChildrenIssues(unknownChildrenKeys...)
+			children, err = client.IssueAPI.SearchChildrenIssues(unknownChildrenKeys...)
 			if err != nil {
 				return err
 			}

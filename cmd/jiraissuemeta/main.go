@@ -21,7 +21,7 @@ func main() {
 	jrClient, err := opts.Client()
 	logutil.FatalErr(errorsutil.Wrap(err, "Client"))
 
-	iss, err := jrClient.Issue(opts.IssueKey)
+	iss, err := jrClient.IssueAPI.Issue(opts.IssueKey)
 	logutil.FatalErr(err)
 
 	im := jirarest.NewIssueMore(iss)

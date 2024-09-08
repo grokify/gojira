@@ -21,7 +21,7 @@ func (es *EpicsSet) GetKeys(jclient *jira.Client, epicKeys []string) error {
 		return errors.New("jclient cannot be nil")
 	}
 	c := Client{JiraClient: jclient}
-	newEpics, err := c.GetIssuesSetForKeys(epicKeys)
+	newEpics, err := c.IssueAPI.GetIssuesSetForKeys(epicKeys)
 	if err != nil {
 		return err
 	}
