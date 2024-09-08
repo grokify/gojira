@@ -91,8 +91,8 @@ func (c *IssueService) SearchIssuesMulti(jqls ...string) (Issues, error) {
 			return issues, err
 		}
 		issues = append(issues, ii...)
-		if c.Client.Logger != nil {
-			c.Client.Logger.Info().
+		if c.Client.LoggerZ != nil {
+			c.Client.LoggerZ.Info().
 				Str("jql", jql).
 				Int("index", i).
 				Int("totalQueries", len(jqls)).
@@ -129,8 +129,8 @@ func (c *IssueService) SearchIssuesPages(jql string, limit, offset, maxPages uin
 		} else if resp.Response.StatusCode >= 300 {
 			return issues, fmt.Errorf("jira api status code (%d)", resp.Response.StatusCode)
 		}
-		if c.Client.Logger != nil {
-			c.Client.Logger.Info().
+		if c.Client.LoggerZ != nil {
+			c.Client.LoggerZ.Info().
 				Int("iteration", int(i)).
 				Int("limit", resp.MaxResults).
 				Int("offset", resp.StartAt).
@@ -204,8 +204,8 @@ func (c *IssueService) SearchIssuesSetParents(is *IssuesSet) (*IssuesSet, error)
 			break
 		}
 
-		if c.Client.Logger != nil {
-			c.Client.Logger.Info().
+		if c.Client.LoggerZ != nil {
+			c.Client.LoggerZ.Info().
 				Int("iteration", iter).
 				Msg("jira api populate parents (SearchIssuesSetParents)")
 		}
