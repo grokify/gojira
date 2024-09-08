@@ -28,20 +28,6 @@ func BacklogJQL(projectName string) string {
 }
 */
 
-/*
-func Shift[S ~[]E, E any](s S) (E, S) {
-	if len(s) == 0 {
-		return *new(E), []E{}
-	}
-	return s[0], s[1:]
-}
-*/
-
-/*
-func Prepend[S ~[]E, E any](s []E        , e E) []E   {
-	return append     {[]E{e }  ,   s...  }
-}*/
-
 const (
 	ParamFields        = "fields"
 	ParamJQL           = "jql"
@@ -129,12 +115,12 @@ func (svc *BacklogService) GetBacklogIssuesResponse(boardID uint, qry *BoardBack
 	} else if resp.StatusCode >= 300 {
 		return nil, []byte{}, fmt.Errorf("statusCode (%d)", resp.StatusCode)
 	}
-	b, err := io.ReadAll(resp.Body)
-	if err != nil {
+	if b, err := io.ReadAll(resp.Body); err != nil {
 		return nil, []byte{}, err
+	} else {
+		ir, err := ParseIssuesResponseBytes(b)
+		return ir, b, err
 	}
-	ir, err := ParseIssuesResponseBytes(b)
-	return ir, b, err
 }
 
 func (svc *BacklogService) GetBacklogIssuesAll(boardID uint, jql string) (*IssuesResponse, [][]byte, error) {
@@ -147,6 +133,7 @@ func (svc *BacklogService) GetBacklogIssuesAll(boardID uint, jql string) (*Issue
 		MaxResults: MaxResults,
 		JQL:        jql,
 	}
+
 	for {
 		ir, b, err := svc.GetBacklogIssuesResponse(boardID, opts)
 		if err != nil {
