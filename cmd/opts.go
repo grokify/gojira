@@ -19,7 +19,10 @@ type Options struct {
 }
 
 func (opts Options) Client() (*jirarest.Client, error) {
-	return jirarest.NewClientGoauthBasicAuthFile(opts.Options.CredsPath, opts.Options.Account, len(opts.AddCustomFieldSet) > 0)
+	return jirarest.NewClientGoauthBasicAuthFile(
+		opts.Options.CredsPath,
+		opts.Options.Account,
+		len(opts.AddCustomFieldSet) > 0)
 }
 
 func NewOptions() (Options, error) {
