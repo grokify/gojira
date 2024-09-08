@@ -11,15 +11,15 @@ import (
 	"github.com/grokify/mogo/type/stringsutil"
 )
 
-type IssueAPI struct {
+type IssueService struct {
 	Client *Client
 }
 
-func NewIssueAPI(client *Client) *IssueAPI {
-	return &IssueAPI{Client: client}
+func NewIssueService(client *Client) *IssueService {
+	return &IssueService{Client: client}
 }
 
-func (c *IssueAPI) Issue(key string) (*jira.Issue, error) {
+func (c *IssueService) Issue(key string) (*jira.Issue, error) {
 	key = strings.TrimSpace(key)
 	jqlInfo := gojira.JQL{IssuesIncl: [][]string{{key}}}
 	//jql := fmt.Sprintf("issue = %s", key)
@@ -37,7 +37,7 @@ func (c *IssueAPI) Issue(key string) (*jira.Issue, error) {
 	}
 }
 
-func (c *IssueAPI) Issues(keys ...string) (Issues, error) {
+func (c *IssueService) Issues(keys ...string) (Issues, error) {
 	keys = stringsutil.SliceCondenseSpace(keys, true, true)
 	iss := Issues{}
 	if len(keys) == 0 {
@@ -53,7 +53,7 @@ func (c *IssueAPI) Issues(keys ...string) (Issues, error) {
 	return iss, nil
 }
 
-func (c *IssueAPI) GetIssuesSetForKeys(keys []string) (*IssuesSet, error) {
+func (c *IssueService) GetIssuesSetForKeys(keys []string) (*IssuesSet, error) {
 	is := NewIssuesSet(nil)
 
 	keysSlice := slicesutil.SplitMaxLength(stringsutil.SliceCondenseSpace(keys, true, true), gojira.JQLMaxResults)

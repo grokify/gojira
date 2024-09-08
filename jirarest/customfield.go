@@ -45,15 +45,15 @@ type CustomFieldSchema struct {
 	CustomID int    `json:"customId"`
 }
 
-type CustomFieldsService struct {
+type CustomFieldService struct {
 	JRClient *Client
 }
 
-func NewCustomFieldsService(client *Client) *CustomFieldsService {
-	return &CustomFieldsService{JRClient: client}
+func NewCustomFieldService(client *Client) *CustomFieldService {
+	return &CustomFieldService{JRClient: client}
 }
 
-func (svc *CustomFieldsService) GetCustomFields() (CustomFields, error) {
+func (svc *CustomFieldService) GetCustomFields() (CustomFields, error) {
 	var cfs CustomFields
 	if svc.JRClient == nil {
 		return cfs, ErrJiraRESTClientCannotBeNil
@@ -75,11 +75,11 @@ func (svc *CustomFieldsService) GetCustomFields() (CustomFields, error) {
 	return cfs, err
 }
 
-func (svc *CustomFieldsService) GetCustomFieldEpicLink() (CustomField, error) {
+func (svc *CustomFieldService) GetCustomFieldEpicLink() (CustomField, error) {
 	return svc.GetCustomField(CustomFieldNameEpicLink)
 }
 
-func (svc *CustomFieldsService) GetCustomField(customFieldName string) (CustomField, error) {
+func (svc *CustomFieldService) GetCustomField(customFieldName string) (CustomField, error) {
 	cfs, err := svc.GetCustomFields()
 	if err != nil {
 		return CustomField{}, err

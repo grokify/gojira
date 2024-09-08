@@ -15,7 +15,7 @@ import (
 )
 
 // SearchIssues returns all issues for a JQL query, automatically handling API pagination.
-func (c *IssueAPI) SearchIssues(jql string) (Issues, error) {
+func (c *IssueService) SearchIssues(jql string) (Issues, error) {
 	var issues Issues
 
 	// appendFunc will append jira issues to []jira.Issue
@@ -30,7 +30,7 @@ func (c *IssueAPI) SearchIssues(jql string) (Issues, error) {
 	return issues, err
 }
 
-func (c *IssueAPI) SearchChildrenIssues(parentKeys []string) (Issues, error) {
+func (c *IssueService) SearchChildrenIssues(parentKeys []string) (Issues, error) {
 	if parentKeys = stringsutil.SliceCondenseSpace(parentKeys, true, true); len(parentKeys) == 0 {
 		return Issues{}, errors.New("parentKeys cannot be empty")
 	} else {
@@ -39,7 +39,7 @@ func (c *IssueAPI) SearchChildrenIssues(parentKeys []string) (Issues, error) {
 	}
 }
 
-func (c *IssueAPI) SearchChildrenIssuesSet(recursive bool, parentKeys ...string) (*IssuesSet, error) {
+func (c *IssueService) SearchChildrenIssuesSet(recursive bool, parentKeys ...string) (*IssuesSet, error) {
 	is := NewIssuesSet(c.Client.Config)
 	seen := map[string]int{}
 	seen, err := searchChildrenIssuesSetInternal(c, is, parentKeys, seen)
@@ -69,7 +69,7 @@ func (c *IssueAPI) SearchChildrenIssuesSet(recursive bool, parentKeys ...string)
 	return is, nil
 }
 
-func searchChildrenIssuesSetInternal(c *IssueAPI, is *IssuesSet, parentKeys []string, seen map[string]int) (map[string]int, error) {
+func searchChildrenIssuesSetInternal(c *IssueService, is *IssuesSet, parentKeys []string, seen map[string]int) (map[string]int, error) {
 	if ii, err := c.SearchChildrenIssues(parentKeys); err != nil {
 		return seen, err
 	} else if len(ii) > 0 {
@@ -83,7 +83,7 @@ func searchChildrenIssuesSetInternal(c *IssueAPI, is *IssuesSet, parentKeys []st
 	return seen, nil
 }
 
-func (c *IssueAPI) SearchIssuesMulti(jqls ...string) (Issues, error) {
+func (c *IssueService) SearchIssuesMulti(jqls ...string) (Issues, error) {
 	var issues Issues
 	for i, jql := range jqls {
 		ii, err := c.SearchIssues(jql)
@@ -106,7 +106,7 @@ func (c *IssueAPI) SearchIssuesMulti(jqls ...string) (Issues, error) {
 // SearchIssuesPage returns all issues for a JQL query, automatically handling API pagination.
 // A `limit` value of `0` means the max results available. A `maxPages` of `0` means to retrieve
 // all pages.
-func (c *IssueAPI) SearchIssuesPages(jql string, limit, offset, maxPages uint) (Issues, error) {
+func (c *IssueService) SearchIssuesPages(jql string, limit, offset, maxPages uint) (Issues, error) {
 	var issues Issues
 
 	if limit == 0 {
@@ -151,7 +151,7 @@ func (c *IssueAPI) SearchIssuesPages(jql string, limit, offset, maxPages uint) (
 	return issues, nil
 }
 
-func (c *IssueAPI) SearchIssuesByMonth(jql gojira.JQL, createdGTE, createdLT time.Time, fnExec func(ii Issues, start time.Time) error) error {
+func (c *IssueService) SearchIssuesByMonth(jql gojira.JQL, createdGTE, createdLT time.Time, fnExec func(ii Issues, start time.Time) error) error {
 	if createdGTE.IsZero() {
 		createdGTE = month.MonthStart(time.Now(), 0)
 	}
@@ -180,7 +180,7 @@ func (c *IssueAPI) SearchIssuesByMonth(jql gojira.JQL, createdGTE, createdLT tim
 	return nil
 }
 
-func (c *IssueAPI) SearchIssuesSet(jql string) (*IssuesSet, error) {
+func (c *IssueService) SearchIssuesSet(jql string) (*IssuesSet, error) {
 	if ii, err := c.SearchIssues(jql); err != nil {
 		return nil, err
 	} else {
@@ -190,7 +190,7 @@ func (c *IssueAPI) SearchIssuesSet(jql string) (*IssuesSet, error) {
 	}
 }
 
-func (c *IssueAPI) SearchIssuesSetParents(is *IssuesSet) (*IssuesSet, error) {
+func (c *IssueService) SearchIssuesSetParents(is *IssuesSet) (*IssuesSet, error) {
 	if is == nil {
 		return nil, errors.New("issues set must be set")
 	}

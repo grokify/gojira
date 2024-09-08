@@ -100,19 +100,21 @@ func JiraClientBasicAuthGoauth(creds *goauth.CredentialsBasicAuth) (*jira.Client
 }
 
 type Client struct {
-	Config          *gojira.Config
-	HTTPClient      *http.Client
-	JiraClient      *jira.Client
-	simpleClient    *httpsimple.Client
-	Logger          *zerolog.Logger
-	CustomFieldsAPI *CustomFieldsService
-	IssueAPI        *IssueAPI
-	CustomFieldSet  *CustomFieldSet
+	Config         *gojira.Config
+	HTTPClient     *http.Client
+	JiraClient     *jira.Client
+	simpleClient   *httpsimple.Client
+	Logger         *zerolog.Logger
+	BacklogAPI     *BacklogService
+	CustomFieldAPI *CustomFieldService
+	IssueAPI       *IssueService
+	CustomFieldSet *CustomFieldSet
 }
 
 func (c *Client) Inflate(addCustomFieldSet bool) error {
-	c.CustomFieldsAPI = NewCustomFieldsService(c)
-	c.IssueAPI = &IssueAPI{Client: c}
+	c.BacklogAPI = NewBacklogService(c)
+	c.CustomFieldAPI = NewCustomFieldService(c)
+	c.IssueAPI = NewIssueService(c)
 	if addCustomFieldSet {
 		if err := c.LoadCustomFields(); err != nil {
 			return err
@@ -122,10 +124,10 @@ func (c *Client) Inflate(addCustomFieldSet bool) error {
 }
 
 func (c *Client) LoadCustomFields() error {
-	if c.CustomFieldsAPI == nil {
-		c.CustomFieldsAPI = NewCustomFieldsService(c)
+	if c.CustomFieldAPI == nil {
+		c.CustomFieldAPI = NewCustomFieldService(c)
 	}
-	if fields, err := c.CustomFieldsAPI.GetCustomFields(); err != nil {
+	if fields, err := c.CustomFieldAPI.GetCustomFields(); err != nil {
 		return err
 	} else if len(fields) > 0 {
 		c.CustomFieldSet = NewCustomFieldSet()

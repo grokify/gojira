@@ -21,7 +21,7 @@ type FieldPatchRequestObject struct {
 
 // IssuePatch updates fields for an issue. See more here:
 // https://community.developer.atlassian.com/t/update-issue-custom-field-value-via-api-without-going-forge/71161
-func (c *IssueAPI) IssuePatch(issueKeyOrID string, issueUpdateRequestBody IssuePatchRequestBody) (*http.Response, error) {
+func (c *IssueService) IssuePatch(issueKeyOrID string, issueUpdateRequestBody IssuePatchRequestBody) (*http.Response, error) {
 	if issueKeyOrID = strings.TrimSpace(issueKeyOrID); issueKeyOrID == "" {
 		return nil, errors.New("issue key or id must be provided")
 	} else if len(issueUpdateRequestBody.Fields) == 0 {

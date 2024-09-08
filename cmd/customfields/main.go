@@ -22,9 +22,9 @@ func main() {
 	jrClient, err := opts.Client()
 	logutil.FatalErr(err)
 
-	jrAPI := jirarest.NewAPI(jrClient)
+	//jrAPI := jirarest.NewAPI(jrClient)
 
-	cfs, err := jrAPI.CustomFields.GetCustomFields()
+	cfs, err := jrClient.CustomFieldAPI.GetCustomFields()
 	logutil.FatalErr(err)
 	cfs.WriteTable(os.Stdout)
 
@@ -41,7 +41,7 @@ func main() {
 	}
 
 	// Get Epic Link Custom Field
-	cfName, err := jrAPI.CustomFields.GetCustomFieldEpicLink()
+	cfName, err := jrClient.CustomFieldAPI.GetCustomFieldEpicLink()
 	logutil.FatalErr(err)
 	cfsName := jirarest.CustomFields{cfName}
 	cfsName.WriteTable(os.Stdout)
