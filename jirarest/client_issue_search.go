@@ -30,7 +30,7 @@ func (c *IssueAPI) SearchIssues(jql string) (Issues, error) {
 	return issues, err
 }
 
-func (c *IssueAPI) SearchChildrenIssues(parentKeys ...string) (Issues, error) {
+func (c *IssueAPI) SearchChildrenIssues(parentKeys []string) (Issues, error) {
 	if parentKeys = stringsutil.SliceCondenseSpace(parentKeys, true, true); len(parentKeys) == 0 {
 		return Issues{}, errors.New("parentKeys cannot be empty")
 	} else {
@@ -70,7 +70,7 @@ func (c *IssueAPI) SearchChildrenIssuesSet(recursive bool, parentKeys ...string)
 }
 
 func searchChildrenIssuesSetInternal(c *IssueAPI, is *IssuesSet, parentKeys []string, seen map[string]int) (map[string]int, error) {
-	if ii, err := c.SearchChildrenIssues(parentKeys...); err != nil {
+	if ii, err := c.SearchChildrenIssues(parentKeys); err != nil {
 		return seen, err
 	} else if len(ii) > 0 {
 		if err := is.Add(ii...); err != nil {
