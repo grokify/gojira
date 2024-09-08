@@ -54,7 +54,7 @@ func main() {
 	err = is.WriteFileJSON(outfile, "", "  ")
 	logutil.FatalErr(errorsutil.Wrap(err, "WriteFileJSON"))
 
-	tbl, err := is.TableDefault(nil, true, "")
+	tbl, err := is.TableDefault(nil, true, "", []string{})
 	logutil.FatalErr(err)
 	err = tbl.WriteXLSX(fmt.Sprintf("backlog-%s.xlsx", dtfs), "Backlog")
 	logutil.FatalErr(errorsutil.Wrap(err, "WriteXLSX"))
