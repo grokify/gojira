@@ -68,7 +68,7 @@ type IssuePatchRequestBodyField struct {
 
 // IssuePatch updates fields for an issue. See more here:
 // https://community.developer.atlassian.com/t/update-issue-custom-field-value-via-api-without-going-forge/71161
-func (c *IssueService) IssuePatch(issueKeyOrID string, issueUpdateRequestBody IssuePatchRequestBody) (*http.Response, error) {
+func (svc *IssueService) IssuePatch(issueKeyOrID string, issueUpdateRequestBody IssuePatchRequestBody) (*http.Response, error) {
 	if err := issueUpdateRequestBody.Validate(); err != nil {
 		return nil, err
 	} else if issueKeyOrID = strings.TrimSpace(issueKeyOrID); issueKeyOrID == "" {
@@ -76,7 +76,7 @@ func (c *IssueService) IssuePatch(issueKeyOrID string, issueUpdateRequestBody Is
 	} else if issueUpdateRequestBody.Update == nil && len(issueUpdateRequestBody.Fields) == 0 {
 		return nil, errors.New("issue `update` or `fields` must be provided")
 	} else {
-		return c.Client.simpleClient.Do(httpsimple.Request{
+		return svc.Client.simpleClient.Do(httpsimple.Request{
 			Method:   http.MethodPut, // This only updates certain fields but uses a PUT http method.
 			URL:      urlutil.JoinAbsolute(APIV3URLIssue, issueKeyOrID),
 			Body:     issueUpdateRequestBody,
@@ -86,7 +86,7 @@ func (c *IssueService) IssuePatch(issueKeyOrID string, issueUpdateRequestBody Is
 
 // IssuePatchLabelRecursive updates fields for an issue. See more here:
 // https://community.developer.atlassian.com/t/update-issue-custom-field-value-via-api-without-going-forge/71161
-func (c *IssueService) IssuePatchLabelRecursive(ctx context.Context, issueKeyOrID string, iss *jira.Issue, label string, removeLabel, processChildren bool, processChildrenTypes []string, skipUpdate bool) (int, error) {
+func (svc *IssueService) IssuePatchLabelRecursive(ctx context.Context, issueKeyOrID string, iss *jira.Issue, label string, removeLabel, processChildren bool, processChildrenTypes []string, skipUpdate bool) (int, error) {
 	count := 0
 	issueKeyOrID = strings.TrimSpace(issueKeyOrID)
 	processChildrenTypes = stringsutil.SliceCondenseSpace(processChildrenTypes, true, true)
@@ -100,7 +100,7 @@ func (c *IssueService) IssuePatchLabelRecursive(ctx context.Context, issueKeyOrI
 		return count, errors.New("issue key or id must be supplied")
 	}
 	if iss == nil {
-		if issGet, err := c.Issue(issueKeyOrID); err != nil {
+		if issGet, err := svc.Issue(issueKeyOrID); err != nil {
 			return 0, err
 		} else {
 			iss = issGet
@@ -112,7 +112,7 @@ func (c *IssueService) IssuePatchLabelRecursive(ctx context.Context, issueKeyOrI
 	if im.LabelExists(label) {
 		labelExists = true
 	}
-	c.Client.LogOrNotAny(
+	svc.Client.LogOrNotAny(
 		ctx,
 		slog.LevelDebug,
 		"validating issue labels",
@@ -124,7 +124,7 @@ func (c *IssueService) IssuePatchLabelRecursive(ctx context.Context, issueKeyOrI
 
 	if !skipUpdate &&
 		((removeLabel && im.LabelExists(label)) || (!removeLabel && !im.LabelExists(label))) {
-		c.Client.LogOrNotAny(
+		svc.Client.LogOrNotAny(
 			ctx,
 			slog.LevelDebug,
 			"updating issue labels",
@@ -133,7 +133,7 @@ func (c *IssueService) IssuePatchLabelRecursive(ctx context.Context, issueKeyOrI
 			"labelAction", labelOperation,
 			"label", label)
 		reqBody := NewIssuePatchRequestBodyLabelAllRemove(label, removeLabel)
-		if resp, err := c.IssuePatch(issueKeyOrID, reqBody); err != nil {
+		if resp, err := svc.IssuePatch(issueKeyOrID, reqBody); err != nil {
 			return 0, nil
 		} else if resp.StatusCode >= 300 {
 			body, err := io.ReadAll(resp.Body)
@@ -146,7 +146,7 @@ func (c *IssueService) IssuePatchLabelRecursive(ctx context.Context, issueKeyOrI
 		}
 	}
 	if processChildren {
-		ii, err := c.SearchChildrenIssues([]string{issueKeyOrID})
+		ii, err := svc.SearchChildrenIssues([]string{issueKeyOrID})
 		if err != nil {
 			return count, err
 		}
@@ -158,13 +158,13 @@ func (c *IssueService) IssuePatchLabelRecursive(ctx context.Context, issueKeyOrI
 				return count, err
 			}
 		}
-		if c.Client.LoggerZ != nil {
-			c.Client.LoggerZ.Info().
+		if svc.Client.LoggerZ != nil {
+			svc.Client.LoggerZ.Info().
 				Str("issueKey", issueKeyOrID).
 				Int("childrenCount", int(is.Len())).
 				Msg("processing label update children count")
 		}
-		c.Client.LogOrNotAny(
+		svc.Client.LogOrNotAny(
 			ctx,
 			slog.LevelInfo,
 			"processing label update children count",
@@ -181,7 +181,7 @@ func (c *IssueService) IssuePatchLabelRecursive(ctx context.Context, issueKeyOrI
 			}
 			// for _, cISS := range is.IssuesMap {
 			im := NewIssueMore(&cISS)
-			if countChildren, err := c.IssuePatchLabelRecursive(ctx, im.Key(), &cISS, label, removeLabel, processChildren, processChildrenTypes, skipUpdate); err != nil {
+			if countChildren, err := svc.IssuePatchLabelRecursive(ctx, im.Key(), &cISS, label, removeLabel, processChildren, processChildrenTypes, skipUpdate); err != nil {
 				return count, err
 			} else {
 				count += countChildren

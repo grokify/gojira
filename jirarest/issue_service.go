@@ -19,14 +19,14 @@ func NewIssueService(client *Client) *IssueService {
 	return &IssueService{Client: client}
 }
 
-func (c *IssueService) Issue(key string) (*jira.Issue, error) {
+func (svc *IssueService) Issue(key string) (*jira.Issue, error) {
 	key = strings.TrimSpace(key)
 	jqlInfo := gojira.JQL{IssuesIncl: [][]string{{key}}}
 	//jql := fmt.Sprintf("issue = %s", key)
 	jql := jqlInfo.String()
 	if key == "" {
 		return nil, errors.New("issue key is required")
-	} else if iss, err := c.SearchIssues(jql); err != nil {
+	} else if iss, err := svc.SearchIssues(jql); err != nil {
 		return nil, err
 	} else if len(iss) == 0 {
 		return nil, fmt.Errorf("key not found (%s)", key)
@@ -37,14 +37,14 @@ func (c *IssueService) Issue(key string) (*jira.Issue, error) {
 	}
 }
 
-func (c *IssueService) Issues(keys ...string) (Issues, error) {
+func (svc *IssueService) Issues(keys ...string) (Issues, error) {
 	keys = stringsutil.SliceCondenseSpace(keys, true, true)
 	iss := Issues{}
 	if len(keys) == 0 {
 		return iss, nil
 	}
 	for _, key := range keys {
-		if is, err := c.Issue(key); err != nil {
+		if is, err := svc.Issue(key); err != nil {
 			return iss, err
 		} else {
 			iss = append(iss, *is)
@@ -53,7 +53,7 @@ func (c *IssueService) Issues(keys ...string) (Issues, error) {
 	return iss, nil
 }
 
-func (c *IssueService) GetIssuesSetForKeys(keys []string) (*IssuesSet, error) {
+func (svc *IssueService) GetIssuesSetForKeys(keys []string) (*IssuesSet, error) {
 	is := NewIssuesSet(nil)
 
 	keysSlice := slicesutil.SplitMaxLength(stringsutil.SliceCondenseSpace(keys, true, true), gojira.JQLMaxResults)
@@ -67,7 +67,7 @@ func (c *IssueService) GetIssuesSetForKeys(keys []string) (*IssuesSet, error) {
 		// jql := KeysJQL(keys)
 		if jql := jqlInfo.String(); jql == "" {
 			return is, nil
-		} else if ii, err := c.SearchIssuesPages(jql, 0, 0, 0); err != nil {
+		} else if ii, err := svc.SearchIssuesPages(jql, 0, 0, 0); err != nil {
 			return nil, err
 		} else if err = is.Add(ii...); err != nil {
 			return nil, err
