@@ -1,7 +1,9 @@
 package jirarest
 
 import (
+	"context"
 	"errors"
+	"log/slog"
 	"net/http"
 
 	jira "github.com/andygrunwald/go-jira"
@@ -9,6 +11,7 @@ import (
 	"github.com/grokify/goauth/authutil"
 	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/errors/errorsutil"
+	"github.com/grokify/mogo/log/slogutil"
 	"github.com/grokify/mogo/net/http/httpsimple"
 	"github.com/rs/zerolog"
 )
@@ -17,6 +20,19 @@ var (
 	ErrClientCannotBeNil     = errors.New("client cannot be nil")
 	ErrJiraClientCannotBeNil = errors.New("jira client cannot be nil")
 )
+
+type Client struct {
+	Config         *gojira.Config
+	HTTPClient     *http.Client
+	JiraClient     *jira.Client
+	simpleClient   *httpsimple.Client
+	LoggerZ        *zerolog.Logger
+	Logger         *slog.Logger
+	BacklogAPI     *BacklogService
+	CustomFieldAPI *CustomFieldService
+	IssueAPI       *IssueService
+	CustomFieldSet *CustomFieldSet
+}
 
 func NewClientBasicAuth(serverURL, username, password string) (*Client, error) {
 	if hclient, err := authutil.NewClientBasicAuth(username, password, false); err != nil {
@@ -99,18 +115,6 @@ func JiraClientBasicAuthGoauth(creds *goauth.CredentialsBasicAuth) (*jira.Client
 	return JiraClientBasicAuth(creds.ServerURL, creds.Username, creds.Password)
 }
 
-type Client struct {
-	Config         *gojira.Config
-	HTTPClient     *http.Client
-	JiraClient     *jira.Client
-	simpleClient   *httpsimple.Client
-	Logger         *zerolog.Logger
-	BacklogAPI     *BacklogService
-	CustomFieldAPI *CustomFieldService
-	IssueAPI       *IssueService
-	CustomFieldSet *CustomFieldSet
-}
-
 func (c *Client) Inflate(addCustomFieldSet bool) error {
 	c.BacklogAPI = NewBacklogService(c)
 	c.CustomFieldAPI = NewCustomFieldService(c)
@@ -134,4 +138,10 @@ func (c *Client) LoadCustomFields() error {
 		c.CustomFieldSet.Add(fields...)
 	}
 	return nil
+}
+
+func (c *Client) LogOrNotAny(ctx context.Context, level slog.Level, msg string, attrs ...any) {
+	if c.Logger != nil {
+		slogutil.LogOrNotAny(ctx, c.Logger, level, msg, attrs...)
+	}
 }
