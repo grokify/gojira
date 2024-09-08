@@ -11,6 +11,9 @@ const (
 	MaxResults    = uint(1000)
 	MetaParamRank = "_rank"
 
+	OperationAdd    = "add"
+	OperationRemove = "remove"
+
 	TimeTimeSpent                     = "Time Spent"
 	TimeTimeEstimate                  = "Time Estimate"
 	TimeTimeOriginalEstimate          = "Time Original Estimate"
