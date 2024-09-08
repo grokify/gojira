@@ -1,13 +1,15 @@
 package cmd
 
 import (
+	"github.com/grokify/goauth"
 	"github.com/grokify/gojira/jirarest"
 	flags "github.com/jessevdk/go-flags"
 )
 
 type Options struct {
-	Authfile        string `short:"a" long:"Goauth authfile" description:"Goauth auth File"`
-	Authkey         string `short:"k" long:"Goauth key" description:"Goauth credentials Key"`
+	Options goauth.Options
+	// Authfile        string `short:"a" long:"Goauth authfile" description:"Goauth auth File"`
+	// Authkey         string `short:"k" long:"Goauth key" description:"Goauth credentials Key"`
 	BoardID         uint   `short:"b" long:"boardid" description:"Jira Board ID"`
 	IssueKey        string `short:"i" long:"key" description:"Jira Issue Key"`
 	JQL             string `short:"j" long:"jql" description:"Jira Query Language"`
@@ -16,7 +18,7 @@ type Options struct {
 }
 
 func (opts Options) Client() (*jirarest.Client, error) {
-	return jirarest.NewClientGoauthBasicAuthFile(opts.Authfile, opts.Authkey)
+	return jirarest.NewClientGoauthBasicAuthFile(opts.Options.CredsPath, opts.Options.Account)
 }
 
 func NewOptions() (Options, error) {
