@@ -1,4 +1,5 @@
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
+cloud.google.com/go v0.115.1 h1:Jo0SM9cQnSkYfp44+v+NQXHpcHqlnRJk2qxh6yvxxxQ=
 cloud.google.com/go/auth v0.9.3 h1:VOEUIAADkkLtyfr3BLa3R8Ed/j6w1jTBmARx+wb5w5U=
 cloud.google.com/go/auth v0.9.3/go.mod h1:7z6VY+7h3KUdRov5F1i8NDP5ZzWKYmEPO842BgCsmTk=
 cloud.google.com/go/auth/oauth2adapt v0.2.4 h1:0GWE/FUsXhf6C+jAkWgYm7X9tK8cuEIfy19DBn6B6bY=
@@ -76,8 +77,8 @@ github.com/grokify/goauth v0.22.0 h1:0BI3bCMMQT1qKQOvIDDal+19JqKEQIt6itthFsQsx6k
 github.com/grokify/goauth v0.22.0/go.mod h1:Dvp9HpXPtSpB1m0On6GU/Xo4O6BMSOtinOWZZV0+EV4=
 github.com/grokify/gocharts/v2 v2.20.0 h1:H+7AfoNJBWZTdQtDSOJmxMi7vSiHHQ51fZOvk3bA0uk=
 github.com/grokify/gocharts/v2 v2.20.0/go.mod h1:29218Yun0/uoYId4YB+3P1DVHpeX+uy1dWUwR6MzfQI=
-github.com/grokify/mogo v0.64.10 h1:zK8xzDFXmCwYyoTp72urPMv/X/DuBLtX51/oVJOO3IM=
-github.com/grokify/mogo v0.64.10/go.mod h1:zZsDlAknrt0pTHGeNpm3ZNaUTHSGQoIL6qtmjx0IB0I=
+github.com/grokify/mogo v0.64.11 h1:aFH060aO6yjDdLzCY7Y4bQcC1iyNFvd8rBR9zq9M0zA=
+github.com/grokify/mogo v0.64.11/go.mod h1:FrKyuDTl7uz0BrMCT40KGtsJQs2KGYjo3cib7toouEA=
 github.com/huandu/xstrings v1.5.0 h1:2ag3IFq9ZDANvthTwTiqSSZLjDc+BedvHPAp5tJy2TI=
 github.com/huandu/xstrings v1.5.0/go.mod h1:y5/lhBue+AyNmUVz9RLU9xbLR0o4KIIExikq4ovT0aE=
 github.com/jessevdk/go-flags v1.6.1 h1:Cvu5U8UGrLay1rZfv/zP7iLpSHGUZ/Ou68T0iX1bBK4=
