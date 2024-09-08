@@ -114,16 +114,16 @@ func NewBacklogService(client *Client) *BacklogService {
 			BaseURL:    client.Config.ServerURL}}
 }
 
-func (s *BacklogService) GetBacklogIssuesResponse(boardID uint, qry *BoardBacklogParams) (*IssuesResponse, []byte, error) {
-	if s.sclient.HTTPClient == nil {
+func (svc *BacklogService) GetBacklogIssuesResponse(boardID uint, qry *BoardBacklogParams) (*IssuesResponse, []byte, error) {
+	if svc.sclient.HTTPClient == nil {
 		return nil, []byte{}, errors.New("client not set")
 	}
 	sreq := httpsimple.Request{
 		Method: http.MethodGet,
-		URL:    BacklogAPIURL(s.Client.Config.ServerURL, boardID, nil),
+		URL:    BacklogAPIURL(svc.Client.Config.ServerURL, boardID, nil),
 		Query:  qry.URLValues(),
 	}
-	resp, err := s.sclient.Do(sreq)
+	resp, err := svc.sclient.Do(sreq)
 	if err != nil {
 		return nil, []byte{}, err
 	} else if resp.StatusCode >= 300 {
@@ -137,7 +137,7 @@ func (s *BacklogService) GetBacklogIssuesResponse(boardID uint, qry *BoardBacklo
 	return ir, b, err
 }
 
-func (s *BacklogService) GetBacklogIssuesAll(boardID uint, jql string) (*IssuesResponse, [][]byte, error) {
+func (svc *BacklogService) GetBacklogIssuesAll(boardID uint, jql string) (*IssuesResponse, [][]byte, error) {
 	iragg := &IssuesResponse{}
 	bb := [][]byte{}
 	issues := Issues{}
@@ -148,7 +148,7 @@ func (s *BacklogService) GetBacklogIssuesAll(boardID uint, jql string) (*IssuesR
 		JQL:        jql,
 	}
 	for {
-		ir, b, err := s.GetBacklogIssuesResponse(boardID, opts)
+		ir, b, err := svc.GetBacklogIssuesResponse(boardID, opts)
 		if err != nil {
 			return iragg, bb, err
 		} else {
@@ -171,12 +171,12 @@ func (s *BacklogService) GetBacklogIssuesAll(boardID uint, jql string) (*IssuesR
 	return iragg, bb, nil
 }
 
-func (s *BacklogService) GetBacklogIssuesSetAll(boardID uint, jql string) (*IssuesSet, [][]byte, error) {
-	iir, b, err := s.GetBacklogIssuesAll(boardID, jql)
+func (svc *BacklogService) GetBacklogIssuesSetAll(boardID uint, jql string) (*IssuesSet, [][]byte, error) {
+	iir, b, err := svc.GetBacklogIssuesAll(boardID, jql)
 	if err != nil {
 		return nil, b, err
 	}
-	is := NewIssuesSet(s.Client.Config)
+	is := NewIssuesSet(svc.Client.Config)
 	err = is.Add(iir.Issues...)
 	return is, b, err
 }
