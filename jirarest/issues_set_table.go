@@ -97,9 +97,9 @@ func DefaultIssuesSetTableColumns(inclInitiative, inclEpic bool) *table.ColumnDe
 }
 
 // TableSet is designed to return a `table.TableSet` where the tables include a list of issues and optionally, epics, and/or initiatives.
-func (is *IssuesSet) TableSet(customCols *CustomTableCols, inclEpic bool, initiativeType string) (*table.TableSet, error) {
+func (is *IssuesSet) TableSet(customCols *CustomTableCols, inclEpic bool, initiativeType string, customFieldLabels []string) (*table.TableSet, error) {
 	ts := table.NewTableSet("Jira Issues")
-	tbl1Issues, err := is.TableDefault(customCols, inclEpic, initiativeType)
+	tbl1Issues, err := is.TableDefault(customCols, inclEpic, initiativeType, customFieldLabels)
 	if err != nil {
 		return nil, err
 	}
@@ -111,7 +111,7 @@ func (is *IssuesSet) TableSet(customCols *CustomTableCols, inclEpic bool, initia
 		if err != nil {
 			return nil, errorsutil.Wrapf(err, "error on `is.IssuesSetHighestType(%s)`", gojira.TypeEpic)
 		}
-		tbl2Epics, err := isEpic.TableDefault(customCols, false, initiativeType)
+		tbl2Epics, err := isEpic.TableDefault(customCols, false, initiativeType, customFieldLabels)
 		if err != nil {
 			return nil, err
 		}
@@ -125,7 +125,7 @@ func (is *IssuesSet) TableSet(customCols *CustomTableCols, inclEpic bool, initia
 		if err != nil {
 			return nil, err
 		}
-		tbl3Initiatives, err := isInit.TableDefault(customCols, false, "")
+		tbl3Initiatives, err := isInit.TableDefault(customCols, false, "", customFieldLabels)
 		if err != nil {
 			return nil, err
 		}
@@ -137,7 +137,7 @@ func (is *IssuesSet) TableSet(customCols *CustomTableCols, inclEpic bool, initia
 }
 
 // TableDefault returns a `table.Table` where each record is a Jira issue starting with a linked issue key.
-func (is *IssuesSet) TableDefault(customCols *CustomTableCols, inclEpic bool, initiativeType string) (*table.Table, error) {
+func (is *IssuesSet) TableDefault(customCols *CustomTableCols, inclEpic bool, initiativeType string, customFieldLabels []string) (*table.Table, error) {
 	if is.Config == nil {
 		is.Config = gojira.NewConfigDefault()
 	}
@@ -173,9 +173,9 @@ func (is *IssuesSet) TableDefault(customCols *CustomTableCols, inclEpic bool, in
 
 	for key, iss := range is.IssuesMap {
 		issMore := NewIssueMore(pointer.Pointer(iss))
-		issMeta := issMore.Meta(baseURL)
+		issMeta := issMore.Meta(baseURL, customFieldLabels)
 
-		lineage, err := is.Lineage(key)
+		lineage, err := is.Lineage(key, customFieldLabels)
 		if err != nil {
 			return nil, errorsutil.Wrapf(err, "is.Lineage(key) key=\"%s\"", key)
 		}

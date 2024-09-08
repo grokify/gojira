@@ -26,8 +26,8 @@ func main() {
 
 	im := jirarest.NewIssueMore(iss)
 
-	fmtutil.MustPrintJSON(im.Meta(""))
-	fmtutil.MustPrintJSON(im.Meta(jrClient.Config.ServerURL))
+	fmtutil.MustPrintJSON(im.Meta("", []string{}))
+	fmtutil.MustPrintJSON(im.Meta(jrClient.Config.ServerURL, []string{}))
 
 	fmt.Println("DONE")
 }

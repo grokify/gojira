@@ -284,12 +284,12 @@ func (is *IssuesSet) Issues() Issues {
 	return ii
 }
 
-func (is *IssuesSet) IssueMetas() IssueMetas {
+func (is *IssuesSet) IssueMetas(customFieldLabels []string) IssueMetas {
 	var imetas IssueMetas
 	for _, iss := range is.IssuesMap {
 		iss := iss
 		issMore := NewIssueMore(&iss)
-		issMeta := issMore.Meta(is.Config.ServerURL)
+		issMeta := issMore.Meta(is.Config.ServerURL, customFieldLabels)
 		imetas = append(imetas, issMeta)
 	}
 	return imetas
@@ -305,10 +305,10 @@ func (is *IssuesSet) IssuesSetHighestType(issueType string) (*IssuesSet, error) 
 	for _, iss := range is.IssuesMap {
 		iss := iss
 		issMore := NewIssueMore(&iss)
-		issMeta := issMore.Meta(is.Config.ServerURL)
+		issMeta := issMore.Meta(is.Config.ServerURL, []string{})
 		issKey := strings.TrimSpace(issMeta.Key)
 		if issKey != "" {
-			lineage, err := is.Lineage(issKey)
+			lineage, err := is.Lineage(issKey, []string{})
 			if err != nil {
 				return nil, errorsutil.Wrapf(err, "error on `is.Lineage(%s)`", issKey)
 			}

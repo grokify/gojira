@@ -68,12 +68,12 @@ func (ii Issues) Keys() []string {
 	return stringsutil.SliceCondenseSpace(keys, true, true)
 }
 
-func (ii Issues) Metas(baseURL string) IssueMetas {
+func (ii Issues) Metas(baseURL string, customFieldLabels []string) IssueMetas {
 	metas := IssueMetas{}
 	for _, iss := range ii {
 		iss := iss
 		im := NewIssueMore(&iss)
-		metas = append(metas, im.Meta(baseURL))
+		metas = append(metas, im.Meta(baseURL, customFieldLabels))
 	}
 	return metas
 }

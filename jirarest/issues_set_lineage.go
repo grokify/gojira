@@ -13,7 +13,7 @@ var ErrLineageNotFound = errors.New("lineage not found")
 
 // Lineage returns a slice of `IssueMeta` where the supplied key is in index 0 and the most senior
 // parent is the last element of the slice. If a parent is not found in the set, an error is returned.
-func (is *IssuesSet) Lineage(key string) (IssueMetas, error) {
+func (is *IssuesSet) Lineage(key string, customFieldLabels []string) (IssueMetas, error) {
 	if key == "Epic" {
 		panic("Lineage Epic")
 	}
@@ -23,7 +23,7 @@ func (is *IssuesSet) Lineage(key string) (IssueMetas, error) {
 		return ims, errorsutil.Wrapf(err, "key not found (%s)", key)
 	}
 	im := NewIssueMore(&iss)
-	imeta := im.Meta(is.Config.ServerURL)
+	imeta := im.Meta(is.Config.ServerURL, customFieldLabels)
 	ims = append(ims, imeta)
 	parKey := im.ParentKey()
 
@@ -37,7 +37,7 @@ func (is *IssuesSet) Lineage(key string) (IssueMetas, error) {
 			return ims, errorsutil.Wrap(err, "parent not found")
 		}
 		parIM := NewIssueMore(&parIss)
-		parM := parIM.Meta(is.Config.ServerURL)
+		parM := parIM.Meta(is.Config.ServerURL, customFieldLabels)
 		ims = append(ims, parM)
 		parKey = parIM.ParentKey()
 	}

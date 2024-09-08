@@ -190,7 +190,7 @@ func (is *IssuesSet) HistogramMap(stdKeys []string, calcFields []IssueCalcField)
 	return h, nil
 }
 
-func (is *IssuesSet) ExportWorkstremaFilter(wsFuncMake WorkstreamFuncMake, wsFuncIncl WorkstreamFuncIncl) (*IssuesSet, error) {
+func (is *IssuesSet) ExportWorkstremaFilter(wsFuncMake WorkstreamFuncMake, wsFuncIncl WorkstreamFuncIncl, customFieldLabels []string) (*IssuesSet, error) {
 	out := NewIssuesSet(is.Config)
 	for _, iss := range is.IssuesMap {
 		iss := iss
@@ -204,7 +204,7 @@ func (is *IssuesSet) ExportWorkstremaFilter(wsFuncMake WorkstreamFuncMake, wsFun
 			continue
 		} else if err = out.Add(iss); err != nil {
 			return nil, err
-		} else if lineages, err := is.Lineage(key); err != nil {
+		} else if lineages, err := is.Lineage(key, customFieldLabels); err != nil {
 			return nil, err
 		} else {
 			for _, im := range lineages {

@@ -50,21 +50,22 @@ func (ims IssueMetas) HighestAboveEpic() *IssueMeta {
 }
 
 type IssueMeta struct {
-	AssigneeName string
-	CreateTime   *time.Time
-	CreatorName  string
-	EpicName     string
-	Key          string
-	KeyURL       string
-	Labels       []string
-	ParentKey    string
-	Project      string
-	ProjectKey   string
-	Resolution   string
-	Status       string
-	Summary      string
-	Type         string
-	UpdateTime   *time.Time
+	AdditionalFields map[string]*string
+	AssigneeName     string
+	CreateTime       *time.Time
+	CreatorName      string
+	EpicName         string
+	Key              string
+	KeyURL           string
+	Labels           []string
+	ParentKey        string
+	Project          string
+	ProjectKey       string
+	Resolution       string
+	Status           string
+	Summary          string
+	Type             string
+	UpdateTime       *time.Time
 }
 
 func (im *IssueMeta) String() string {

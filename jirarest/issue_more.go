@@ -2,6 +2,7 @@ package jirarest
 
 import (
 	"errors"
+	"os"
 	"sort"
 	"strconv"
 	"strings"
@@ -9,6 +10,8 @@ import (
 
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/gojira"
+	"github.com/grokify/mogo/encoding/jsonutil"
+	"github.com/grokify/mogo/pointer"
 	"github.com/grokify/mogo/time/timeutil"
 	"golang.org/x/exp/slices"
 )
@@ -19,6 +22,19 @@ type IssueMore struct {
 
 func NewIssueMore(iss *jira.Issue) IssueMore {
 	return IssueMore{issue: iss}
+}
+
+func (im *IssueMore) AdditionalFields(additionalFieldNames []string) map[string]*string {
+	out := map[string]*string{}
+	for _, name := range additionalFieldNames {
+		cfStr, err := im.CustomFieldString(name)
+		if err != nil {
+			out[name] = nil
+		} else {
+			out[name] = pointer.Pointer(cfStr)
+		}
+	}
+	return out
 }
 
 func (im *IssueMore) AssigneeName() string {
@@ -228,7 +244,7 @@ func (im *IssueMore) Value(fieldSlug string) (string, bool) {
 	return "", false
 }
 
-func (im *IssueMore) Meta(serverURL string) IssueMeta {
+func (im *IssueMore) Meta(serverURL string, additionalFieldNames []string) IssueMeta {
 	created := im.CreateTime().UTC()
 	var createdPtr *time.Time
 	if !created.IsZero() {
@@ -241,20 +257,25 @@ func (im *IssueMore) Meta(serverURL string) IssueMeta {
 	}
 
 	return IssueMeta{
-		AssigneeName: im.AssigneeName(),
-		CreateTime:   createdPtr,
-		CreatorName:  im.CreatorName(),
-		EpicName:     im.EpicName(),
-		Key:          im.Key(),
-		KeyURL:       im.KeyURL(serverURL),
-		Labels:       im.Labels(true),
-		ParentKey:    im.ParentKey(),
-		Project:      im.Project(),
-		ProjectKey:   im.ProjectKey(),
-		Resolution:   im.Resolution(),
-		Status:       im.Status(),
-		Summary:      im.Summary(),
-		Type:         im.Type(),
-		UpdateTime:   updatedPtr,
+		AdditionalFields: im.AdditionalFields(additionalFieldNames),
+		AssigneeName:     im.AssigneeName(),
+		CreateTime:       createdPtr,
+		CreatorName:      im.CreatorName(),
+		EpicName:         im.EpicName(),
+		Key:              im.Key(),
+		KeyURL:           im.KeyURL(serverURL),
+		Labels:           im.Labels(true),
+		ParentKey:        im.ParentKey(),
+		Project:          im.Project(),
+		ProjectKey:       im.ProjectKey(),
+		Resolution:       im.Resolution(),
+		Status:           im.Status(),
+		Summary:          im.Summary(),
+		Type:             im.Type(),
+		UpdateTime:       updatedPtr,
 	}
+}
+
+func (im *IssueMore) WriteFileJSON(filename string, perm os.FileMode, prefix, indent string) error {
+	return jsonutil.WriteFile(filename, im.issue, prefix, indent, perm)
 }
