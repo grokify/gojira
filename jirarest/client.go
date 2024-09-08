@@ -34,7 +34,7 @@ func NewClientBasicAuth(serverURL, username, password string) (*Client, error) {
 	}
 }
 
-func NewClientGoauthBasicAuthFile(filename, credsKey string) (*Client, error) {
+func NewClientGoauthBasicAuthFile(filename, credsKey string, addCustomFieldSet bool) (*Client, error) {
 	if hclient, serverURL, err := NewClientHTTPBasicAuthFile(filename, credsKey); err != nil {
 		return nil, errorsutil.Wrapf(err, `jirarest.ClientsBasicAuthFile() (%s)`, filename)
 	} else if jclient, err := NewClientJiraBasicAuthFile(filename, credsKey); err != nil {
@@ -48,7 +48,9 @@ func NewClientGoauthBasicAuthFile(filename, credsKey string) (*Client, error) {
 		sc := httpsimple.NewClient(hclient, serverURL)
 		c.simpleClient = &sc
 		c.Config = cfg
-		c.Inflate()
+		if err := c.Inflate(addCustomFieldSet); err != nil {
+			return nil, err
+		}
 		return c, nil
 	}
 }
@@ -98,14 +100,36 @@ func JiraClientBasicAuthGoauth(creds *goauth.CredentialsBasicAuth) (*jira.Client
 }
 
 type Client struct {
-	Config       *gojira.Config
-	HTTPClient   *http.Client
-	JiraClient   *jira.Client
-	simpleClient *httpsimple.Client
-	Logger       *zerolog.Logger
-	IssueAPI     *IssueAPI
+	Config          *gojira.Config
+	HTTPClient      *http.Client
+	JiraClient      *jira.Client
+	simpleClient    *httpsimple.Client
+	Logger          *zerolog.Logger
+	CustomFieldsAPI *CustomFieldsService
+	IssueAPI        *IssueAPI
+	CustomFieldSet  *CustomFieldSet
 }
 
-func (c *Client) Inflate() {
+func (c *Client) Inflate(addCustomFieldSet bool) error {
+	c.CustomFieldsAPI = NewCustomFieldsService(c)
 	c.IssueAPI = &IssueAPI{Client: c}
+	if addCustomFieldSet {
+		if err := c.LoadCustomFields(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (c *Client) LoadCustomFields() error {
+	if c.CustomFieldsAPI == nil {
+		c.CustomFieldsAPI = NewCustomFieldsService(c)
+	}
+	if fields, err := c.CustomFieldsAPI.GetCustomFields(); err != nil {
+		return err
+	} else if len(fields) > 0 {
+		c.CustomFieldSet = NewCustomFieldSet()
+		c.CustomFieldSet.Add(fields...)
+	}
+	return nil
 }
