@@ -58,7 +58,7 @@ func (svc *CustomFieldsService) GetCustomFields() (CustomFields, error) {
 	if svc.JRClient == nil {
 		return cfs, ErrJiraRESTClientCannotBeNil
 	}
-	apiURL := urlutil.JoinAbsolute(svc.JRClient.Config.ServerURL, APIURL2ListCustomFields)
+	apiURL := urlutil.JoinAbsolute(svc.JRClient.Config.ServerURL, APIV2URLListCustomFields)
 	hclient := svc.JRClient.HTTPClient
 	if hclient == nil {
 		hclient = &http.Client{}
@@ -148,10 +148,10 @@ func (cfs CustomFields) Table(name string) table.Table {
 		name = "Custom Fields"
 	}
 	tbl := table.NewTable(name)
-	tbl.Columns = []string{"ID", "Name", "Clause Names"}
+	tbl.Columns = []string{"Name", "ID", "Clause Names"}
 	for _, cf := range cfs {
 		row := []string{
-			cf.ID, cf.Name, stringsutil.JoinLiteraryQuote(cf.ClauseNames, `"`, `"`, `, `, ""),
+			cf.Name, cf.ID, stringsutil.JoinLiteraryQuote(cf.ClauseNames, `"`, `"`, `, `, ""),
 		}
 		tbl.Rows = append(tbl.Rows, row)
 	}
@@ -162,6 +162,8 @@ func (cfs CustomFields) WriteTable(w io.Writer) {
 	cfs.SortByName(true)
 	tbl := cfs.Table("")
 	tw := tablewriter.NewWriter(w)
+	tw.SetRowLine(true)
+	tw.SetRowSeparator("-")
 	tw.SetHeader(tbl.Columns)
 	tw.AppendBulk(tbl.Rows)
 	tw.Render()

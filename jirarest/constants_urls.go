@@ -1,7 +1,8 @@
 package jirarest
 
 const (
-	APIURL2ListCustomFields = `/rest/api/2/field`
+	APIV2URLListCustomFields = `/rest/api/2/field`
+	APIV3URLIssue            = `/rest/api/3/issue` // /rest/api/3/issue/{issueIdOrKey}
 
 	StatusDone         = "Done"
 	StatusOpen         = "Open"
