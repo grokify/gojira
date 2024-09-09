@@ -248,6 +248,14 @@ func (im *IssueMore) Value(fieldSlug string) (string, bool) {
 	return "", false
 }
 
+func (im *IssueMore) ValueOrDefault(fieldSlug, def string) string {
+	if v, ok := im.Value(fieldSlug); ok {
+		return v
+	} else {
+		return def
+	}
+}
+
 func (im *IssueMore) Meta(serverURL string, additionalFieldNames []string) IssueMeta {
 	created := im.CreateTime().UTC()
 	var createdPtr *time.Time
