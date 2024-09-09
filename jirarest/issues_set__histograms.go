@@ -158,7 +158,23 @@ func DefaultHistogramMapTableConfig(projectKeys []string) *histogram.HistogramMa
 	}
 }
 
-func HistogramSetFuncProjectType(iss *jira.Issue) (string, string) {
+// HistogramMapFunc provides a `*histogram.Histogram` given a provided function.
+func (set *IssuesSet) HistogramMapFunc(fn func(iss *jira.Issue) (map[string]string, error)) (*histogram.Histogram, error) {
+	if fn == nil {
+		return nil, ErrFunctionCannotBeNil
+	}
+	hist := histogram.NewHistogram(gojira.FieldIssuePlural)
+	for _, iss := range set.IssuesMap {
+		if m, err := fn(&iss); err != nil {
+			return nil, err
+		} else {
+			hist.AddMap(m, 1)
+		}
+	}
+	return hist, nil
+}
+
+func HistogramSetFuncProjectkeyType(iss *jira.Issue) (string, string) {
 	if iss == nil {
 		return "", ""
 	}
@@ -177,7 +193,7 @@ func HistogramSetsProjectkeyTypeStatus(iss *jira.Issue) (string, string, string)
 // HistogramSetFunc provides a `*histogram.HistogramSet` given a provided function.
 func (set *IssuesSet) HistogramSetFunc(fn func(iss *jira.Issue) (cat1 string, cat2 string)) *histogram.HistogramSet {
 	if fn == nil {
-		fn = HistogramSetFuncProjectType
+		fn = HistogramSetFuncProjectkeyType
 	}
 	hset := histogram.NewHistogramSet(gojira.FieldIssuePlural)
 	for _, iss := range set.IssuesMap {
@@ -189,7 +205,7 @@ func (set *IssuesSet) HistogramSetFunc(fn func(iss *jira.Issue) (cat1 string, ca
 
 // HistogramSetProjectType returns a list of histograms by Project and Type.
 func (set *IssuesSet) HistogramSetProjectType() *histogram.HistogramSet {
-	return set.HistogramSetFunc(HistogramSetFuncProjectType)
+	return set.HistogramSetFunc(HistogramSetFuncProjectkeyType)
 	/*
 		hset := histogram.NewHistogramSet(gojira.FieldIssuePlural)
 		for _, iss := range set.IssuesMap {
