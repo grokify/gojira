@@ -210,6 +210,7 @@ func (set *IssuesSet) InflateEpics(jclient *jira.Client, customFieldIDEpicLink s
 	return nil
 }
 
+// Issues returns the issues in the set as an `Issues{}` slice.
 func (set *IssuesSet) Issues() Issues {
 	ii := Issues{}
 	for _, iss := range set.IssuesMap {
