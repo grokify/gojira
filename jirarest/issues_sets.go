@@ -25,8 +25,24 @@ func (sets *IssuesSets) OrderOrDefault() []string {
 	}
 }
 
-func (sets *IssuesSets) Upsert(key string, set *IssuesSet) {
-	sets.Data[key] = *set
+func (sets *IssuesSets) Upsert(setName string, set *IssuesSet) {
+	sets.Data[setName] = *set
+}
+
+func (sets *IssuesSets) UpsertIssueKeys(jrClient *Client, setName string, issueKeys []string) error {
+	if jrClient == nil {
+		return ErrClientCannotBeNil
+	}
+	ii, err := jrClient.IssueAPI.Issues(issueKeys...)
+	if err != nil {
+		return err
+	}
+	is, err := ii.IssuesSet(nil)
+	if err != nil {
+		return err
+	}
+	sets.Upsert(setName, is)
+	return nil
 }
 
 func (sets *IssuesSets) TableSet(
