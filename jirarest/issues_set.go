@@ -11,7 +11,6 @@ import (
 	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/encoding/jsonutil"
 	"github.com/grokify/mogo/errors/errorsutil"
-	"github.com/grokify/mogo/net/urlutil"
 	"github.com/grokify/mogo/pointer"
 	"github.com/grokify/mogo/type/maputil"
 	"github.com/grokify/mogo/type/slicesutil"
@@ -293,11 +292,6 @@ func (is *IssuesSet) IssueMetas(customFieldLabels []string) IssueMetas {
 		imetas = append(imetas, issMeta)
 	}
 	return imetas
-}
-
-func BuildJiraIssueURL(baseURL, issueKey string) string {
-	issueKey = strings.TrimSpace(issueKey)
-	return urlutil.JoinAbsolute(baseURL, "/browse/", issueKey)
 }
 
 func (is *IssuesSet) IssuesSetHighestType(issueType string) (*IssuesSet, error) {

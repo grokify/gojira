@@ -10,6 +10,7 @@ import (
 
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/gojira"
+	"github.com/grokify/gojira/jiraweb"
 	"github.com/grokify/mogo/encoding/jsonutil"
 	"github.com/grokify/mogo/pointer"
 	"github.com/grokify/mogo/time/timeutil"
@@ -120,15 +121,19 @@ func (im *IssueMore) Key() string {
 	return strings.TrimSpace(im.issue.Key)
 }
 
-func (im *IssueMore) KeyURL(baseURL string) string {
+func (im *IssueMore) KeyLinkWebMarkdown(baseURL string) string {
+	return jiraweb.IssueURLWebOrEmptyFromIssueKey(
+		baseURL, im.Key())
+
+}
+
+func (im *IssueMore) KeyURLWeb(baseURL string) string {
 	key := im.Key()
-	if key == "" {
+	baseURL = strings.TrimSpace(baseURL)
+	if key == "" || baseURL == "" {
 		return ""
 	}
-	if strings.TrimSpace(baseURL) == "" {
-		return ""
-	}
-	return BuildJiraIssueURL(baseURL, key)
+	return jiraweb.IssueURLWebOrEmptyFromIssueKey(baseURL, key)
 }
 
 func (im *IssueMore) Labels(sortAsc bool) []string {
@@ -263,7 +268,7 @@ func (im *IssueMore) Meta(serverURL string, additionalFieldNames []string) Issue
 		CreatorName:      im.CreatorName(),
 		EpicName:         im.EpicName(),
 		Key:              im.Key(),
-		KeyURL:           im.KeyURL(serverURL),
+		KeyURL:           im.KeyURLWeb(serverURL),
 		Labels:           im.Labels(true),
 		ParentKey:        im.ParentKey(),
 		Project:          im.Project(),

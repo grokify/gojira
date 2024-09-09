@@ -1,12 +1,8 @@
 package gojira
 
 import (
-	"fmt"
 	"regexp"
-	"strings"
 
-	"github.com/grokify/mogo/net/urlutil"
-	"github.com/grokify/mogo/text/markdown"
 	"github.com/grokify/mogo/type/stringsutil"
 )
 
@@ -27,6 +23,7 @@ func ParseKeys(s string, unique, asc bool) []string {
 	return stringsutil.SliceCondenseSpace(keys, unique, asc)
 }
 
+/*
 func BuildIssueKeyURL(baseURL, key string) string {
 	key = strings.TrimSpace(key)
 	if urlutil.IsHTTP(key, true, true) {
@@ -39,3 +36,4 @@ func BuildIssueKeyURLMarkdown(baseURL, key string) string {
 	keyURL := BuildIssueKeyURL(baseURL, key)
 	return markdown.Linkify(keyURL, key)
 }
+*/

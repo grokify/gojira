@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/grokify/gojira"
+	"github.com/grokify/gojira/jiraweb"
 	"github.com/grokify/mogo/text/markdown"
 )
 
@@ -86,7 +87,9 @@ func (im *IssueMeta) String() string {
 
 func (im *IssueMeta) BuildKeyURL(baseURL string) {
 	if strings.TrimSpace(baseURL) != "" && strings.TrimSpace(im.Key) != "" {
-		im.KeyURL = BuildJiraIssueURL(baseURL, im.Key)
+		im.KeyURL = jiraweb.IssueLinkWebMarkdownOrEmptyFromIssueKey(
+			strings.TrimSpace(baseURL),
+			strings.TrimSpace(im.Key))
 	}
 }
 
