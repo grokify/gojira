@@ -35,15 +35,16 @@ func NewIssuesSet(cfg *gojira.Config) *IssuesSet {
 	}
 }
 
+// StatusesOrder returns the status order from `StageConfig{}`.
 func (set *IssuesSet) StatusesOrder() []string {
 	if set.Config != nil && set.Config.StatusConfig != nil {
-		// is.Config.StatusesSet.DedupeMetaStageOrder()
 		return set.Config.StatusConfig.StageConfig.Order()
 	} else {
 		return []string{}
 	}
 }
 
+// AddIssuesFile reads a `Issues{}` JSON file and adds it to the `IssuesSet{}`.
 func (set *IssuesSet) AddIssuesFile(filename string) error {
 	if ii, err := IssuesReadFileJSON(filename); err != nil {
 		return err
@@ -66,6 +67,8 @@ func (set *IssuesSet) Add(issues ...jira.Issue) error {
 	return nil
 }
 
+// IssueFirst returns the first issue by alphabetical sorting of keys.
+// It is primarily used for testing purposes to get an issue.
 func (set *IssuesSet) IssueFirst() (jira.Issue, error) {
 	keys := set.Keys()
 	if len(keys) == 0 {
@@ -259,6 +262,7 @@ func (set *IssuesSet) IssuesSetHighestType(issueType string) (*IssuesSet, error)
 	return new, nil
 }
 
+// WriteFileJSON writes the `IssuesSet{}` as a JSON file.
 func (set *IssuesSet) WriteFileJSON(name, prefix, indent string) error {
 	j, err := jsonutil.MarshalSimple(set, prefix, indent)
 	if err != nil {
