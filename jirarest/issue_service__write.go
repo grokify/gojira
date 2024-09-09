@@ -98,6 +98,8 @@ func (svc *IssueService) IssuePatch(issueKeyOrID string, issueUpdateRequestBody 
 	}
 }
 
+// IssuePatchCustomFieldRecursive updates an issue, and optionally child issues, with a
+// custom field value.
 func (svc *IssueService) IssuePatchCustomFieldRecursive(ctx context.Context, issueKeyOrID string, iss *jira.Issue, customFieldLabel, customFieldValue string, processChildren bool, processChildrenTypes []string, skipUpdate bool) (int, error) {
 	count := 0
 	customFieldLabel = strings.TrimSpace(customFieldLabel)
