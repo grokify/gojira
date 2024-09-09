@@ -37,42 +37,42 @@ func NewIssuesSet(cfg *gojira.Config) *IssuesSet {
 	}
 }
 
-func (is *IssuesSet) StatusesOrder() []string {
-	if is.Config != nil && is.Config.StatusConfig != nil {
+func (set *IssuesSet) StatusesOrder() []string {
+	if set.Config != nil && set.Config.StatusConfig != nil {
 		// is.Config.StatusesSet.DedupeMetaStageOrder()
-		return is.Config.StatusConfig.StageConfig.Order()
+		return set.Config.StatusConfig.StageConfig.Order()
 	} else {
 		return []string{}
 	}
 }
 
-func (is *IssuesSet) AddIssuesFile(filename string) error {
+func (set *IssuesSet) AddIssuesFile(filename string) error {
 	if ii, err := IssuesReadFileJSON(filename); err != nil {
 		return err
 	} else {
-		return is.Add(ii...)
+		return set.Add(ii...)
 	}
 }
 
-func (is *IssuesSet) Add(issues ...jira.Issue) error {
-	if is.IssuesMap == nil {
-		is.IssuesMap = map[string]jira.Issue{}
+func (set *IssuesSet) Add(issues ...jira.Issue) error {
+	if set.IssuesMap == nil {
+		set.IssuesMap = map[string]jira.Issue{}
 	}
 	for _, iss := range issues {
 		if key := strings.TrimSpace(iss.Key); key == "" {
 			return errors.New("no key")
 		} else {
-			is.IssuesMap[key] = iss
+			set.IssuesMap[key] = iss
 		}
 	}
 	return nil
 }
 
-func (is *IssuesSet) IssueFirst() (jira.Issue, error) {
-	keys := is.Keys()
+func (set *IssuesSet) IssueFirst() (jira.Issue, error) {
+	keys := set.Keys()
 	if len(keys) == 0 {
 		return jira.Issue{}, errors.New("no issues present")
-	} else if iss, ok := is.IssuesMap[keys[0]]; ok {
+	} else if iss, ok := set.IssuesMap[keys[0]]; ok {
 		return iss, nil
 	} else {
 		panic(fmt.Sprintf("issue key from map not found (%s)", keys[0]))
@@ -80,32 +80,32 @@ func (is *IssuesSet) IssueFirst() (jira.Issue, error) {
 }
 
 // KeyExists returns a boolean representing the existence of an issue key.
-func (is *IssuesSet) KeyExists(key string, inclParents bool) bool {
-	if _, ok := is.IssuesMap[key]; ok {
+func (set *IssuesSet) KeyExists(key string, inclParents bool) bool {
+	if _, ok := set.IssuesMap[key]; ok {
 		return true
-	} else if !inclParents || is.Parents == nil {
+	} else if !inclParents || set.Parents == nil {
 		return false
 	} else {
-		return is.Parents.KeyExists(key, inclParents)
+		return set.Parents.KeyExists(key, inclParents)
 	}
 }
 
-func (is *IssuesSet) Keys() []string              { return maputil.Keys(is.IssuesMap) }
-func (is *IssuesSet) Len() uint                   { return uint(len(is.IssuesMap)) }
-func (is *IssuesSet) LenParents() uint            { return uint(len(is.KeysParents())) }
-func (is *IssuesSet) LenParentsPopulated() uint   { return uint(len(is.KeysParentsPopulated())) }
-func (is *IssuesSet) LenParentsUnpopulated() uint { return uint(len(is.KeysParentsUnpopulated())) }
+func (set *IssuesSet) Keys() []string              { return maputil.Keys(set.IssuesMap) }
+func (set *IssuesSet) Len() uint                   { return uint(len(set.IssuesMap)) }
+func (set *IssuesSet) LenParents() uint            { return uint(len(set.KeysParents())) }
+func (set *IssuesSet) LenParentsPopulated() uint   { return uint(len(set.KeysParentsPopulated())) }
+func (set *IssuesSet) LenParentsUnpopulated() uint { return uint(len(set.KeysParentsUnpopulated())) }
 
-func (is *IssuesSet) LenLineageTopKeysPopulated() uint {
-	if linPopIDs, err := is.LineageTopKeysPopulated(); err != nil {
+func (set *IssuesSet) LenLineageTopKeysPopulated() uint {
+	if linPopIDs, err := set.LineageTopKeysPopulated(); err != nil {
 		panic(err)
 	} else {
 		return uint(len(linPopIDs))
 	}
 }
 
-func (is *IssuesSet) LenLineageTopKeysUnpopulated() uint {
-	if linUnpopIDs, err := is.LineageTopKeysUnpopulated(); err != nil {
+func (set *IssuesSet) LenLineageTopKeysUnpopulated() uint {
+	if linUnpopIDs, err := set.LineageTopKeysUnpopulated(); err != nil {
 		panic(err)
 	} else {
 		return uint(len(linUnpopIDs))
@@ -113,24 +113,24 @@ func (is *IssuesSet) LenLineageTopKeysUnpopulated() uint {
 }
 
 // LenMap provides various metrics. It is useful for determining if all parents and lineages have been loaded.
-func (is *IssuesSet) LenMap() map[string]uint {
+func (set *IssuesSet) LenMap() map[string]uint {
 	lenParentsSet := 0
-	if is.Parents != nil {
-		lenParentsSet = len(is.Parents.IssuesMap)
+	if set.Parents != nil {
+		lenParentsSet = len(set.Parents.IssuesMap)
 	}
 	return map[string]uint{
-		"len":                       is.Len(),
-		"lineageTopKeysPopulated":   is.LenLineageTopKeysPopulated(),
-		"lineageTopKeysUnpopulated": is.LenLineageTopKeysUnpopulated(),
-		"parents":                   is.LenParents(),
-		"parentsPopulated":          is.LenParentsPopulated(),
-		"parentsUnpopulated":        is.LenParentsUnpopulated(),
+		"len":                       set.Len(),
+		"lineageTopKeysPopulated":   set.LenLineageTopKeysPopulated(),
+		"lineageTopKeysUnpopulated": set.LenLineageTopKeysUnpopulated(),
+		"parents":                   set.LenParents(),
+		"parentsPopulated":          set.LenParentsPopulated(),
+		"parentsUnpopulated":        set.LenParentsUnpopulated(),
 		"parentsSetAll":             uint(lenParentsSet),
 	}
 }
 
-func (is *IssuesSet) FilterByStatus(inclStatuses, exclStatuses []string) (*IssuesSet, error) {
-	filteredIssuesSet := NewIssuesSet(is.Config)
+func (set *IssuesSet) FilterByStatus(inclStatuses, exclStatuses []string) (*IssuesSet, error) {
+	filteredIssuesSet := NewIssuesSet(set.Config)
 	inclStatusesMap := map[string]int{}
 	for _, s := range inclStatuses {
 		inclStatusesMap[s]++
@@ -139,7 +139,7 @@ func (is *IssuesSet) FilterByStatus(inclStatuses, exclStatuses []string) (*Issue
 	for _, s := range exclStatuses {
 		exclStatusesMap[s]++
 	}
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		im := NewIssueMore(pointer.Pointer(iss))
 		// ifs := IssueFieldsSimple{Fields: iss.Fields}
 		statusName := im.Status()
@@ -158,9 +158,9 @@ func (is *IssuesSet) FilterByStatus(inclStatuses, exclStatuses []string) (*Issue
 	return filteredIssuesSet, nil
 }
 
-func (is *IssuesSet) EpicKeys(customFieldID string) []string {
+func (set *IssuesSet) EpicKeys(customFieldID string) []string {
 	keys := []string{}
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		if iss.Fields == nil {
 			continue
 		}
@@ -177,23 +177,23 @@ func (is *IssuesSet) EpicKeys(customFieldID string) []string {
 	return keys
 }
 
-func (is *IssuesSet) Get(key string) (jira.Issue, error) {
+func (set *IssuesSet) Get(key string) (jira.Issue, error) {
 	key = strings.TrimSpace(key)
 	if key == "" {
 		return jira.Issue{}, errors.New("key not provided")
 	}
-	if iss, ok := is.IssuesMap[key]; ok {
+	if iss, ok := set.IssuesMap[key]; ok {
 		return iss, nil
-	} else if is.Parents != nil {
-		if iss, ok := is.Parents.IssuesMap[key]; ok {
+	} else if set.Parents != nil {
+		if iss, ok := set.Parents.IssuesMap[key]; ok {
 			return iss, nil
 		}
 	}
 	return jira.Issue{}, errors.New("key not found")
 }
 
-func (is *IssuesSet) InflateEpicKeys(customFieldEpicLinkID string) {
-	for k, iss := range is.IssuesMap {
+func (set *IssuesSet) InflateEpicKeys(customFieldEpicLinkID string) {
+	for k, iss := range set.IssuesMap {
 		if iss.Fields == nil {
 			continue
 		}
@@ -207,16 +207,16 @@ func (is *IssuesSet) InflateEpicKeys(customFieldEpicLinkID string) {
 			}
 			iss.Fields.Epic.Key = epicKey
 		}
-		is.IssuesMap[k] = iss
+		set.IssuesMap[k] = iss
 	}
 }
 
 // InflateEpics uses the Jira REST API to inflate the Issue struct with an Epic struct.
-func (is *IssuesSet) InflateEpics(jclient *jira.Client, customFieldIDEpicLink string) error {
-	epicKeys := is.EpicKeys(customFieldIDEpicLink)
+func (set *IssuesSet) InflateEpics(jclient *jira.Client, customFieldIDEpicLink string) error {
+	epicKeys := set.EpicKeys(customFieldIDEpicLink)
 	newEpicKeys := []string{}
 	for _, key := range epicKeys {
-		if _, ok := is.IssuesMap[key]; !ok {
+		if _, ok := set.IssuesMap[key]; !ok {
 			newEpicKeys = append(newEpicKeys, key)
 		}
 	}
@@ -226,7 +226,7 @@ func (is *IssuesSet) InflateEpics(jclient *jira.Client, customFieldIDEpicLink st
 		return err
 	}
 
-	for k, iss := range is.IssuesMap {
+	for k, iss := range set.IssuesMap {
 		issEpicKey := strings.TrimSpace(IssueFieldsCustomFieldString(iss.Fields, customFieldIDEpicLink))
 		if issEpicKey == "" {
 			continue
@@ -236,17 +236,17 @@ func (is *IssuesSet) InflateEpics(jclient *jira.Client, customFieldIDEpicLink st
 			panic("not found")
 		}
 		iss.Fields.Epic = &epic
-		is.IssuesMap[k] = iss
+		set.IssuesMap[k] = iss
 	}
 	return nil
 }
 
-func (is *IssuesSet) FilterStatus(inclStatuses ...string) (*IssuesSet, error) {
-	n := NewIssuesSet(is.Config)
+func (set *IssuesSet) FilterStatus(inclStatuses ...string) (*IssuesSet, error) {
+	n := NewIssuesSet(set.Config)
 	if len(inclStatuses) == 0 {
 		return n, nil
 	}
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		im := NewIssueMore(pointer.Pointer(iss))
 		if slices.Index(inclStatuses, im.Status()) >= 0 {
 			err := n.Add(iss)
@@ -258,12 +258,12 @@ func (is *IssuesSet) FilterStatus(inclStatuses ...string) (*IssuesSet, error) {
 	return n, nil
 }
 
-func (is *IssuesSet) FilterType(inclTypes ...string) (*IssuesSet, error) {
-	n := NewIssuesSet(is.Config)
+func (set *IssuesSet) FilterType(inclTypes ...string) (*IssuesSet, error) {
+	n := NewIssuesSet(set.Config)
 	if len(inclTypes) == 0 {
 		return n, nil
 	}
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		im := NewIssueMore(pointer.Pointer(iss))
 		if slices.Index(inclTypes, im.Type()) >= 0 {
 			err := n.Add(iss)
@@ -275,39 +275,39 @@ func (is *IssuesSet) FilterType(inclTypes ...string) (*IssuesSet, error) {
 	return n, nil
 }
 
-func (is *IssuesSet) Issues() Issues {
+func (set *IssuesSet) Issues() Issues {
 	ii := Issues{}
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		ii = append(ii, iss)
 	}
 	return ii
 }
 
-func (is *IssuesSet) IssueMetas(customFieldLabels []string) IssueMetas {
+func (set *IssuesSet) IssueMetas(customFieldLabels []string) IssueMetas {
 	var imetas IssueMetas
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		iss := iss
 		issMore := NewIssueMore(&iss)
-		issMeta := issMore.Meta(is.Config.ServerURL, customFieldLabels)
+		issMeta := issMore.Meta(set.Config.ServerURL, customFieldLabels)
 		imetas = append(imetas, issMeta)
 	}
 	return imetas
 }
 
-func (is *IssuesSet) IssuesSetHighestType(issueType string) (*IssuesSet, error) {
-	new := NewIssuesSet(is.Config)
-	for _, iss := range is.IssuesMap {
+func (set *IssuesSet) IssuesSetHighestType(issueType string) (*IssuesSet, error) {
+	new := NewIssuesSet(set.Config)
+	for _, iss := range set.IssuesMap {
 		iss := iss
 		issMore := NewIssueMore(&iss)
-		issMeta := issMore.Meta(is.Config.ServerURL, []string{})
+		issMeta := issMore.Meta(set.Config.ServerURL, []string{})
 		issKey := strings.TrimSpace(issMeta.Key)
 		if issKey != "" {
-			lineage, err := is.Lineage(issKey, []string{})
+			lineage, err := set.Lineage(issKey, []string{})
 			if err != nil {
 				return nil, errorsutil.Wrapf(err, "error on `is.Lineage(%s)`", issKey)
 			}
 			if issMetaType := lineage.HighestType(issueType); issMetaType != nil && strings.TrimSpace(issMetaType.Key) != "" {
-				if issType, err := is.Get(issMetaType.Key); err != nil {
+				if issType, err := set.Get(issMetaType.Key); err != nil {
 					return nil, errorsutil.Wrapf(err, "error on `is.Get(%s)`", issMetaType.Key)
 				} else {
 					if err := new.Add(issType); err != nil {
@@ -317,12 +317,12 @@ func (is *IssuesSet) IssuesSetHighestType(issueType string) (*IssuesSet, error) 
 			}
 		}
 	}
-	new.Parents = is.Parents
+	new.Parents = set.Parents
 	return new, nil
 }
 
-func (is *IssuesSet) WriteFileJSON(name, prefix, indent string) error {
-	j, err := jsonutil.MarshalSimple(is, prefix, indent)
+func (set *IssuesSet) WriteFileJSON(name, prefix, indent string) error {
+	j, err := jsonutil.MarshalSimple(set, prefix, indent)
 	if err != nil {
 		return err
 	}

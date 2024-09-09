@@ -12,9 +12,9 @@ import (
 )
 
 /*
-func (is *IssuesSet) RetrieveParentsIssuesSet(client *Client) (*IssuesSet, error) {
-	parIssuesSet := NewIssuesSet(is.Config)
-	parIDs := is.UnknownParents()
+func (set *IssuesSet) RetrieveParentsIssuesSet(client *Client) (*IssuesSet, error) {
+	parIssuesSet := NewIssuesSet(set.Config)
+	parIDs := set.UnknownParents()
 	if len(parIDs) == 0 {
 		return parIssuesSet, nil
 	}
@@ -127,13 +127,13 @@ func (set *IssuesSet) KeysParentsUnpopulated() []string {
 }
 
 /*
-func (is *IssuesSet) GetLineage(key string) (Issues, error) {
+func (set *IssuesSet) GetLineage(key string) (Issues, error) {
 	key = strings.TrimSpace(key)
 	lineage := Issues{}
 	if key == "" {
 		return lineage, nil
 	}
-	iss, err := is.Get(key)
+	iss, err := set.Get(key)
 	if err != nil {
 		return lineage, err
 	}
@@ -144,7 +144,7 @@ func (is *IssuesSet) GetLineage(key string) (Issues, error) {
 		if parKey == "" {
 			return lineage, nil
 		}
-		if parIss, err := is.Get(parKey); err != nil {
+		if parIss, err := set.Get(parKey); err != nil {
 			return lineage, err
 		} else {
 			lineage = append(lineage, parIss)

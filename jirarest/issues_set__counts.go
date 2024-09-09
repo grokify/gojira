@@ -20,9 +20,9 @@ func (set *IssuesSet) Counts() map[string]map[string]uint {
 }
 
 /*
-func (is *IssuesSet) TimeSeriesCreated() (timeseries.TimeSeries, error) {
+func (set *IssuesSet) TimeSeriesCreated() (timeseries.TimeSeries, error) {
 	ts := timeseries.NewTimeSeries("")
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		iss := iss
 		im := IssueMore{Issue: &iss}
 		ts.AddInt64(im.CreateTime().UTC(), 1)
@@ -107,7 +107,7 @@ func (set *IssuesSet) CountsByMetaStage(inclTypeFilter []string) map[string]uint
 	return out
 }
 
-func (is *IssuesSet) CountsByProjectAndMetaStage(inclTypeFilter []string) *histogram.HistogramSet {
+func (set *IssuesSet) CountsByProjectAndMetaStage(inclTypeFilter []string) *histogram.HistogramSet {
 	out := histogram.NewHistogramSet("")
 	inclTypeFilter = stringsutil.SliceCondenseSpace(inclTypeFilter, true, true)
 	inclTypeFilterMap := map[string]int{}
@@ -115,7 +115,7 @@ func (is *IssuesSet) CountsByProjectAndMetaStage(inclTypeFilter []string) *histo
 		inclTypeFilterMap[filter]++
 	}
 	count := int(0)
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		im := NewIssueMore(pointer.Pointer(iss))
 		if len(inclTypeFilterMap) > 0 {
 			if _, ok := inclTypeFilterMap[im.Type()]; !ok {
@@ -124,8 +124,8 @@ func (is *IssuesSet) CountsByProjectAndMetaStage(inclTypeFilter []string) *histo
 		}
 		projectName := im.Project()
 		metaStage := ""
-		if is.Config != nil && is.Config.StatusConfig != nil {
-			metaStage = is.Config.StatusConfig.MetaStage(im.Status())
+		if set.Config != nil && set.Config.StatusConfig != nil {
+			metaStage = set.Config.StatusConfig.MetaStage(im.Status())
 		}
 		out.Add(projectName, metaStage, 1)
 		count++
@@ -144,14 +144,14 @@ func msuCount(m map[string]uint) uint {
 	return c
 }
 
-func (is *IssuesSet) CountWithTypeFilter(inclTypeFilter []string) uint {
+func (set *IssuesSet) CountWithTypeFilter(inclTypeFilter []string) uint {
 	inclTypeFilter = stringsutil.SliceCondenseSpace(inclTypeFilter, true, true)
 	inclTypeFilterMap := map[string]int{}
 	for _, filter := range inclTypeFilter {
 		inclTypeFilterMap[filter]++
 	}
 	count := uint(0)
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		im := NewIssueMore(pointer.Pointer(iss))
 		if len(inclTypeFilterMap) > 0 {
 			if _, ok := inclTypeFilterMap[im.Type()]; !ok {
@@ -163,17 +163,17 @@ func (is *IssuesSet) CountWithTypeFilter(inclTypeFilter []string) uint {
 	return count
 }
 
-func (is *IssuesSet) CountsByType(inclLeafs, inclParents bool) map[string]uint {
+func (set *IssuesSet) CountsByType(inclLeafs, inclParents bool) map[string]uint {
 	m := map[string]uint{}
 	if inclLeafs {
-		for _, iss := range is.IssuesMap {
+		for _, iss := range set.IssuesMap {
 			iss := iss
 			im := NewIssueMore(&iss)
 			m[im.Type()]++
 		}
 	}
-	if inclParents && is.Parents != nil {
-		for _, iss := range is.Parents.IssuesMap {
+	if inclParents && set.Parents != nil {
+		for _, iss := range set.Parents.IssuesMap {
 			iss := iss
 			im := NewIssueMore(&iss)
 			m[im.Type()]++
@@ -182,9 +182,9 @@ func (is *IssuesSet) CountsByType(inclLeafs, inclParents bool) map[string]uint {
 	return m
 }
 
-func (is *IssuesSet) CountsByTime() map[string]uint {
+func (set *IssuesSet) CountsByTime() map[string]uint {
 	out := map[string]uint{}
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		if iss.Fields == nil {
 			continue
 		}
@@ -212,14 +212,14 @@ func (is *IssuesSet) CountsByTime() map[string]uint {
 	return out
 }
 
-func (is *IssuesSet) CountsByWorkstream(wsFuncMake WorkstreamFuncMake, inclTypeFilter []string) (map[string]uint, error) {
+func (set *IssuesSet) CountsByWorkstream(wsFuncMake WorkstreamFuncMake, inclTypeFilter []string) (map[string]uint, error) {
 	inclTypeFilter = stringsutil.SliceCondenseSpace(inclTypeFilter, true, true)
 	inclTypeFilterMap := map[string]int{}
 	for _, filter := range inclTypeFilter {
 		inclTypeFilterMap[filter]++
 	}
 	out := map[string]uint{}
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		im := NewIssueMore(pointer.Pointer(iss))
 		if len(inclTypeFilterMap) > 0 {
 			if _, ok := inclTypeFilterMap[im.Type()]; !ok {
@@ -235,17 +235,17 @@ func (is *IssuesSet) CountsByWorkstream(wsFuncMake WorkstreamFuncMake, inclTypeF
 	return out, nil
 }
 
-func (is *IssuesSet) TimeStats() gojira.TimeStats {
-	if is.Config == nil {
-		is.Config = gojira.NewConfigDefault()
+func (set *IssuesSet) TimeStats() gojira.TimeStats {
+	if set.Config == nil {
+		set.Config = gojira.NewConfigDefault()
 	}
 	ts := gojira.TimeStats{
 		TimeUnit:           timeutil.SecondString,
-		ItemCount:          len(is.IssuesMap),
-		WorkingDaysPerWeek: is.Config.WorkingDaysPerWeek,
-		WorkingHoursPerDay: is.Config.WorkingHoursPerDay,
+		ItemCount:          len(set.IssuesMap),
+		WorkingDaysPerWeek: set.Config.WorkingDaysPerWeek,
+		WorkingHoursPerDay: set.Config.WorkingHoursPerDay,
 	}
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		if iss.Fields == nil {
 			continue
 		}

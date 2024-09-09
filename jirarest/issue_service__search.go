@@ -69,11 +69,11 @@ func (svc *IssueService) SearchChildrenIssuesSet(recursive bool, parentKeys ...s
 	return is, nil
 }
 
-func searchChildrenIssuesSetInternal(svc *IssueService, is *IssuesSet, parentKeys []string, seen map[string]int) (map[string]int, error) {
+func searchChildrenIssuesSetInternal(svc *IssueService, set *IssuesSet, parentKeys []string, seen map[string]int) (map[string]int, error) {
 	if ii, err := svc.SearchChildrenIssues(parentKeys); err != nil {
 		return seen, err
 	} else if len(ii) > 0 {
-		if err := is.Add(ii...); err != nil {
+		if err := set.Add(ii...); err != nil {
 			return seen, err
 		}
 	}
@@ -190,13 +190,13 @@ func (svc *IssueService) SearchIssuesSet(jql string) (*IssuesSet, error) {
 	}
 }
 
-func (svc *IssueService) SearchIssuesSetParents(is *IssuesSet) (*IssuesSet, error) {
-	if is == nil {
-		return nil, errors.New("issues set must be set")
+func (svc *IssueService) SearchIssuesSetParents(set *IssuesSet) (*IssuesSet, error) {
+	if set == nil {
+		return nil, ErrIssuesSetCannotBeNil
 	}
-	// func (is *IssuesSet) RetrieveParentsIssuesSet(client *Client) (*IssuesSet, error) {
-	parIssuesSet := NewIssuesSet(is.Config)
-	parIDs := is.KeysParentsUnpopulated()
+	// func (set *IssuesSet) RetrieveParentsIssuesSet(client *Client) (*IssuesSet, error) {
+	parIssuesSet := NewIssuesSet(set.Config)
+	parIDs := set.KeysParentsUnpopulated()
 
 	iter := 0
 	for {

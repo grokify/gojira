@@ -2,13 +2,13 @@ package jirarest
 
 import "errors"
 
-func (svc *IssueService) IssuesSetAddParents(is *IssuesSet) error {
-	if is == nil {
+func (svc *IssueService) IssuesSetAddParents(set *IssuesSet) error {
+	if set == nil {
 		return errors.New("issues set is nil")
-	} else if parents, err := svc.SearchIssuesSetParents(is); err != nil {
+	} else if parents, err := svc.SearchIssuesSetParents(set); err != nil {
 		return err
 	} else {
-		is.Parents = parents
+		set.Parents = parents
 		return nil
 	}
 }

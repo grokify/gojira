@@ -91,15 +91,15 @@ func (set *IssuesSet) LineageTopKeysPopulated() ([]string, error) {
 	return stringsutil.SliceCondenseSpace(linPop, true, true), nil
 }
 
-func (is *IssuesSet) LineageTopKeysUnpopulated() ([]string, error) {
+func (set *IssuesSet) LineageTopKeysUnpopulated() ([]string, error) {
 	var linUnpop []string
-	issKeys := is.Keys()
+	issKeys := set.Keys()
 	for _, issKey := range issKeys {
 		issKey = strings.TrimSpace(issKey)
 		if issKey == "" {
 			return linUnpop, errors.New("issue map key is empty string")
 		}
-		lin, err := is.LineageValidateKey(issKey)
+		lin, err := set.LineageValidateKey(issKey)
 		if err != nil {
 			if errors.Is(err, ErrLineageNotFound) {
 				if len(lin) > 0 {
@@ -118,13 +118,13 @@ func (is *IssuesSet) LineageTopKeysUnpopulated() ([]string, error) {
 
 // LineageValidateKey returns a lineage slice where the leaf key is in index position 0 (little-endian).
 // This is done in case a parent cannot be found in which case the boolean returned is false.
-func (is *IssuesSet) LineageValidateKey(key string) ([]string, error) {
+func (set *IssuesSet) LineageValidateKey(key string) ([]string, error) {
 	key = strings.TrimSpace(key)
 	var lineage []string
 	if key == "" {
 		return lineage, errors.New("key not provided")
 	}
-	iss, ok := is.IssueOrParent(key)
+	iss, ok := set.IssueOrParent(key)
 	if !ok {
 		return lineage, fmt.Errorf("key not found for (%s)", key)
 	}
@@ -141,7 +141,7 @@ func (is *IssuesSet) LineageValidateKey(key string) ([]string, error) {
 			break
 		}
 		lineage = append(lineage, parKey)
-		parIss, ok := is.IssueOrParent(parKey)
+		parIss, ok := set.IssueOrParent(parKey)
 		if !ok {
 			return lineage, errorsutil.Wrapf(ErrLineageNotFound, "parent key not found (%s)", parKey)
 		}

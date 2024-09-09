@@ -309,8 +309,8 @@ func (set *IssuesSet) ExportWorkstreamXfieldStatusTablePivot(wsFuncMake Workstre
 	return &tbl, nil
 }
 
-func (is *IssuesSet) ExportWorkstreamProjectkeyStatusTablePivot(wsFuncMake WorkstreamFuncMake, wsFuncIncl WorkstreamFuncIncl, useStatusCategory bool) (*table.Table, error) {
-	hss, err := is.ExportWorkstreamXfieldStatusHistogramSets(wsFuncMake, wsFuncIncl, FieldSlugProjectkey, useStatusCategory)
+func (set *IssuesSet) ExportWorkstreamProjectkeyStatusTablePivot(wsFuncMake WorkstreamFuncMake, wsFuncIncl WorkstreamFuncIncl, useStatusCategory bool) (*table.Table, error) {
+	hss, err := set.ExportWorkstreamXfieldStatusHistogramSets(wsFuncMake, wsFuncIncl, FieldSlugProjectkey, useStatusCategory)
 	if err != nil {
 		return nil, err
 	}
@@ -320,7 +320,7 @@ func (is *IssuesSet) ExportWorkstreamProjectkeyStatusTablePivot(wsFuncMake Works
 		ColNameHistogramSet: "Workstream",
 		ColNameHistogram:    "Project Key",
 		ColNameBinPrefix:    "Status: ",
-		BinNamesOrder:       is.StatusesOrder(),
+		BinNamesOrder:       set.StatusesOrder(),
 		InclBinsUnordered:   true,
 		InclBinCounts:       true,
 		InclBinCountsSum:    true,
@@ -330,8 +330,8 @@ func (is *IssuesSet) ExportWorkstreamProjectkeyStatusTablePivot(wsFuncMake Works
 	return &tbl, nil
 }
 
-func (is *IssuesSet) ExportWorkstreamTypeStatusTablePivot(wsFuncMake WorkstreamFuncMake, wsFuncIncl WorkstreamFuncIncl, useStatusCategory bool) (*table.Table, error) {
-	hss, err := is.ExportWorkstreamXfieldStatusHistogramSets(wsFuncMake, wsFuncIncl, FieldSlugType, useStatusCategory)
+func (set *IssuesSet) ExportWorkstreamTypeStatusTablePivot(wsFuncMake WorkstreamFuncMake, wsFuncIncl WorkstreamFuncIncl, useStatusCategory bool) (*table.Table, error) {
+	hss, err := set.ExportWorkstreamXfieldStatusHistogramSets(wsFuncMake, wsFuncIncl, FieldSlugType, useStatusCategory)
 	if err != nil {
 		return nil, err
 	}
@@ -341,7 +341,7 @@ func (is *IssuesSet) ExportWorkstreamTypeStatusTablePivot(wsFuncMake WorkstreamF
 		ColNameHistogramSet: "Workstream",
 		ColNameHistogram:    "Type",
 		ColNameBinPrefix:    "Status: ",
-		BinNamesOrder:       is.StatusesOrder(),
+		BinNamesOrder:       set.StatusesOrder(),
 		InclBinsUnordered:   true,
 		InclBinCounts:       true,
 		InclBinCountsSum:    true,
