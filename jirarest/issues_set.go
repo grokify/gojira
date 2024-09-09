@@ -88,6 +88,7 @@ func (set *IssuesSet) KeyExists(key string, inclParents bool) bool {
 	}
 }
 
+// Keys returns a slice of sorted issue keys.
 func (set *IssuesSet) Keys() []string              { return maputil.Keys(set.IssuesMap) }
 func (set *IssuesSet) Len() uint                   { return uint(len(set.IssuesMap)) }
 func (set *IssuesSet) LenParents() uint            { return uint(len(set.KeysParents())) }
