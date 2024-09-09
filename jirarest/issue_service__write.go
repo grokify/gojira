@@ -54,16 +54,22 @@ func NewIssuePatchRequestBodyCustomField(customFieldLabel, customFieldValue stri
 	}
 }
 
+// IssuePatchRequestBodyUpdate represntes the `labels` slice in the `update` property
+// of an issue update request.
 type IssuePatchRequestBodyUpdate struct {
 	Labels []IssuePatchRequestBodyUpdateLabel `json:"labels,omitempty"`
 }
 
+// IssuePatchRequestBodyUpdateLabel represents a specific label operation in the `update` property
+// of an issue update request.
 type IssuePatchRequestBodyUpdateLabel struct {
 	// cannot have both
 	Add    *string `json:"add,omitempty"`
 	Remove *string `json:"remove,omitempty"`
 }
 
+// Validate ensures that the `add` and `remove` propererties cannot both be set
+// at the same time.
 func (body IssuePatchRequestBody) Validate() error {
 	if body.Update != nil {
 		if len(body.Update.Labels) > 0 {
