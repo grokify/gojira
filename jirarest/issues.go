@@ -78,6 +78,7 @@ func (ii Issues) Metas(baseURL string, customFieldLabels []string) IssueMetas {
 	return metas
 }
 
+// WriteFileJSON outputs a JSON file that can be read in again.
 func (ii Issues) WriteFileJSON(filename, prefix, indent string) error {
 	if b, err := jsonutil.MarshalSimple(ii, prefix, indent); err != nil {
 		return err
