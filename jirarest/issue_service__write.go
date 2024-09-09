@@ -21,7 +21,9 @@ type IssuePatchRequestBody struct {
 	Fields map[string]IssuePatchRequestBodyField `json:"fields,omitempty"`
 }
 
-func NewIssuePatchRequestBodyLabelAllRemove(label string, remove bool) IssuePatchRequestBody {
+// NewIssuePatchRequestBodyLabelAddRemove returns a body for patching the Jira issue
+// by adding or removing a label.
+func NewIssuePatchRequestBodyLabelAddRemove(label string, remove bool) IssuePatchRequestBody {
 	labelUpdate := IssuePatchRequestBodyUpdateLabel{}
 	if remove {
 		labelUpdate.Remove = pointer.Pointer(label)
@@ -32,6 +34,18 @@ func NewIssuePatchRequestBodyLabelAllRemove(label string, remove bool) IssuePatc
 		Update: &IssuePatchRequestBodyUpdate{
 			Labels: []IssuePatchRequestBodyUpdateLabel{
 				labelUpdate,
+			},
+		},
+	}
+}
+
+// NewIssuePatchRequestBodyCustomField returns a body for patching the Jira issue
+// with a custom field value.
+func NewIssuePatchRequestBodyCustomField(customFieldLabel, customFieldValue string) IssuePatchRequestBody {
+	return IssuePatchRequestBody{
+		Fields: map[string]IssuePatchRequestBodyField{
+			customFieldLabel: IssuePatchRequestBodyField{
+				Value: customFieldValue,
 			},
 		},
 	}
@@ -84,6 +98,108 @@ func (svc *IssueService) IssuePatch(issueKeyOrID string, issueUpdateRequestBody 
 	}
 }
 
+func (svc *IssueService) IssuePatchCustomFieldRecursive(ctx context.Context, issueKeyOrID string, iss *jira.Issue, customFieldLabel, customFieldValue string, processChildren bool, processChildrenTypes []string, skipUpdate bool) (int, error) {
+	count := 0
+	customFieldLabel = strings.TrimSpace(customFieldLabel)
+	if customFieldLabel == "" {
+		return count, ErrCustomFieldLabelRequired
+	}
+	issueKeyOrID = strings.TrimSpace(issueKeyOrID)
+	if issueKeyOrID == "" && iss == nil {
+		return count, ErrIssueOrIssueKeyOrIssueIDRequired
+	}
+	processChildrenTypes = stringsutil.SliceCondenseSpace(processChildrenTypes, true, true)
+	if iss == nil {
+		if issGet, err := svc.Issue(issueKeyOrID); err != nil {
+			return 0, err
+		} else {
+			iss = issGet
+		}
+	}
+	im := NewIssueMore(iss)
+	if issueKeyOrID == "" && iss != nil {
+		issueKeyOrID = im.Key()
+	}
+
+	curVal, err := im.CustomFieldString(customFieldLabel)
+	if err != nil {
+		return count, err
+	}
+	svc.Client.LogOrNotAny(
+		ctx,
+		slog.LevelDebug,
+		"processing issue custom field update: current value",
+		"issueKey", issueKeyOrID,
+		"issueType", im.Type(),
+		"customFieldLabel", customFieldLabel,
+		"customFieldValue", customFieldValue,
+		"customFieldValueCurrent", curVal)
+	if curVal != customFieldValue {
+		if skipUpdate {
+			count++
+		} else if !skipUpdate {
+			svc.Client.LogOrNotAny(
+				ctx,
+				slog.LevelDebug,
+				"updating issue custom field",
+				"issueKey", issueKeyOrID,
+				"issueType", im.Type(),
+				"customFieldLabel", customFieldLabel,
+				"customFieldValue", customFieldValue)
+			reqBody := NewIssuePatchRequestBodyCustomField(customFieldLabel, customFieldValue)
+			if resp, err := svc.IssuePatch(issueKeyOrID, reqBody); err != nil {
+				return 0, nil
+			} else if resp.StatusCode >= 300 {
+				body, err := io.ReadAll(resp.Body)
+				if err != nil {
+					body = []byte(err.Error())
+				}
+				return 0, fmt.Errorf("key (%s) status code (%d) bodyOrErr (%s)", im.Key(), resp.StatusCode, string(body))
+			} else {
+				count++
+			}
+		}
+	}
+	if processChildren {
+		ii, err := svc.SearchChildrenIssues([]string{issueKeyOrID})
+		if err != nil {
+			return count, err
+		}
+		is := NewIssuesSet(nil)
+		is.Add(ii...)
+		if len(processChildrenTypes) > 0 {
+			is, err = is.FilterType(processChildrenTypes...)
+			if err != nil {
+				return count, err
+			}
+		}
+		cIssKeys := is.Keys()
+		for _, cIssKey := range cIssKeys {
+			svc.Client.LogOrNotAny(
+				ctx,
+				slog.LevelInfo,
+				"processing issue custom field update children count",
+				"issueKey", cIssKey,
+				"issueType", im.Type(),
+				"customFieldLabel", customFieldLabel,
+				"customFieldValue", customFieldValue,
+				"parentChildrenCount", is.Len())
+			cISS, err := is.Get(cIssKey)
+			if err != nil {
+				return count, err
+			}
+			// cIM := NewIssueMore(&cISS)
+			if countChildren, err := svc.IssuePatchCustomFieldRecursive(ctx, "", &cISS, customFieldLabel, customFieldValue, processChildren, processChildrenTypes, skipUpdate); err != nil {
+				return count, err
+			} else {
+				count += countChildren
+			}
+		}
+	}
+
+	return count, nil
+}
+
 // IssuePatchLabelRecursive updates fields for an issue. See more here:
 // https://community.developer.atlassian.com/t/update-issue-custom-field-value-via-api-without-going-forge/71161
 func (svc *IssueService) IssuePatchLabelRecursive(ctx context.Context, issueKeyOrID string, iss *jira.Issue, label string, removeLabel, processChildren bool, processChildrenTypes []string, skipUpdate bool) (int, error) {
@@ -97,7 +213,7 @@ func (svc *IssueService) IssuePatchLabelRecursive(ctx context.Context, issueKeyO
 		labelOperation = OperationAdd
 	}
 	if issueKeyOrID == "" {
-		return count, errors.New("issue key or id must be supplied")
+		return count, ErrIssueOrIssueKeyOrIssueIDRequired
 	}
 	if iss == nil {
 		if issGet, err := svc.Issue(issueKeyOrID); err != nil {
@@ -122,27 +238,30 @@ func (svc *IssueService) IssuePatchLabelRecursive(ctx context.Context, issueKeyO
 		"label", label,
 		"labelExists", labelExists)
 
-	if !skipUpdate &&
-		((removeLabel && im.LabelExists(label)) || (!removeLabel && !im.LabelExists(label))) {
-		svc.Client.LogOrNotAny(
-			ctx,
-			slog.LevelDebug,
-			"updating issue labels",
-			"issueKey", issueKeyOrID,
-			"issueType", im.Type(),
-			"labelAction", labelOperation,
-			"label", label)
-		reqBody := NewIssuePatchRequestBodyLabelAllRemove(label, removeLabel)
-		if resp, err := svc.IssuePatch(issueKeyOrID, reqBody); err != nil {
-			return 0, nil
-		} else if resp.StatusCode >= 300 {
-			body, err := io.ReadAll(resp.Body)
-			if err != nil {
-				body = []byte(err.Error())
-			}
-			return 0, fmt.Errorf("key (%s) status code (%d) bodyOrErr (%s)", im.Key(), resp.StatusCode, string(body))
-		} else {
+	if (removeLabel && im.LabelExists(label)) || (!removeLabel && !im.LabelExists(label)) {
+		if skipUpdate {
 			count++
+		} else {
+			svc.Client.LogOrNotAny(
+				ctx,
+				slog.LevelDebug,
+				"updating issue labels",
+				"issueKey", issueKeyOrID,
+				"issueType", im.Type(),
+				"labelAction", labelOperation,
+				"label", label)
+			reqBody := NewIssuePatchRequestBodyLabelAddRemove(label, removeLabel)
+			if resp, err := svc.IssuePatch(issueKeyOrID, reqBody); err != nil {
+				return count, err
+			} else if resp.StatusCode >= 300 {
+				body, err := io.ReadAll(resp.Body)
+				if err != nil {
+					body = []byte(err.Error())
+				}
+				return count, fmt.Errorf("key (%s) status code (%d) bodyOrErr (%s)", im.Key(), resp.StatusCode, string(body))
+			} else {
+				count++
+			}
 		}
 	}
 	if processChildren {
@@ -179,7 +298,6 @@ func (svc *IssueService) IssuePatchLabelRecursive(ctx context.Context, issueKeyO
 			if err != nil {
 				return count, err
 			}
-			// for _, cISS := range is.IssuesMap {
 			im := NewIssueMore(&cISS)
 			if countChildren, err := svc.IssuePatchLabelRecursive(ctx, im.Key(), &cISS, label, removeLabel, processChildren, processChildrenTypes, skipUpdate); err != nil {
 				return count, err
