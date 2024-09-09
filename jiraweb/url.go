@@ -53,7 +53,7 @@ func IssueURLWebOrEmptyFromIssueKey(serverURL, issueKey string) string {
 }
 
 func IssueURLWebFromIssueKey(serverURL, issueKey string) (string, error) {
-	var parts = []string{}
+	var parts []string
 	if issueKey = strings.TrimSpace(issueKey); issueKey == "" {
 		return "", errors.New("issue key cannot be empty")
 	}

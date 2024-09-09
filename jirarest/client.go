@@ -135,7 +135,9 @@ func (c *Client) LoadCustomFields() error {
 		return err
 	} else if len(fields) > 0 {
 		c.CustomFieldSet = NewCustomFieldSet()
-		c.CustomFieldSet.Add(fields...)
+		if err := c.CustomFieldSet.Add(fields...); err != nil {
+			return err
+		}
 	}
 	return nil
 }

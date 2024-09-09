@@ -124,7 +124,6 @@ func (im *IssueMore) Key() string {
 func (im *IssueMore) KeyLinkWebMarkdown(baseURL string) string {
 	return jiraweb.IssueURLWebOrEmptyFromIssueKey(
 		baseURL, im.Key())
-
 }
 
 func (im *IssueMore) KeyURLWeb(baseURL string) string {

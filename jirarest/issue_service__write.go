@@ -44,7 +44,7 @@ func NewIssuePatchRequestBodyLabelAddRemove(label string, remove bool) IssuePatc
 func NewIssuePatchRequestBodyCustomField(customFieldLabel, customFieldValue string) IssuePatchRequestBody {
 	return IssuePatchRequestBody{
 		Fields: map[string]IssuePatchRequestBodyField{
-			customFieldLabel: IssuePatchRequestBodyField{
+			customFieldLabel: {
 				Value: customFieldValue,
 			},
 		},
@@ -166,7 +166,9 @@ func (svc *IssueService) IssuePatchCustomFieldRecursive(ctx context.Context, iss
 			return count, err
 		}
 		is := NewIssuesSet(nil)
-		is.Add(ii...)
+		if err := is.Add(ii...); err != nil {
+			return count, err
+		}
 		if len(processChildrenTypes) > 0 {
 			is, err = is.FilterType(processChildrenTypes...)
 			if err != nil {
@@ -270,7 +272,9 @@ func (svc *IssueService) IssuePatchLabelRecursive(ctx context.Context, issueKeyO
 			return count, err
 		}
 		is := NewIssuesSet(nil)
-		is.Add(ii...)
+		if err := is.Add(ii...); err != nil {
+			return count, err
+		}
 		if len(processChildrenTypes) > 0 {
 			is, err = is.FilterType(processChildrenTypes...)
 			if err != nil {
