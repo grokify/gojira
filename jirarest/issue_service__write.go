@@ -16,6 +16,9 @@ import (
 	"github.com/grokify/mogo/type/stringsutil"
 )
 
+// IssuePatchRequestBody represents a API request body to patch an issue. The
+// Jira API uses `PUT` however this struct and associated method use `Patch` to
+// better align with API best practices for a partial update.
 type IssuePatchRequestBody struct {
 	Update *IssuePatchRequestBodyUpdate          `json:"update,omitempty"`
 	Fields map[string]IssuePatchRequestBodyField `json:"fields,omitempty"`
