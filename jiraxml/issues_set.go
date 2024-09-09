@@ -29,9 +29,9 @@ func NewIssuesSet(cfg *gojira.Config) IssuesSet {
 		IssuesMap: map[string]Issue{}}
 }
 
-func (is *IssuesSet) AddFromAPI(issues ...jira.Issue) error {
+func (set *IssuesSet) AddFromAPI(issues ...jira.Issue) error {
 	for _, iss := range issues {
-		err := is.Add(IssueFromAPI(iss))
+		err := set.Add(IssueFromAPI(iss))
 		if err != nil {
 			return err
 		}
@@ -39,9 +39,9 @@ func (is *IssuesSet) AddFromAPI(issues ...jira.Issue) error {
 	return nil
 }
 
-func (is *IssuesSet) Add(issues ...Issue) error {
-	if is.IssuesMap == nil {
-		is.IssuesMap = map[string]Issue{}
+func (set *IssuesSet) Add(issues ...Issue) error {
+	if set.IssuesMap == nil {
+		set.IssuesMap = map[string]Issue{}
 	}
 	missingKeyIndexes := []string{}
 	for i, ix := range issues {
@@ -51,7 +51,7 @@ func (is *IssuesSet) Add(issues ...Issue) error {
 			continue
 		}
 		ix.TrimSpace()
-		is.IssuesMap[k] = ix
+		set.IssuesMap[k] = ix
 	}
 	if len(missingKeyIndexes) > 0 {
 		return fmt.Errorf("missingkeyindexes (%s)", strings.Join(missingKeyIndexes, ","))
@@ -59,23 +59,23 @@ func (is *IssuesSet) Add(issues ...Issue) error {
 	return nil
 }
 
-func (is *IssuesSet) ReadFile(filename string) error {
+func (set *IssuesSet) ReadFile(filename string) error {
 	x, err := ReadFile(filename)
 	if err != nil {
 		return err
 	}
-	return is.Add(x.Channel.Issues...)
+	return set.Add(x.Channel.Issues...)
 }
 
-func (is *IssuesSet) Keys() []string {
-	return maputil.Keys(is.IssuesMap)
+func (set *IssuesSet) Keys() []string {
+	return maputil.Keys(set.IssuesMap)
 }
 
-func (is *IssuesSet) Table(baseURL string) table.Table {
+func (set *IssuesSet) Table(baseURL string) table.Table {
 	baseURL = strings.TrimSpace(baseURL)
 
-	if is.Config == nil {
-		is.Config = gojira.NewConfigDefault()
+	if set.Config == nil {
+		set.Config = gojira.NewConfigDefault()
 	}
 	tbl := table.NewTable("issues")
 	tbl.Columns = []string{"Type", "Key", "Summary", "Status", "Resolution", "Aggregate Original Time Estimate Seconds", "Original Estimate Seconds", "Original Estimate Days", "Estimate Days", "Time Spent", "Time Remaining"}
@@ -87,7 +87,7 @@ func (is *IssuesSet) Table(baseURL string) table.Table {
 		8: table.FormatFloat,
 		9: table.FormatFloat,
 	}
-	for k, ix := range is.IssuesMap {
+	for k, ix := range set.IssuesMap {
 		keyDisplay := k
 		if len(baseURL) > 0 {
 			keyURL := urlutil.JoinAbsolute(baseURL, "/browse/", k)
@@ -102,54 +102,54 @@ func (is *IssuesSet) Table(baseURL string) table.Table {
 			ix.Resolution.DisplayName,
 			strconv.Itoa(int(ix.AggregateTimeOriginalEstimate.Seconds)),
 			strconv.Itoa(int(ix.TimeOriginalEstimate.Seconds)),
-			strconvutil.Ftoa(float64(ix.TimeOriginalEstimate.Days(is.Config.WorkingHoursPerDay)), -1),
-			strconvutil.Ftoa(float64(ix.TimeEstimate.Days(is.Config.WorkingHoursPerDay)), -1),
-			strconvutil.Ftoa(float64(ix.TimeSpent.Days(is.Config.WorkingHoursPerDay)), -1),
+			strconvutil.Ftoa(float64(ix.TimeOriginalEstimate.Days(set.Config.WorkingHoursPerDay)), -1),
+			strconvutil.Ftoa(float64(ix.TimeEstimate.Days(set.Config.WorkingHoursPerDay)), -1),
+			strconvutil.Ftoa(float64(ix.TimeSpent.Days(set.Config.WorkingHoursPerDay)), -1),
 			// strconvutil.FormatFloat64Simple(float64(ix.TimeRemainingEstimate.Days(is.Config.WorkingHoursPerDay))),
 		})
 	}
 	return tbl
 }
 
-func (is *IssuesSet) AggregateTimeEstimate() int64 {
+func (set *IssuesSet) AggregateTimeEstimate() int64 {
 	var agg int64
-	for _, ix := range is.IssuesMap {
+	for _, ix := range set.IssuesMap {
 		agg += ix.TimeEstimate.Seconds
 	}
 	return agg
 }
 
-func (is *IssuesSet) AggregateTimeOriginalEstimate() int64 {
+func (set *IssuesSet) AggregateTimeOriginalEstimate() int64 {
 	var agg int64
-	for _, ix := range is.IssuesMap {
+	for _, ix := range set.IssuesMap {
 		agg += ix.TimeOriginalEstimate.Seconds
 	}
 	return agg
 }
 
-func (is *IssuesSet) AggregateTimeRemainingEstimate() int64 {
+func (set *IssuesSet) AggregateTimeRemainingEstimate() int64 {
 	var agg int64
-	for _, ix := range is.IssuesMap {
+	for _, ix := range set.IssuesMap {
 		agg += ix.TimeSpent.Seconds
 	}
 	return agg
 }
 
-func (is *IssuesSet) AggregateTimeSpent() int64 {
+func (set *IssuesSet) AggregateTimeSpent() int64 {
 	var agg int64
-	for _, ix := range is.IssuesMap {
+	for _, ix := range set.IssuesMap {
 		agg += ix.TimeSpent.Seconds
 	}
 	return agg
 }
 
 // TSRHistogramSets returns a `*histogram.HistogramSets` for Type, Status and Resolution.
-func (is *IssuesSet) TSRHistogramSets(name string) *histogram.HistogramSets {
+func (set *IssuesSet) TSRHistogramSets(name string) *histogram.HistogramSets {
 	if strings.TrimSpace(name) == "" {
 		name = "TSR"
 	}
 	hset := histogram.NewHistogramSets(name)
-	for _, iss := range is.IssuesMap {
+	for _, iss := range set.IssuesMap {
 		hset.Add(
 			iss.Type.DisplayName,
 			iss.Status.DisplayName,
@@ -160,19 +160,19 @@ func (is *IssuesSet) TSRHistogramSets(name string) *histogram.HistogramSets {
 }
 
 // TSRTable returns a `table.Table` for Type, Status and Resolution.
-func (is *IssuesSet) TSRTable(name string) table.Table {
-	hset := is.TSRHistogramSets(name)
+func (set *IssuesSet) TSRTable(name string) table.Table {
+	hset := set.TSRHistogramSets(name)
 	return hset.Table("Jira Issues", "Type", "Status", "Resolution", "Count")
 }
 
 // TSRWriteCSV writes a CSV file for Type, Status and Resolution.
-func (is *IssuesSet) TSRWriteCSV(filename string) error {
-	tbl := is.TSRTable("")
+func (set *IssuesSet) TSRWriteCSV(filename string) error {
+	tbl := set.TSRTable("")
 	return tbl.WriteCSV(filename)
 }
 
 // TSRWriteCSV writes a CSV file for Type, Status and Resolution.
-func (is *IssuesSet) TSRWriteXLSX(filename, sheetname string) error {
-	tbl := is.TSRTable("")
+func (set *IssuesSet) TSRWriteXLSX(filename, sheetname string) error {
+	tbl := set.TSRTable("")
 	return tbl.WriteXLSX(filename, sheetname)
 }
