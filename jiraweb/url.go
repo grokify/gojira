@@ -2,15 +2,31 @@ package jiraweb
 
 import (
 	"errors"
+	"regexp"
 	"strings"
 
 	"github.com/grokify/mogo/net/urlutil"
 	"github.com/grokify/mogo/text/markdown"
+	"github.com/grokify/mogo/type/stringsutil"
 )
 
 const (
-	WebSlugBrowse = "/browse"
+	WebSlugBrowse  = "/browse"
+	IssueURLFormat = `%s/browse/%s`
 )
+
+var rxJiraTicket = regexp.MustCompile(`([A-Z]+\-[0-9]+)`)
+
+func ParseKeys(s string, unique, asc bool) []string {
+	var keys []string
+	m := rxJiraTicket.FindAllStringSubmatch(s, -1)
+	for _, n := range m {
+		if len(n) > 1 {
+			keys = append(keys, n[1])
+		}
+	}
+	return stringsutil.SliceCondenseSpace(keys, unique, asc)
+}
 
 func IssueLinkWebMarkdownOrEmptyFromIssueKey(serverURL, issueKey string) string {
 	if issueKey = strings.TrimSpace(issueKey); issueKey == "" {
