@@ -52,6 +52,7 @@ func (ii Issues) AddRank() Issues {
 	return nii
 }
 
+// IssuesSet converts the `Issues{}` to an `*IssuesSet{}`.
 func (ii Issues) IssuesSet(cfg *gojira.Config) (*IssuesSet, error) {
 	is := NewIssuesSet(cfg)
 	err := is.Add(ii...)
