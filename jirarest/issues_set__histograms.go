@@ -169,20 +169,43 @@ func (set *IssuesSet) HistogramSetProjectType() *histogram.HistogramSet {
 	return hset
 }
 
-// HistogramSetsProjectTypeStatus provides issue counts by: Project, Type, and Status.
-func (set *IssuesSet) HistogramSetsProjectTypeStatus() *histogram.HistogramSets {
+// HistogramSetsFunc provides a `*histogram.HistogramSets` given a provided function.
+func (set *IssuesSet) HistogramSetsFunc(fn func(iss *jira.Issue) (cat1 string, cat2 string, cat3 string)) *histogram.HistogramSets {
 	hsets := histogram.NewHistogramSets(gojira.FieldIssuePlural)
 	for _, iss := range set.IssuesMap {
-		iss := iss
-		im := NewIssueMore(&iss)
+		cat1, cat2, cat3 := fn(&iss)
 		hsets.Add(
-			im.ProjectKey(),
-			im.Type(),
-			im.Status(),
-			1,
-			true)
+			cat1, cat2, cat3,
+			1, true)
 	}
 	return hsets
+}
+
+// HistogramSetsProjectTypeStatus provides issue counts by: Project, Type, and Status.
+func (set *IssuesSet) HistogramSetsProjectTypeStatus() *histogram.HistogramSets {
+	return set.HistogramSetsFunc(
+		func(iss *jira.Issue) (string, string, string) {
+			if iss == nil {
+				return "", "", ""
+			}
+			im := NewIssueMore(iss)
+			return im.ProjectKey(), im.Type(), im.Status()
+		},
+	)
+	/*
+		hsets := histogram.NewHistogramSets(gojira.FieldIssuePlural)
+		for _, iss := range set.IssuesMap {
+			iss := iss
+			im := NewIssueMore(&iss)
+			hsets.Add(
+				im.ProjectKey(),
+				im.Type(),
+				im.Status(),
+				1,
+				true)
+		}
+		return hsets
+	*/
 }
 
 func (set *IssuesSet) HistogramMap(stdKeys []string, calcFields []IssueCalcField) (*histogram.Histogram, error) {
