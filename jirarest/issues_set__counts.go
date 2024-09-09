@@ -8,6 +8,8 @@ import (
 	"github.com/grokify/mogo/type/stringsutil"
 )
 
+// Counts returns a `map[string]map[string]uint{}` where the first key
+// is the category and the second is the category value.
 func (set *IssuesSet) Counts() map[string]map[string]uint {
 	mm := map[string]map[string]uint{
 		"byProject":    set.CountsByProject(),
