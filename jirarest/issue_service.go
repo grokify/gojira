@@ -37,6 +37,8 @@ func (svc *IssueService) Issue(key string) (*jira.Issue, error) {
 	}
 }
 
+// Issues returns a list of issues given a set of keys. If no keys are provided,
+// any empty slice is returned.
 func (svc *IssueService) Issues(keys ...string) (Issues, error) {
 	keys = stringsutil.SliceCondenseSpace(keys, true, true)
 	iss := Issues{}
@@ -53,6 +55,8 @@ func (svc *IssueService) Issues(keys ...string) (Issues, error) {
 	return iss, nil
 }
 
+// Issues returns an `IssuesSet{}` given a set of keys. If no keys are provided,
+// any empty slice is returned.
 func (svc *IssueService) GetIssuesSetForKeys(keys []string) (*IssuesSet, error) {
 	is := NewIssuesSet(nil)
 
