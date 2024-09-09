@@ -170,7 +170,7 @@ func (svc *IssueService) IssuePatchCustomFieldRecursive(ctx context.Context, iss
 			return count, err
 		}
 		if len(processChildrenTypes) > 0 {
-			is, err = is.FilterType(processChildrenTypes...)
+			is, err = is.FilterByType(processChildrenTypes...)
 			if err != nil {
 				return count, err
 			}
@@ -276,7 +276,7 @@ func (svc *IssueService) IssuePatchLabelRecursive(ctx context.Context, issueKeyO
 			return count, err
 		}
 		if len(processChildrenTypes) > 0 {
-			is, err = is.FilterType(processChildrenTypes...)
+			is, err = is.FilterByType(processChildrenTypes...)
 			if err != nil {
 				return count, err
 			}

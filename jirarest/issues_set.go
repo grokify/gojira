@@ -11,10 +11,8 @@ import (
 	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/encoding/jsonutil"
 	"github.com/grokify/mogo/errors/errorsutil"
-	"github.com/grokify/mogo/pointer"
 	"github.com/grokify/mogo/type/maputil"
 	"github.com/grokify/mogo/type/slicesutil"
-	"golang.org/x/exp/slices"
 )
 
 type IssuesSet struct {
@@ -129,35 +127,6 @@ func (set *IssuesSet) LenMap() map[string]uint {
 	}
 }
 
-func (set *IssuesSet) FilterByStatus(inclStatuses, exclStatuses []string) (*IssuesSet, error) {
-	filteredIssuesSet := NewIssuesSet(set.Config)
-	inclStatusesMap := map[string]int{}
-	for _, s := range inclStatuses {
-		inclStatusesMap[s]++
-	}
-	exclStatusesMap := map[string]int{}
-	for _, s := range exclStatuses {
-		exclStatusesMap[s]++
-	}
-	for _, iss := range set.IssuesMap {
-		im := NewIssueMore(pointer.Pointer(iss))
-		// ifs := IssueFieldsSimple{Fields: iss.Fields}
-		statusName := im.Status()
-		_, inclStatusOk := inclStatusesMap[statusName]
-		_, exclStatusOk := exclStatusesMap[statusName]
-		if len(inclStatusesMap) > 0 && !inclStatusOk {
-			continue
-		} else if len(exclStatuses) > 0 && exclStatusOk {
-			continue
-		}
-		err := filteredIssuesSet.Add(iss)
-		if err != nil {
-			return nil, err
-		}
-	}
-	return filteredIssuesSet, nil
-}
-
 func (set *IssuesSet) EpicKeys(customFieldID string) []string {
 	keys := []string{}
 	for _, iss := range set.IssuesMap {
@@ -239,40 +208,6 @@ func (set *IssuesSet) InflateEpics(jclient *jira.Client, customFieldIDEpicLink s
 		set.IssuesMap[k] = iss
 	}
 	return nil
-}
-
-func (set *IssuesSet) FilterStatus(inclStatuses ...string) (*IssuesSet, error) {
-	n := NewIssuesSet(set.Config)
-	if len(inclStatuses) == 0 {
-		return n, nil
-	}
-	for _, iss := range set.IssuesMap {
-		im := NewIssueMore(pointer.Pointer(iss))
-		if slices.Index(inclStatuses, im.Status()) >= 0 {
-			err := n.Add(iss)
-			if err != nil {
-				return nil, err
-			}
-		}
-	}
-	return n, nil
-}
-
-func (set *IssuesSet) FilterType(inclTypes ...string) (*IssuesSet, error) {
-	n := NewIssuesSet(set.Config)
-	if len(inclTypes) == 0 {
-		return n, nil
-	}
-	for _, iss := range set.IssuesMap {
-		im := NewIssueMore(pointer.Pointer(iss))
-		if slices.Index(inclTypes, im.Type()) >= 0 {
-			err := n.Add(iss)
-			if err != nil {
-				return nil, err
-			}
-		}
-	}
-	return n, nil
 }
 
 func (set *IssuesSet) Issues() Issues {
