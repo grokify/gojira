@@ -58,6 +58,7 @@ func (ii Issues) IssuesSet(cfg *gojira.Config) (*IssuesSet, error) {
 	return is, err
 }
 
+// Keys returns a slice of sorted issue keys.
 func (ii Issues) Keys() []string {
 	var keys []string
 	for _, iss := range ii {
