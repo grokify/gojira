@@ -49,6 +49,7 @@ func (set *IssuesSet) CountsByCustomFieldValues(customField string) (map[string]
 	return out, nil
 }
 
+// CountsByProject returns `map[string]uint` representing issue counts by project.
 func (set *IssuesSet) CountsByProject() map[string]uint {
 	m := map[string]uint{}
 	for _, iss := range set.IssuesMap {
@@ -58,6 +59,7 @@ func (set *IssuesSet) CountsByProject() map[string]uint {
 	return m
 }
 
+// CountsByProjectKey returns `map[string]uint` representing issue counts by project key.
 func (set *IssuesSet) CountsByProjectKey() map[string]uint {
 	m := map[string]uint{}
 	for _, iss := range set.IssuesMap {
@@ -67,6 +69,7 @@ func (set *IssuesSet) CountsByProjectKey() map[string]uint {
 	return m
 }
 
+// CountsByStatus returns `map[string]uint` representing issue counts by status.
 func (set *IssuesSet) CountsByStatus() map[string]uint {
 	m := map[string]uint{}
 	for _, iss := range set.IssuesMap {
