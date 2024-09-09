@@ -146,6 +146,7 @@ func (set *IssuesSet) EpicKeys(customFieldID string) []string {
 	return keys
 }
 
+// Get returns a `jira.Issue` given an issue key.
 func (set *IssuesSet) Get(key string) (jira.Issue, error) {
 	key = strings.TrimSpace(key)
 	if key == "" {
