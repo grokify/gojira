@@ -176,10 +176,16 @@ func (svc *IssueService) IssuePatchCustomFieldRecursive(ctx context.Context, iss
 		if err != nil {
 			return count, err
 		}
-		is := NewIssuesSet(nil)
-		if err := is.Add(ii...); err != nil {
+		is, err := ii.IssuesSet(nil)
+		if err != nil {
 			return count, err
 		}
+		/*
+			is := NewIssuesSet(nil)
+			if err := is.Add(ii...); err != nil {
+				return count, err
+			}
+		*/
 		if len(processChildrenTypes) > 0 {
 			is, err = is.FilterByType(processChildrenTypes...)
 			if err != nil {
@@ -282,10 +288,16 @@ func (svc *IssueService) IssuePatchLabelRecursive(ctx context.Context, issueKeyO
 		if err != nil {
 			return count, err
 		}
-		is := NewIssuesSet(nil)
-		if err := is.Add(ii...); err != nil {
+		is, err := ii.IssuesSet(nil)
+		if err != nil {
 			return count, err
 		}
+		/*
+			is := NewIssuesSet(nil)
+			if err := is.Add(ii...); err != nil {
+				return count, err
+			}
+		*/
 		if len(processChildrenTypes) > 0 {
 			is, err = is.FilterByType(processChildrenTypes...)
 			if err != nil {
