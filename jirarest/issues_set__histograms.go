@@ -271,7 +271,7 @@ func (set *IssuesSet) HistogramMap(stdKeys []string, calcFields []IssueCalcField
 	return h, nil
 }
 
-func (set *IssuesSet) ExportWorkstremaFilter(wsFuncMake WorkstreamFuncMake, wsFuncIncl WorkstreamFuncIncl, customFieldLabels []string) (*IssuesSet, error) {
+func (set *IssuesSet) ExportWorkstreamFilter(wsFuncMake WorkstreamFuncMake, wsFuncIncl WorkstreamFuncIncl, customFieldLabels []string) (*IssuesSet, error) {
 	out := NewIssuesSet(set.Config)
 	for _, iss := range set.IssuesMap {
 		iss := iss
