@@ -96,7 +96,10 @@ func (set *IssuesSet) TimeSeriesSetCreatedMonthByKey(cumulative, inflate, popLas
 	return &tssm, err
 }
 
+type FuncIssueToMap func(iss *jira.Issue) (map[string]string, error)
+
 // HistogramMapFunc provides a `*histogram.Histogram` given a provided function.
+// The function param corresponds to `FuncIssueToMap`.
 func (set *IssuesSet) HistogramMapFunc(fn func(iss *jira.Issue) (map[string]string, error)) (*histogram.Histogram, error) {
 	if fn == nil {
 		return nil, ErrFunctionCannotBeNil
@@ -126,19 +129,6 @@ func IssueMapProjectStatusType(iss *jira.Issue) (map[string]string, error) {
 // HistogramMapProjectTypeStatus provides issue counts by: Project, Type, and Status.
 func (set *IssuesSet) HistogramMapProjectTypeStatus() (*histogram.Histogram, error) {
 	return set.HistogramMapFunc(IssueMapProjectStatusType)
-	/*
-		h := histogram.NewHistogram(gojira.FieldIssuePlural)
-		for _, iss := range set.IssuesMap {
-			iss := iss
-			im := NewIssueMore(&iss)
-			h.AddMap(map[string]string{
-				gojira.FieldProject: im.ProjectKey(),
-				gojira.FieldType:    im.Type(),
-				gojira.FieldStatus:  im.Status(),
-			}, 1)
-		}
-		return h
-	*/
 }
 
 func (set *IssuesSet) TableSetProjectTypeStatus(tsConfig *histogram.HistogramMapTableSetConfig) (*table.TableSet, error) {
