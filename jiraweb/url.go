@@ -4,6 +4,7 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/grokify/gocharts/v2/data/table"
 	"github.com/grokify/mogo/net/urlutil"
 	"github.com/grokify/mogo/text/markdown"
 )
@@ -12,6 +13,20 @@ const (
 	WebSlugBrowse  = "/browse"
 	IssueURLFormat = `%s/browse/%s`
 )
+
+func LinkTableColumn(tbl *table.Table, colIdx int, serverURL string) {
+	if colIdx < 0 {
+		return
+	}
+	for i, row := range tbl.Rows {
+		if colIdx >= len(row) {
+			continue
+		}
+		row[colIdx] = IssueLinkWebMarkdownOrEmptyFromIssueKey(serverURL, row[colIdx])
+		tbl.Rows[i] = row
+	}
+	tbl.FormatMap[colIdx] = table.FormatURL
+}
 
 func IssueLinkWebMarkdownOrEmptyFromIssueKey(serverURL, issueKey string) string {
 	if issueKey = strings.TrimSpace(issueKey); issueKey == "" {
