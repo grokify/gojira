@@ -171,13 +171,3 @@ type IssueCustomField struct {
 	Self  string `json:"self"`
 	Value string `json:"value"`
 }
-
-/*
-func UnmarshalAny(data, v any) error {
-	b, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-	return json.Unmarshal(b, v)
-}
-*/

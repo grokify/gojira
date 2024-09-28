@@ -54,3 +54,16 @@ func (svc *CustomFieldService) GetCustomField(customFieldName string) (CustomFie
 	}
 	return cfsName[0], nil
 }
+
+func (svc *CustomFieldService) GetCustomFieldSet() (*CustomFieldSet, error) {
+	if cfs, err := svc.GetCustomFields(); err != nil {
+		return nil, err
+	} else {
+		set := NewCustomFieldSet()
+		if err := set.Add(cfs...); err != nil {
+			return nil, err
+		} else {
+			return set, nil
+		}
+	}
+}
