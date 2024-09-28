@@ -2,6 +2,7 @@ package gojira
 
 import (
 	"regexp"
+	"strings"
 
 	"github.com/grokify/mogo/type/stringsutil"
 )
@@ -17,4 +18,15 @@ func ParseKeys(s string, unique, asc bool) []string {
 		}
 	}
 	return stringsutil.SliceCondenseSpace(keys, unique, asc)
+}
+
+func KeysContainProject(keys []string, projectKey string) bool {
+	pk := strings.ToUpper(strings.TrimSpace(projectKey))
+	for _, k := range keys {
+		k := strings.ToUpper(strings.TrimSpace(k))
+		if strings.Index(k, pk+"-") == 0 {
+			return true
+		}
+	}
+	return false
 }
