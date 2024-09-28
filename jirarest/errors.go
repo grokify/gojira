@@ -9,4 +9,6 @@ var (
 	ErrIssueOrIssueKeyOrIssueIDRequired = errors.New("issue, issue id, or issue key required")
 	ErrIssuesSetCannotBeNil             = errors.New("issuesSet cannot be nil")
 	ErrFunctionCannotBeNil              = errors.New("function cannot be nil")
+
+	ErrNotFound = errors.New("Issue does not exist or you do not have permission to see it.: request failed. Please analyze the request body for more details. Status code: 400")
 )
