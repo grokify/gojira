@@ -50,6 +50,16 @@ func NewClientBasicAuth(serverURL, username, password string) (*Client, error) {
 	}
 }
 
+func NewClientFromGoauthCredentials(c *goauth.Credentials) (*Client, error) {
+	if c == nil {
+		return nil, errors.New("goauth.Credentials cannot be nil")
+	} else if c.Type == goauth.TypeBasic && c.Basic != nil {
+		return NewClientBasicAuth(c.Basic.ServerURL, c.Basic.Username, c.Basic.Password)
+	} else {
+		return nil, errors.New("auth method not supported or popuated")
+	}
+}
+
 func NewClientGoauthBasicAuthFile(filename, credsKey string, addCustomFieldSet bool) (*Client, error) {
 	if hclient, serverURL, err := NewClientHTTPBasicAuthFile(filename, credsKey); err != nil {
 		return nil, errorsutil.Wrapf(err, `jirarest.ClientsBasicAuthFile() (%s)`, filename)
