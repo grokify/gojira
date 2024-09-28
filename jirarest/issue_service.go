@@ -38,8 +38,9 @@ func (svc *IssueService) Issue(key string) (*jira.Issue, error) {
 }
 
 // Issues returns a list of issues given a set of keys. If no keys are provided,
-// any empty slice is returned.
-func (svc *IssueService) Issues(keys ...string) (Issues, error) {
+// any empty slice is returned. `skipNotFound` is useful if Jira ticket key no
+// longer exists.
+func (svc *IssueService) Issues(keys []string, skipNotFound bool) (Issues, error) {
 	keys = stringsutil.SliceCondenseSpace(keys, true, true)
 	iss := Issues{}
 	if len(keys) == 0 {
@@ -47,7 +48,11 @@ func (svc *IssueService) Issues(keys ...string) (Issues, error) {
 	}
 	for _, key := range keys {
 		if is, err := svc.Issue(key); err != nil {
-			return iss, err
+			if skipNotFound && err.Error() == ErrNotFound.Error() {
+				continue
+			} else {
+				return iss, err
+			}
 		} else {
 			iss = append(iss, *is)
 		}

@@ -33,7 +33,7 @@ func (sets *IssuesSets) UpsertIssueKeys(jrClient *Client, setName string, issueK
 	if jrClient == nil {
 		return ErrClientCannotBeNil
 	}
-	ii, err := jrClient.IssueAPI.Issues(issueKeys...)
+	ii, err := jrClient.IssueAPI.Issues(issueKeys, false)
 	if err != nil {
 		return err
 	}
