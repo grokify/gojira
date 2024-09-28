@@ -54,18 +54,18 @@ func (set *IssuesSet) FilterStatus(inclStatuses ...string) (*IssuesSet, error) {
 */
 
 func (set *IssuesSet) FilterByType(inclTypes ...string) (*IssuesSet, error) {
-	n := NewIssuesSet(set.Config)
+	out := NewIssuesSet(set.Config)
 	if len(inclTypes) == 0 {
-		return n, nil
+		return out, nil
 	}
 	for _, iss := range set.IssuesMap {
 		im := NewIssueMore(pointer.Pointer(iss))
 		if slices.Index(inclTypes, im.Type()) >= 0 {
-			err := n.Add(iss)
+			err := out.Add(iss)
 			if err != nil {
 				return nil, err
 			}
 		}
 	}
-	return n, nil
+	return out, nil
 }
