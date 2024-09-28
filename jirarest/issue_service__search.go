@@ -39,8 +39,21 @@ func (svc *IssueService) SearchChildrenIssues(parentKeys []string) (Issues, erro
 	}
 }
 
-func (svc *IssueService) SearchChildrenIssuesSet(recursive bool, parentKeys ...string) (*IssuesSet, error) {
+func (svc *IssueService) SearchChildrenIssuesSet(recursive, inclParents bool, parentKeys ...string) (*IssuesSet, error) {
+	parentKeys = stringsutil.SliceCondenseSpace(parentKeys, true, true)
 	is := NewIssuesSet(svc.Client.Config)
+	if len(parentKeys) == 0 {
+		return is, nil
+	}
+	if inclParents {
+		if iss, err := svc.Issues(parentKeys, false); err != nil {
+			return nil, err
+		} else if (len(iss)) == 0 {
+			return nil, fmt.Errorf("no issues found for (%d) keys", len(parentKeys))
+		} else if err := is.Add(iss...); err != nil {
+			return nil, err
+		}
+	}
 	seen := map[string]int{}
 	seen, err := searchChildrenIssuesSetInternal(svc, is, parentKeys, seen)
 	if err != nil {
@@ -62,10 +75,9 @@ func (svc *IssueService) SearchChildrenIssuesSet(recursive bool, parentKeys ...s
 		}
 		i++
 		if i >= recurseLimit {
-			break
+			return is, fmt.Errorf("recurse limit of %d reached", recurseLimit)
 		}
 	}
-
 	return is, nil
 }
 
