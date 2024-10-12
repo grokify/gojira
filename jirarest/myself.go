@@ -21,8 +21,7 @@ func (c *Client) Myself() (*jira.User, *http.Response, error) {
 	usr := jira.User{}
 	if c.simpleClient == nil {
 		return nil, nil, ErrSimpleClientCannotBeNil
-	}
-	if resp, err := c.simpleClient.Do(httpsimple.Request{
+	} else if resp, err := c.simpleClient.Do(httpsimple.Request{
 		Method: http.MethodGet,
 		URL:    urlutil.JoinAbsolute(c.Config.ServerURL, APIURLMyself)}); err != nil {
 		return nil, nil, err
