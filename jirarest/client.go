@@ -35,21 +35,21 @@ type Client struct {
 	CustomFieldSet *CustomFieldSet
 }
 
-func NewClientBasicAuth(serverURL, username, password string) (*Client, error) {
+func NewClientBasicAuth(serverURL, username, password string, addCustomFieldSet bool) (*Client, error) {
 	if hclient, err := authutil.NewClientBasicAuth(username, password, false); err != nil {
 		return nil, err
 	} else if jclient, err := JiraClientBasicAuth(serverURL, username, password); err != nil {
 		return nil, err
 	} else {
-		return newClientFromClients(hclient, jclient, serverURL, true)
+		return newClientFromClients(hclient, jclient, serverURL, addCustomFieldSet)
 	}
 }
 
-func NewClientGoauthCredentials(c *goauth.Credentials) (*Client, error) {
+func NewClientGoauthCredentials(c *goauth.Credentials, addCustomFieldSet bool) (*Client, error) {
 	if c == nil {
 		return nil, errors.New("goauth.Credentials cannot be nil")
 	} else if c.Type == goauth.TypeBasic && c.Basic != nil {
-		return NewClientBasicAuth(c.Basic.ServerURL, c.Basic.Username, c.Basic.Password)
+		return NewClientBasicAuth(c.Basic.ServerURL, c.Basic.Username, c.Basic.Password, addCustomFieldSet)
 	} else {
 		return nil, errors.New("auth method not supported or popuated")
 	}
