@@ -19,6 +19,9 @@ const APIURLMyself = "/rest/api/3/myself"
 
 func (c *Client) Myself() (*jira.User, *http.Response, error) {
 	usr := jira.User{}
+	if c.simpleClient == nil {
+		return nil, nil, ErrSimpleClientCannotBeNil
+	}
 	if resp, err := c.simpleClient.Do(httpsimple.Request{
 		Method: http.MethodGet,
 		URL:    urlutil.JoinAbsolute(c.Config.ServerURL, APIURLMyself)}); err != nil {
@@ -38,7 +41,7 @@ func (c *Client) MyselfUserInfo(ctx context.Context) (*oidc.UserInfo, *jira.User
 	} else if u, resp, err := c.JiraClient.User.GetSelfWithContext(ctx); err != nil {
 		return nil, nil, nil, err
 	} else if resp.StatusCode > 299 {
-		return nil, nil, nil, fmt.Errorf("bad status code [%d]", resp.StatusCode)
+		return nil, nil, nil, fmt.Errorf("bad status code (%d)", resp.StatusCode)
 	} else {
 		return UserJiraToOIDC(u, c.Config.ServerURL), u, resp, nil
 	}
