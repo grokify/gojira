@@ -17,8 +17,9 @@ import (
 )
 
 var (
-	ErrClientCannotBeNil     = errors.New("client cannot be nil")
-	ErrJiraClientCannotBeNil = errors.New("jira client cannot be nil")
+	ErrClientCannotBeNil       = errors.New("client cannot be nil")
+	ErrJiraClientCannotBeNil   = errors.New("jira client cannot be nil")
+	ErrSimpleClientCannotBeNil = errors.New("simple client cannot be nil")
 )
 
 type Client struct {
@@ -40,17 +41,11 @@ func NewClientBasicAuth(serverURL, username, password string) (*Client, error) {
 	} else if jclient, err := JiraClientBasicAuth(serverURL, username, password); err != nil {
 		return nil, err
 	} else {
-		c := &Client{
-			HTTPClient: hclient,
-			JiraClient: jclient}
-		cfg := gojira.NewConfigDefault()
-		cfg.ServerURL = serverURL
-		c.Config = cfg
-		return c, nil
+		return newClient(hclient, jclient, serverURL, true)
 	}
 }
 
-func NewClientFromGoauthCredentials(c *goauth.Credentials) (*Client, error) {
+func NewClientGoauthCredentials(c *goauth.Credentials) (*Client, error) {
 	if c == nil {
 		return nil, errors.New("goauth.Credentials cannot be nil")
 	} else if c.Type == goauth.TypeBasic && c.Basic != nil {
@@ -60,24 +55,28 @@ func NewClientFromGoauthCredentials(c *goauth.Credentials) (*Client, error) {
 	}
 }
 
+func newClient(hclient *http.Client, jclient *jira.Client, serverURL string, addCustomFieldSet bool) (*Client, error) {
+	c := &Client{
+		HTTPClient: hclient,
+		JiraClient: jclient}
+	cfg := gojira.NewConfigDefault()
+	cfg.ServerURL = serverURL
+	c.Config = cfg
+	sc := httpsimple.NewClient(hclient, serverURL)
+	c.simpleClient = &sc
+	if err := c.Inflate(addCustomFieldSet); err != nil {
+		return nil, err
+	}
+	return c, nil
+}
+
 func NewClientGoauthBasicAuthFile(filename, credsKey string, addCustomFieldSet bool) (*Client, error) {
 	if hclient, serverURL, err := NewClientHTTPBasicAuthFile(filename, credsKey); err != nil {
 		return nil, errorsutil.Wrapf(err, `jirarest.ClientsBasicAuthFile() (%s)`, filename)
 	} else if jclient, err := NewClientJiraBasicAuthFile(filename, credsKey); err != nil {
 		return nil, errorsutil.Wrap(err, `jirarest.ClientsBasicAuthFile()..JiraClientBasicAuthFile()`)
 	} else {
-		c := &Client{
-			HTTPClient: hclient,
-			JiraClient: jclient}
-		cfg := gojira.NewConfigDefault()
-		cfg.ServerURL = serverURL
-		sc := httpsimple.NewClient(hclient, serverURL)
-		c.simpleClient = &sc
-		c.Config = cfg
-		if err := c.Inflate(addCustomFieldSet); err != nil {
-			return nil, err
-		}
-		return c, nil
+		return newClient(hclient, jclient, serverURL, addCustomFieldSet)
 	}
 }
 
