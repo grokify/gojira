@@ -41,7 +41,7 @@ func NewClientBasicAuth(serverURL, username, password string) (*Client, error) {
 	} else if jclient, err := JiraClientBasicAuth(serverURL, username, password); err != nil {
 		return nil, err
 	} else {
-		return newClient(hclient, jclient, serverURL, true)
+		return newClientFromClients(hclient, jclient, serverURL, true)
 	}
 }
 
@@ -55,7 +55,7 @@ func NewClientGoauthCredentials(c *goauth.Credentials) (*Client, error) {
 	}
 }
 
-func newClient(hclient *http.Client, jclient *jira.Client, serverURL string, addCustomFieldSet bool) (*Client, error) {
+func newClientFromClients(hclient *http.Client, jclient *jira.Client, serverURL string, addCustomFieldSet bool) (*Client, error) {
 	c := &Client{
 		HTTPClient: hclient,
 		JiraClient: jclient}
@@ -76,7 +76,7 @@ func NewClientGoauthBasicAuthFile(filename, credsKey string, addCustomFieldSet b
 	} else if jclient, err := NewClientJiraBasicAuthFile(filename, credsKey); err != nil {
 		return nil, errorsutil.Wrap(err, `jirarest.ClientsBasicAuthFile()..JiraClientBasicAuthFile()`)
 	} else {
-		return newClient(hclient, jclient, serverURL, addCustomFieldSet)
+		return newClientFromClients(hclient, jclient, serverURL, addCustomFieldSet)
 	}
 }
 
