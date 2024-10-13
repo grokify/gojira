@@ -34,6 +34,7 @@ type JQL struct {
 	TypesExcl       [][]string
 	Raw             []string
 	CustomFieldIncl map[string][]string // slice is `IN`
+	CustomFieldExcl map[string][]string
 }
 
 func (j JQL) String() string {
@@ -104,6 +105,19 @@ func (j JQL) String() string {
 			parts = append(parts, clause)
 		}
 	}
+	for cfk, cfv := range j.CustomFieldExcl {
+		cfv = stringsutil.SliceCondenseSpace(cfv, true, false)
+		if len(cfv) == 0 {
+			continue
+		}
+		if cfkCanonicalID, err := CustomFieldLabelToID(cfk); err == nil {
+			cfk = cfkCanonicalID.StringBrackets()
+		}
+		if clause := inClause(cfk, cfv, true); clause != "" {
+			parts = append(parts, clause)
+		}
+	}
+
 	parts = append(parts, j.Raw...)
 
 	if len(parts) > 0 {
