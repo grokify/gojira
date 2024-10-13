@@ -18,6 +18,7 @@ import (
 
 var (
 	ErrClientCannotBeNil       = errors.New("client cannot be nil")
+	ErrKeyNotFound             = errors.New("key not found")
 	ErrJiraClientCannotBeNil   = errors.New("jira client cannot be nil")
 	ErrSimpleClientCannotBeNil = errors.New("simple client cannot be nil")
 )
