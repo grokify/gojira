@@ -82,7 +82,6 @@ func NewClientGoauthBasicAuthFile(filename, credsKey string, addCustomFieldSet b
 }
 
 func NewCredentialsBasicAuthGoauthFile(filename, credsKey string) (*goauth.CredentialsBasicAuth, error) {
-	// func UserPassCredsBasic(filename, credsKey string) (*goauth.CredentialsBasicAuth, error) {
 	if cs, err := goauth.ReadFileCredentialsSet(filename, true); err != nil {
 		return nil, err
 	} else if creds, err := cs.Get(credsKey); err != nil {
