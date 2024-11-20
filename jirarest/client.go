@@ -52,7 +52,7 @@ func NewClientGoauthCredentials(c *goauth.Credentials, addCustomFieldSet bool) (
 	} else if c.Type == goauth.TypeBasic && c.Basic != nil {
 		return NewClientBasicAuth(c.Basic.ServerURL, c.Basic.Username, c.Basic.Password, addCustomFieldSet)
 	} else {
-		return nil, errors.New("auth method not supported or popuated")
+		return nil, errors.New("auth method not supported or populated")
 	}
 }
 
