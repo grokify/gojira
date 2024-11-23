@@ -132,7 +132,7 @@ func (set *IssuesSet) LenMap() map[string]uint {
 }
 
 func (set *IssuesSet) EpicKeys(customFieldID string) []string {
-	keys := []string{}
+	var keys []string
 	for _, iss := range set.IssuesMap {
 		if iss.Fields == nil {
 			continue
@@ -148,22 +148,6 @@ func (set *IssuesSet) EpicKeys(customFieldID string) []string {
 	keys = slicesutil.Dedupe(keys)
 	sort.Strings(keys)
 	return keys
-}
-
-// Get returns a `jira.Issue` given an issue key.
-func (set *IssuesSet) Get(key string) (jira.Issue, error) {
-	key = strings.TrimSpace(key)
-	if key == "" {
-		return jira.Issue{}, errors.New("key not provided")
-	}
-	if iss, ok := set.IssuesMap[key]; ok {
-		return iss, nil
-	} else if set.Parents != nil {
-		if iss, ok := set.Parents.IssuesMap[key]; ok {
-			return iss, nil
-		}
-	}
-	return jira.Issue{}, errors.New("key not found")
 }
 
 func (set *IssuesSet) InflateEpicKeys(customFieldEpicLinkID string) {
@@ -188,7 +172,7 @@ func (set *IssuesSet) InflateEpicKeys(customFieldEpicLinkID string) {
 // InflateEpics uses the Jira REST API to inflate the Issue struct with an Epic struct.
 func (set *IssuesSet) InflateEpics(jclient *jira.Client, customFieldIDEpicLink string) error {
 	epicKeys := set.EpicKeys(customFieldIDEpicLink)
-	newEpicKeys := []string{}
+	var newEpicKeys []string
 	for _, key := range epicKeys {
 		if _, ok := set.IssuesMap[key]; !ok {
 			newEpicKeys = append(newEpicKeys, key)
@@ -215,11 +199,35 @@ func (set *IssuesSet) InflateEpics(jclient *jira.Client, customFieldIDEpicLink s
 	return nil
 }
 
+// Issue returns a `jira.Issue` given an issue key.
+func (set *IssuesSet) Issue(key string) (jira.Issue, error) {
+	key = strings.TrimSpace(key)
+	if key == "" {
+		return jira.Issue{}, errors.New("key not provided")
+	}
+	if iss, ok := set.IssuesMap[key]; ok {
+		return iss, nil
+	} else if set.Parents != nil {
+		if iss, ok := set.Parents.IssuesMap[key]; ok {
+			return iss, nil
+		}
+	}
+	return jira.Issue{}, errors.New("key not found")
+}
+
 // Issues returns the issues in the set as an `Issues{}` slice.
-func (set *IssuesSet) Issues() Issues {
-	ii := Issues{}
-	for _, iss := range set.IssuesMap {
-		ii = append(ii, iss)
+func (set *IssuesSet) Issues(keys ...string) Issues {
+	var ii Issues
+	if len(keys) == 0 {
+		for _, iss := range set.IssuesMap {
+			ii = append(ii, iss)
+		}
+	} else {
+		for _, key := range keys {
+			if iss, ok := set.IssuesMap[key]; ok {
+				ii = append(ii, iss)
+			}
+		}
 	}
 	return ii
 }
@@ -235,6 +243,27 @@ func (set *IssuesSet) IssueMetas(customFieldLabels []string) IssueMetas {
 	return imetas
 }
 
+func (set *IssuesSet) IssueMores(keys ...string) IssueMores {
+	var ims IssueMores
+	if len(keys) == 0 {
+		for _, iss := range set.IssuesMap {
+			im := NewIssueMore(&iss)
+			ims = append(ims, im)
+		}
+	} else {
+		for _, k := range keys {
+			k = strings.TrimSpace(k)
+			if k == "" {
+				continue
+			} else if iss, ok := set.IssuesMap[k]; ok {
+				im := NewIssueMore(&iss)
+				ims = append(ims, im)
+			}
+		}
+	}
+	return ims
+}
+
 func (set *IssuesSet) IssuesSetHighestType(issueType string) (*IssuesSet, error) {
 	new := NewIssuesSet(set.Config)
 	for _, iss := range set.IssuesMap {
@@ -248,7 +277,7 @@ func (set *IssuesSet) IssuesSetHighestType(issueType string) (*IssuesSet, error)
 				return nil, errorsutil.Wrapf(err, "error on `is.Lineage(%s)`", issKey)
 			}
 			if issMetaType := lineage.HighestType(issueType); issMetaType != nil && strings.TrimSpace(issMetaType.Key) != "" {
-				if issType, err := set.Get(issMetaType.Key); err != nil {
+				if issType, err := set.Issue(issMetaType.Key); err != nil {
 					return nil, errorsutil.Wrapf(err, "error on `is.Get(%s)`", issMetaType.Key)
 				} else {
 					if err := new.Add(issType); err != nil {

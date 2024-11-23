@@ -281,7 +281,7 @@ func (set *IssuesSet) ExportWorkstreamFilter(wsFuncMake WorkstreamFuncMake, wsFu
 			for _, im := range lineages {
 				if im.Key == key {
 					continue
-				} else if iss, err := set.Get(im.Key); err != nil {
+				} else if iss, err := set.Issue(im.Key); err != nil {
 					return nil, err
 				} else if err = out.Parents.Add(iss); err != nil {
 					return nil, err

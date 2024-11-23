@@ -197,7 +197,7 @@ func (svc *IssueService) IssuePatchCustomFieldRecursive(ctx context.Context, iss
 				"customFieldLabel", customFieldLabel,
 				"customFieldValue", customFieldValue,
 				"parentChildrenCount", is.Len())
-			cISS, err := is.Get(cIssKey)
+			cISS, err := is.Issue(cIssKey)
 			if err != nil {
 				return count, err
 			}
@@ -308,7 +308,7 @@ func (svc *IssueService) IssuePatchLabelRecursive(ctx context.Context, issueKeyO
 			"childrenCount", is.Len())
 		issKeys := is.Keys()
 		for _, issKey := range issKeys {
-			cISS, err := is.Get(issKey)
+			cISS, err := is.Issue(issKey)
 			if err != nil {
 				return count, err
 			}

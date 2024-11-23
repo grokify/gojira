@@ -18,7 +18,7 @@ func (set *IssuesSet) Lineage(key string, customFieldLabels []string) (IssueMeta
 		panic("Lineage Epic")
 	}
 	ims := IssueMetas{}
-	iss, err := set.Get(key)
+	iss, err := set.Issue(key)
 	if err != nil {
 		return ims, errorsutil.Wrapf(err, "key not found (%s)", key)
 	}
@@ -32,7 +32,7 @@ func (set *IssuesSet) Lineage(key string, customFieldLabels []string) (IssueMeta
 	}
 
 	for parKey != "" {
-		parIss, err := set.Get(parKey)
+		parIss, err := set.Issue(parKey)
 		if err != nil {
 			return ims, errorsutil.Wrap(err, "parent not found")
 		}
