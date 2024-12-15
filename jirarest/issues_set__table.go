@@ -58,7 +58,7 @@ func CustomTableColsFromStrings(cols []string) CustomTableCols {
 	return ccols
 }
 
-func DefaultIssuesSetTableColumns(inclInitiative, inclEpic bool) *table.ColumnDefinitions {
+func DefaultIssuesSetTableColumns(inclInitiative, inclEpic bool) table.ColumnDefinitionSet {
 	var defs []table.ColumnDefinition
 	if inclInitiative {
 		initiativeCols := []table.ColumnDefinition{
@@ -91,7 +91,7 @@ func DefaultIssuesSetTableColumns(inclInitiative, inclEpic bool) *table.ColumnDe
 
 	// defs = append(defs, {Name: "Epic Key", Format: table.FormatURL},
 
-	return &table.ColumnDefinitions{
+	return table.ColumnDefinitionSet{
 		Definitions: defs,
 	}
 }
@@ -150,7 +150,7 @@ func (set *IssuesSet) TableDefault(customCols *CustomTableCols, inclEpic bool, i
 
 	tbl := table.NewTable("issues")
 
-	tbl.LoadColumnDefinitions(DefaultIssuesSetTableColumns(inclInitiative, inclEpic))
+	tbl.LoadColumnDefinitionSet(DefaultIssuesSetTableColumns(inclInitiative, inclEpic))
 
 	if customCols != nil {
 		lenCols := len(tbl.Columns)
