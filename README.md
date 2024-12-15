@@ -7,8 +7,8 @@
 [![LOC][loc-svg]][loc-url]
 [![License][license-svg]][license-url]
 
- [build-status-svg]: https://github.com/grokify/gojira/workflows/build/badge.svg
- [build-status-url]: https://github.com/grokify/gojira/actions
+ [build-status-svg]: https://github.com/grokify/gojira/workflows/test/badge.svg?branch=master
+ [build-status-url]: https://github.com/grokify/gojira/actions/workflows/test.yaml
  [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/gojira
  [goreport-url]: https://goreportcard.com/report/github.com/grokify/gojira
  [codeclimate-status-svg]: https://codeclimate.com/github/grokify/gojira/badges/gpa.svg
