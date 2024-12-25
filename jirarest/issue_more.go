@@ -289,5 +289,5 @@ func (im *IssueMore) Meta(serverURL string, additionalFieldNames []string) Issue
 }
 
 func (im *IssueMore) WriteFileJSON(filename string, perm os.FileMode, prefix, indent string) error {
-	return jsonutil.WriteFile(filename, im.issue, prefix, indent, perm)
+	return jsonutil.MarshalFile(filename, im.issue, prefix, indent, perm)
 }

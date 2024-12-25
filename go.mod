@@ -1,12 +1,12 @@
 module github.com/grokify/gojira
 
-go 1.22.7
+go 1.23.2
 
 require (
 	github.com/andygrunwald/go-jira v1.16.0
-	github.com/grokify/goauth v0.22.6
-	github.com/grokify/gocharts/v2 v2.21.3
-	github.com/grokify/mogo v0.66.3
+	github.com/grokify/goauth v0.22.7
+	github.com/grokify/gocharts/v2 v2.21.5
+	github.com/grokify/mogo v0.66.5
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/rs/zerolog v1.33.0
@@ -14,7 +14,7 @@ require (
 )
 
 require (
-	cloud.google.com/go/auth v0.12.1 // indirect
+	cloud.google.com/go/auth v0.13.0 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.6 // indirect
 	cloud.google.com/go/compute/metadata v0.6.0 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
@@ -27,7 +27,7 @@ require (
 	github.com/google/s2a-go v0.1.8 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.4 // indirect
-	github.com/googleapis/gax-go/v2 v2.14.0 // indirect
+	github.com/googleapis/gax-go/v2 v2.14.1 // indirect
 	github.com/grokify/base36 v1.0.5 // indirect
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
@@ -59,10 +59,10 @@ require (
 	golang.org/x/sys v0.28.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 	gonum.org/v1/gonum v0.15.1 // indirect
-	google.golang.org/api v0.211.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20241209162323-e6fa225c2576 // indirect
-	google.golang.org/grpc v1.69.0 // indirect
-	google.golang.org/protobuf v1.36.0 // indirect
+	google.golang.org/api v0.214.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20241223144023-3abc09e42ca8 // indirect
+	google.golang.org/grpc v1.69.2 // indirect
+	google.golang.org/protobuf v1.36.1 // indirect
 )
 
 // replace github.com/grokify/goauth => ../goauth
