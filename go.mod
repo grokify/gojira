@@ -4,9 +4,9 @@ go 1.23.2
 
 require (
 	github.com/andygrunwald/go-jira v1.16.0
-	github.com/grokify/goauth v0.23.1
-	github.com/grokify/gocharts/v2 v2.21.11
-	github.com/grokify/mogo v0.67.4
+	github.com/grokify/goauth v0.23.2
+	github.com/grokify/gocharts/v2 v2.21.12
+	github.com/grokify/mogo v0.67.5
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/rs/zerolog v1.33.0
@@ -61,7 +61,7 @@ require (
 	gonum.org/v1/gonum v0.15.1 // indirect
 	google.golang.org/api v0.216.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250106144421-5f5ef82da422 // indirect
-	google.golang.org/grpc v1.69.2 // indirect
+	google.golang.org/grpc v1.69.4 // indirect
 	google.golang.org/protobuf v1.36.2 // indirect
 )
 
