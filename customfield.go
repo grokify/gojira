@@ -26,7 +26,7 @@ func CustomFieldLabelToID(key string) (CustomFieldID, error) {
 		if keyID, err := strconv.Atoi(key); err != nil {
 			return 0, err
 		} else {
-			return CustomFieldID(uint(keyID)), nil
+			return CustomFieldID(keyID), nil
 		}
 	} else if m := rxCustomFieldPrefix.FindAllStringSubmatch(key, -1); len(m) > 0 {
 		n := m[0]
@@ -35,7 +35,7 @@ func CustomFieldLabelToID(key string) (CustomFieldID, error) {
 			if keyID, err := strconv.Atoi(keyIDStr); err != nil {
 				return 0, err
 			} else {
-				return CustomFieldID(uint(keyID)), nil
+				return CustomFieldID(keyID), nil
 			}
 		}
 	} else if m := rxCustomFieldBrackets.FindAllStringSubmatch(key, -1); len(m) > 0 {
@@ -45,7 +45,7 @@ func CustomFieldLabelToID(key string) (CustomFieldID, error) {
 			if keyID, err := strconv.Atoi(keyIDStr); err != nil {
 				return 0, err
 			} else {
-				return CustomFieldID(uint(keyID)), nil
+				return CustomFieldID(keyID), nil
 			}
 		}
 	}
@@ -60,7 +60,7 @@ func CustomFieldKeyAnyToBrackets(key string) (string, error) {
 	}
 }
 
-type CustomFieldID uint
+type CustomFieldID int
 
 // StringBrackets returns a string in the format of `cf[12345]`.
 // This is used in JQL queries.
