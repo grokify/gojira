@@ -294,7 +294,7 @@ func (svc *IssueService) IssuePatchLabelRecursive(ctx context.Context, issueKeyO
 		if svc.Client.LoggerZ != nil {
 			svc.Client.LoggerZ.Info().
 				Str("issueKey", issueKeyOrID).
-				Int("childrenCount", int(is.Len())).
+				Int("childrenCount", is.Len()).
 				Msg("processing label update children count")
 		}
 		svc.Client.LogOrNotAny(

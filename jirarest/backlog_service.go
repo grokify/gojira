@@ -37,8 +37,8 @@ const (
 )
 
 type BoardBacklogParams struct {
-	StartAt       uint   `url:"startAt"`
-	MaxResults    uint   `url:"maxResults"`
+	StartAt       int    `url:"startAt"`
+	MaxResults    int    `url:"maxResults"`
 	JQL           string `url:"jql"`
 	ValidateQuery bool   `url:"validateQuery"`
 	Fields        string `url:"fields"`
@@ -48,10 +48,10 @@ type BoardBacklogParams struct {
 func (p BoardBacklogParams) URLValues() url.Values {
 	u := url.Values{}
 	if p.StartAt > 0 {
-		u.Add(ParamStartAt, strconv.Itoa(int(p.StartAt)))
+		u.Add(ParamStartAt, strconv.Itoa(p.StartAt))
 	}
 	if p.MaxResults > 0 {
-		u.Add(ParamMaxResults, strconv.Itoa(int(p.MaxResults)))
+		u.Add(ParamMaxResults, strconv.Itoa(p.MaxResults))
 	}
 	jql := strings.TrimSpace(p.JQL)
 	if jql != "" {
@@ -87,9 +87,6 @@ func BacklogAPIURL(baseURL string, boardID uint, qry *BoardBacklogParams) string
 type BacklogService struct {
 	Client  *Client
 	sclient httpsimple.Client
-	// config  gojira.Config
-	// client    *http.Client
-	// serverURL string
 }
 
 func NewBacklogService(client *Client) *BacklogService {
@@ -129,7 +126,7 @@ func (svc *BacklogService) GetBacklogIssuesAll(boardID uint, jql string) (*Issue
 	issues := Issues{}
 
 	opts := &BoardBacklogParams{
-		StartAt:    uint(0),
+		StartAt:    0,
 		MaxResults: MaxResults,
 		JQL:        jql,
 	}
@@ -148,7 +145,7 @@ func (svc *BacklogService) GetBacklogIssuesAll(boardID uint, jql string) (*Issue
 		} else {
 			break
 		}
-		if opts.StartAt+opts.MaxResults > uint(ir.Total) {
+		if opts.StartAt+opts.MaxResults > ir.Total {
 			break
 		} else {
 			opts.StartAt += opts.MaxResults

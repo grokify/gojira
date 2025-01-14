@@ -118,19 +118,22 @@ func (svc *IssueService) SearchIssuesMulti(jqls ...string) (Issues, error) {
 // SearchIssuesPage returns all issues for a JQL query, automatically handling API pagination.
 // A `limit` value of `0` means the max results available. A `maxPages` of `0` means to retrieve
 // all pages.
-func (svc *IssueService) SearchIssuesPages(jql string, limit, offset, maxPages uint) (Issues, error) {
+func (svc *IssueService) SearchIssuesPages(jql string, limit, offset, maxPages int) (Issues, error) {
 	var issues Issues
+	if limit < 0 || offset < 0 || maxPages < 0 {
+		return issues, errors.New("limit, offset, and maxPages cannot be negative")
+	}
 
 	if limit == 0 {
 		limit = gojira.JQLMaxResults
 	}
 
 	so := jira.SearchOptions{
-		MaxResults: int(limit),
-		StartAt:    int(offset),
+		MaxResults: limit,
+		StartAt:    offset,
 	}
 
-	i := uint(0)
+	i := 0
 	for {
 		if maxPages > 0 && i >= maxPages {
 			break

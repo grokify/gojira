@@ -8,7 +8,7 @@ const (
 	StatusOpen         = "Open"
 	StatusCustomClosed = "Closed"
 
-	MaxResults    = uint(1000)
+	MaxResults    = 1000
 	MetaParamRank = "_rank"
 
 	OperationAdd    = "add"
