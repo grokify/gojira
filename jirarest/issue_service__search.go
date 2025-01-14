@@ -146,7 +146,7 @@ func (svc *IssueService) SearchIssuesPages(jql string, limit, offset, maxPages i
 		}
 		if svc.Client.LoggerZ != nil {
 			svc.Client.LoggerZ.Info().
-				Int("iteration", int(i)).
+				Int("iteration", i).
 				Int("limit", resp.MaxResults).
 				Int("offset", resp.StartAt).
 				Int("total", resp.Total).
