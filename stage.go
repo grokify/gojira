@@ -135,11 +135,11 @@ func (ss *StageConfig) Order() []string {
 	}, true, false)
 }
 
-func (ss *StageConfig) Map() map[string]uint {
+func (ss *StageConfig) Map() map[string]int {
 	names := ss.Order()
-	out := map[string]uint{}
+	out := map[string]int{}
 	for i, name := range names {
-		out[name] = uint(i)
+		out[name] = i
 	}
 	return out
 }

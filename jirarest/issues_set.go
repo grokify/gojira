@@ -92,42 +92,42 @@ func (set *IssuesSet) KeyExists(key string, inclParents bool) bool {
 }
 
 // Keys returns a slice of sorted issue keys.
-func (set *IssuesSet) Keys() []string              { return maputil.Keys(set.IssuesMap) }
-func (set *IssuesSet) Len() uint                   { return uint(len(set.IssuesMap)) }
-func (set *IssuesSet) LenParents() uint            { return uint(len(set.KeysParents())) }
-func (set *IssuesSet) LenParentsPopulated() uint   { return uint(len(set.KeysParentsPopulated())) }
-func (set *IssuesSet) LenParentsUnpopulated() uint { return uint(len(set.KeysParentsUnpopulated())) }
+func (set *IssuesSet) Keys() []string             { return maputil.Keys(set.IssuesMap) }
+func (set *IssuesSet) Len() int                   { return len(set.IssuesMap) }
+func (set *IssuesSet) LenParents() int            { return len(set.KeysParents()) }
+func (set *IssuesSet) LenParentsPopulated() int   { return len(set.KeysParentsPopulated()) }
+func (set *IssuesSet) LenParentsUnpopulated() int { return len(set.KeysParentsUnpopulated()) }
 
-func (set *IssuesSet) LenLineageTopKeysPopulated() uint {
+func (set *IssuesSet) LenLineageTopKeysPopulated() int {
 	if linPopIDs, err := set.LineageTopKeysPopulated(); err != nil {
 		panic(err)
 	} else {
-		return uint(len(linPopIDs))
+		return len(linPopIDs)
 	}
 }
 
-func (set *IssuesSet) LenLineageTopKeysUnpopulated() uint {
+func (set *IssuesSet) LenLineageTopKeysUnpopulated() int {
 	if linUnpopIDs, err := set.LineageTopKeysUnpopulated(); err != nil {
 		panic(err)
 	} else {
-		return uint(len(linUnpopIDs))
+		return len(linUnpopIDs)
 	}
 }
 
 // LenMap provides various metrics. It is useful for determining if all parents and lineages have been loaded.
-func (set *IssuesSet) LenMap() map[string]uint {
+func (set *IssuesSet) LenMap() map[string]int {
 	lenParentsSet := 0
 	if set.Parents != nil {
 		lenParentsSet = len(set.Parents.IssuesMap)
 	}
-	return map[string]uint{
+	return map[string]int{
 		"len":                       set.Len(),
 		"lineageTopKeysPopulated":   set.LenLineageTopKeysPopulated(),
 		"lineageTopKeysUnpopulated": set.LenLineageTopKeysUnpopulated(),
 		"parents":                   set.LenParents(),
 		"parentsPopulated":          set.LenParentsPopulated(),
 		"parentsUnpopulated":        set.LenParentsUnpopulated(),
-		"parentsSetAll":             uint(lenParentsSet),
+		"parentsSetAll":             lenParentsSet,
 	}
 }
 

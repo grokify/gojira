@@ -156,7 +156,10 @@ func inClause(field string, values []string, exclude bool) string {
 
 // JQLStringsSimple provides a set of JQLs for a single field and values. The purpose of this function
 // is to split very long lists of values so that each JQL is under a certain length limit.
-func JQLStringsSimple(field string, exclude bool, vals []string, jqlMaxLength uint) []string {
+func JQLStringsSimple(field string, exclude bool, vals []string, jqlMaxLength int) []string {
+	if jqlMaxLength < 0 {
+		jqlMaxLength *= -1
+	}
 	field = strings.TrimSpace(field)
 	if field == "" {
 		return []string{}
@@ -180,7 +183,7 @@ func JQLStringsSimple(field string, exclude bool, vals []string, jqlMaxLength ui
 	if jqlMaxLength == 0 {
 		jqlMaxLength = JQLMaxLength
 	}
-	valsMaxLength := int(jqlMaxLength) - baseStringLen
+	valsMaxLength := jqlMaxLength - baseStringLen
 	valsString := ""
 	for i, val := range vals {
 		valQuoted := quoter.Quote(val)
