@@ -1,6 +1,7 @@
 # GoJira
 
 [![Build Status][build-status-svg]][build-status-url]
+[![Lint Status][lint-status-svg]][lint-status-url]
 [![Go Report Card][goreport-svg]][goreport-url]
 [![CodeClimate][codeclimate-status-svg]][codeclimate-status-url]
 [![Docs][docs-godoc-svg]][docs-godoc-url]
@@ -9,6 +10,8 @@
 
  [build-status-svg]: https://github.com/grokify/gojira/workflows/test/badge.svg
  [build-status-url]: https://github.com/grokify/gojira/actions/workflows/test.yaml
+ [lint-status-svg]: https://github.com/grokify/gojira/workflows/lint/badge.svg
+ [lint-status-url]: https://github.com/grokify/gojira/actions/workflows/lint.yaml
  [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/gojira
  [goreport-url]: https://goreportcard.com/report/github.com/grokify/gojira
  [codeclimate-status-svg]: https://codeclimate.com/github/grokify/gojira/badges/gpa.svg
