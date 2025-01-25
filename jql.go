@@ -12,6 +12,8 @@ import (
 
 // JQL is a JQL builder. It will create a JQL string using `JQL.String()` from the supplied infomration.
 type JQL struct {
+	Name            string
+	FilterID        int
 	CreatedGTE      time.Time
 	CreatedLT       time.Time
 	FiltersIncl     [][]string // outer level is `AND`, inner level is `IN`.
