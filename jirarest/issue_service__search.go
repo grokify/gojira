@@ -115,6 +115,17 @@ func (svc *IssueService) SearchIssuesMulti(jqls ...string) (Issues, error) {
 	return issues, nil
 }
 
+func (svc *IssueService) JQLResultsTotalCount(jql string) (int, error) {
+	if _, resp, err := svc.Client.JiraClient.Issue.Search(jql, &jira.SearchOptions{
+		MaxResults: 1,
+		StartAt:    0,
+	}); err != nil {
+		return -1, err
+	} else {
+		return resp.Total, nil
+	}
+}
+
 // SearchIssuesPage returns all issues for a JQL query, automatically handling API pagination.
 // A `limit` value of `0` means the max results available. A `maxPages` of `0` means to retrieve
 // all pages.
