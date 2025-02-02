@@ -256,13 +256,3 @@ func JQLStringsSimple(field string, exclude bool, vals []string, jqlMaxLength in
 	}
 	return jqls
 }
-
-type JQLs []JQL
-
-func (j JQLs) JoinString(keyword string) string {
-	var parts []string
-	for _, jql := range j {
-		parts = append(parts, "("+jql.String()+")")
-	}
-	return strings.Join(parts, " "+keyword+" ")
-}

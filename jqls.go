@@ -9,6 +9,16 @@ import (
 	"github.com/grokify/mogo/time/timeutil"
 )
 
+type JQLs []JQL
+
+func (jqls JQLs) JoinString(keyword string) string {
+	var parts []string
+	for _, jql := range jqls {
+		parts = append(parts, "("+jql.String()+")")
+	}
+	return strings.Join(parts, " "+keyword+" ")
+}
+
 type JQLsReportMarkdownOpts struct {
 	TimeZone       string
 	AddCount       bool
