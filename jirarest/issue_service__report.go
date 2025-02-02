@@ -9,7 +9,7 @@ import (
 
 // JQLsReportMarkdownLines provides Markdownlines for a set of JQLs, including querying the number
 // of results for each JQL via the Jira API.
-func (svc *IssueService) JQLsReportMarkdownLines(headerPrefix string, jqls []gojira.JQL, opts gojira.JQLsReportMarkdownOpts) ([]string, error) {
+func (svc *IssueService) JQLsReportMarkdownLines(headerPrefix string, jqls gojira.JQLs, opts gojira.JQLsReportMarkdownOpts) ([]string, error) {
 	jqls, err := svc.JQLsAddMetadata(jqls)
 	if err != nil {
 		return []string{}, err
@@ -20,5 +20,5 @@ func (svc *IssueService) JQLsReportMarkdownLines(headerPrefix string, jqls []goj
 			issuesWebURL = urlutil.JoinAbsolute(svrURL, "issues/?")
 		}
 	}
-	return gojira.JQLsReportMarkdownLines(issuesWebURL, headerPrefix, jqls, opts)
+	return jqls.ReportMarkdownLines(issuesWebURL, headerPrefix, opts)
 }

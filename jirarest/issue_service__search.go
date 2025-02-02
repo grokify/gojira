@@ -254,7 +254,7 @@ func (svc *IssueService) SearchIssuesSetParents(set *IssuesSet) (*IssuesSet, err
 }
 
 // JQLsAddMetadata returns all issues for a JQL query, automatically handling API pagination.
-func (svc *IssueService) JQLsAddMetadata(jqls []gojira.JQL) ([]gojira.JQL, error) {
+func (svc *IssueService) JQLsAddMetadata(jqls gojira.JQLs) (gojira.JQLs, error) {
 	if len(jqls) == 0 {
 		return jqls, nil
 	}

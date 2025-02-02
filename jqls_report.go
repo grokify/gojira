@@ -15,13 +15,13 @@ type JQLsReportMarkdownOpts struct {
 	AddExplicitURL bool
 }
 
-// JQLsReportMarkdownLines provides Markdownlines for a set of JQLs.
+// ReportMarkdownLines provides Markdownlines for a set of JQLs.
 // The `JQLsReportMarkdownOpts.AddCount` option adds a static count to the report. This is useful when the
 // report isn't auto-updating, such as on a code repo.
 // The `JQLsReportMarkdownOpts.AddExplicitURL` option adds a URL which can be pasted into Confluence. This
 // will be interpreted to load a dynamic table in the Confluence page. This is not needed for git repo
 // pages.
-func JQLsReportMarkdownLines(issuesWebURL, headerPrefix string, jqls []JQL, opts JQLsReportMarkdownOpts) ([]string, error) {
+func (jqls JQLs) ReportMarkdownLines(issuesWebURL, headerPrefix string, opts JQLsReportMarkdownOpts) ([]string, error) {
 	var lines []string
 	issuesWebURL = strings.TrimSpace(issuesWebURL) // should end with `issues/?`
 	timeZone := strings.TrimSpace(opts.TimeZone)
