@@ -252,3 +252,20 @@ func (svc *IssueService) SearchIssuesSetParents(set *IssuesSet) (*IssuesSet, err
 
 	return parIssuesSet, nil
 }
+
+// JQLsAddMetadata returns all issues for a JQL query, automatically handling API pagination.
+func (svc *IssueService) JQLsAddMetadata(jqls []gojira.JQL) ([]gojira.JQL, error) {
+	if len(jqls) == 0 {
+		return jqls, nil
+	}
+	for i, j := range jqls {
+		if count, err := svc.JQLResultsTotalCount(j.String()); err != nil {
+			return jqls, err
+		} else {
+			j.Meta.QueryTime = time.Now()
+			j.Meta.QueryTotalCount = count
+			jqls[i] = j
+		}
+	}
+	return jqls, nil
+}
