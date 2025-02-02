@@ -12,10 +12,12 @@ import (
 )
 
 type JQLMeta struct {
-	Name        string
-	Key         string
-	Description string
-	FilterID    int
+	Name            string
+	Key             string
+	Description     string
+	FilterID        int
+	QueryTime       time.Time
+	QueryTotalCount int
 }
 
 // JQL is a JQL builder. It will create a JQL string using `JQL.String()` from the supplied infomration.
