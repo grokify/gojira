@@ -27,6 +27,11 @@ This module contains code to access Jira, parsing both the JSON API via [`github
 
 Various aggregate staticstics and reports are calculated/generated.
 
+## Use Cases
+
+1. Programmatically construct JQL
+1. Generate Markdown Reports from JQLs for addition to git repos or Confluence
+
 ## URL Formats
 
 Accessing a list of issues by JQL is avialable via the UI and API:
