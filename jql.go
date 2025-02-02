@@ -2,6 +2,7 @@ package gojira
 
 import (
 	"fmt"
+	"net/url"
 	"strings"
 	"time"
 
@@ -10,10 +11,16 @@ import (
 	"github.com/grokify/mogo/type/stringsutil/join"
 )
 
+type JQLMeta struct {
+	Name        string
+	Key         string
+	Description string
+	FilterID    int
+}
+
 // JQL is a JQL builder. It will create a JQL string using `JQL.String()` from the supplied infomration.
 type JQL struct {
-	Name            string
-	FilterID        int
+	Meta            JQLMeta // Not part of JQL
 	CreatedGTE      time.Time
 	CreatedLT       time.Time
 	FiltersIncl     [][]string // outer level is `AND`, inner level is `IN`.
@@ -37,6 +44,42 @@ type JQL struct {
 	Raw             []string
 	CustomFieldIncl map[string][]string // slice is `IN`
 	CustomFieldExcl map[string][]string
+	Any             JQLAndOrStringer
+}
+
+type JQLAndOrStringer [][]fmt.Stringer
+
+// JQLOrAndStringer combines `fmt.Stringer` slice of slice to create a JQL.
+// Outer slide is "AND", Inner slice is "OR".
+func (j JQLAndOrStringer) String() string {
+	if len(j) == 0 {
+		return ""
+	}
+	var andClauses []string
+	for _, orClausesRaw := range j {
+		if len(orClausesRaw) == 0 {
+			continue
+		}
+		var orClausesStr []string
+		for _, orClauseRaw := range orClausesRaw {
+			orClauseStr := strings.TrimSpace(orClauseRaw.String())
+			if orClauseStr == "" {
+				continue
+			} else {
+				orClausesStr = append(orClausesStr, addParen(orClauseStr))
+			}
+		}
+		andClauses = append(andClauses, addParen(strings.Join(orClausesStr, " OR ")))
+	}
+	return strings.Join(andClauses, " AND ")
+}
+
+func addParen(s string) string {
+	return addPrefixSuffix("(", ")", s)
+}
+
+func addPrefixSuffix(prefix, suffix, s string) string {
+	return prefix + s + suffix
 }
 
 func (j JQL) String() string {
@@ -122,11 +165,19 @@ func (j JQL) String() string {
 
 	parts = append(parts, j.Raw...)
 
+	if anyPart := j.Any.String(); anyPart != "" {
+		parts = append(parts, anyPart)
+	}
+
 	if len(parts) > 0 {
 		return strings.Join(parts, " AND ")
 	} else {
 		return ""
 	}
+}
+
+func (j JQL) QueryString() string {
+	return "jql=" + url.QueryEscape(j.String())
 }
 
 func inClause(field string, values []string, exclude bool) string {
