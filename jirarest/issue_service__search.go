@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"slices"
+	"strings"
 	"time"
 
 	jira "github.com/andygrunwald/go-jira"
@@ -116,7 +117,13 @@ func (svc *IssueService) SearchIssuesMulti(jqls ...string) (Issues, error) {
 }
 
 func (svc *IssueService) JQLResultsTotalCount(jql string) (int, error) {
-	if _, resp, err := svc.Client.JiraClient.Issue.Search(jql, &jira.SearchOptions{
+	if jql = strings.TrimSpace(jql); jql == "" {
+		return 0, nil
+	} else if svc.Client == nil {
+		return -1, ErrClientCannotBeNil
+	} else if svc.Client.JiraClient == nil {
+		return -1, ErrJiraClientCannotBeNil
+	} else if _, resp, err := svc.Client.JiraClient.Issue.Search(jql, &jira.SearchOptions{
 		MaxResults: 1,
 		StartAt:    0,
 	}); err != nil {
@@ -141,8 +148,7 @@ func (svc *IssueService) SearchIssuesPages(jql string, limit, offset, maxPages i
 
 	so := jira.SearchOptions{
 		MaxResults: limit,
-		StartAt:    offset,
-	}
+		StartAt:    offset}
 
 	i := 0
 	for {
@@ -194,7 +200,6 @@ func (svc *IssueService) SearchIssuesByMonth(jql gojira.JQL, createdGTE, created
 	for createdGTE.Before(createdLT) {
 		jql.CreatedGTE = createdGTE
 		jql.CreatedLT = month.MonthStart(createdGTE, 1)
-		// fmt.Printf("JQL [%s]\n", jql.String())
 		if ii, err := svc.SearchIssues(jql.String()); err != nil {
 			return err
 		} else if err := fnExec(ii, createdGTE); err != nil {
@@ -220,7 +225,7 @@ func (svc *IssueService) SearchIssuesSetParents(set *IssuesSet) (*IssuesSet, err
 	if set == nil {
 		return nil, ErrIssuesSetCannotBeNil
 	}
-	// func (set *IssuesSet) RetrieveParentsIssuesSet(client *Client) (*IssuesSet, error) {
+
 	parIssuesSet := NewIssuesSet(set.Config)
 	parIDs := set.KeysParentsUnpopulated()
 
@@ -241,7 +246,6 @@ func (svc *IssueService) SearchIssuesSetParents(set *IssuesSet) (*IssuesSet, err
 		} else if err := parIssuesSet.Add(parIssues.Issues()...); err != nil {
 			return nil, err
 		} else if parIDs, err = parIssuesSet.LineageTopKeysUnpopulated(); err != nil {
-			// err = parIssuesSet.RetrieveParents(c) // don't use - use lineage instead.
 			return nil, err
 		}
 		iter++

@@ -22,12 +22,10 @@ func NewIssueService(client *Client) *IssueService {
 
 func (svc *IssueService) Issue(key string) (*jira.Issue, error) {
 	key = strings.TrimSpace(key)
-	jqlInfo := gojira.JQL{IssuesIncl: [][]string{{key}}}
-	//jql := fmt.Sprintf("issue = %s", key)
-	jql := jqlInfo.String()
+	jql := gojira.JQL{IssuesIncl: [][]string{{key}}}
 	if key == "" {
 		return nil, errors.New("issue key is required")
-	} else if iss, err := svc.SearchIssues(jql); err != nil {
+	} else if iss, err := svc.SearchIssues(jql.String()); err != nil {
 		return nil, err
 	} else if len(iss) == 0 {
 		return nil, fmt.Errorf("key not found (%s)", key)
