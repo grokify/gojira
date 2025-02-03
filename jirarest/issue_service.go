@@ -7,6 +7,7 @@ import (
 
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/gojira"
+	"github.com/grokify/mogo/net/urlutil"
 	"github.com/grokify/mogo/type/slicesutil"
 	"github.com/grokify/mogo/type/stringsutil"
 )
@@ -84,4 +85,14 @@ func (svc *IssueService) GetIssuesSetForKeys(keys []string) (*IssuesSet, error) 
 	}
 
 	return is, nil
+}
+
+func (svc *IssueService) WebURL() string {
+	issuesWebURL := ""
+	if svc.Client != nil && svc.Client.Config != nil {
+		if svrURL := strings.TrimSpace(svc.Client.Config.ServerURL); svrURL != "" {
+			issuesWebURL = urlutil.JoinAbsolute(svrURL, "issues/?")
+		}
+	}
+	return issuesWebURL
 }
