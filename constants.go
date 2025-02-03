@@ -84,6 +84,8 @@ const (
 	JQLMaxResults = 100
 	JQLMaxLength  = 6000 // https://jira.atlassian.com/browse/JRASERVER-41005
 	JQLInSep      = ","
+
+	JQLStatusCategoryNEDone = "statusCategory != Done"
 )
 
 func MetaStageOrder() []string {
