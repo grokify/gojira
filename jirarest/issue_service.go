@@ -72,9 +72,8 @@ func (svc *IssueService) GetIssuesSetForKeys(keys []string) (*IssuesSet, error) 
 			continue
 		}
 		jqlInfo := gojira.JQL{KeysIncl: [][]string{keysIter}}
-		// jql := KeysJQL(keys)
 		if jql := jqlInfo.String(); jql == "" {
-			return is, nil
+			continue
 		} else if ii, err := svc.SearchIssuesPages(jql, 0, 0, 0); err != nil {
 			return nil, err
 		} else if err = is.Add(ii...); err != nil {
