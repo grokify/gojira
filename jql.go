@@ -49,10 +49,10 @@ type JQL struct {
 	StatusesExcl    [][]string
 	TypesIncl       [][]string
 	TypesExcl       [][]string
-	Raw             []string
 	CustomFieldIncl map[string][]string // slice is `IN`
 	CustomFieldExcl map[string][]string
 	Any             JQLAndOrStringer
+	Raw             []string
 }
 
 type JQLAndOrStringer [][]fmt.Stringer
