@@ -140,43 +140,19 @@ func (j JQL) String() string {
 		*/
 	}
 
-	if clauses := j.createdClauses(); len(clauses) > 0 {
+	if clauses := j.clausesCreated(); len(clauses) > 0 {
 		parts = append(parts, clauses...)
 	}
-	if clauses := j.updatedClauses(); len(clauses) > 0 {
+	if clauses := j.clausesUpdated(); len(clauses) > 0 {
 		parts = append(parts, clauses...)
 	}
-
-	for cfk, cfv := range j.CustomFieldIncl {
-		cfv = stringsutil.SliceCondenseSpace(cfv, true, false)
-		if len(cfv) == 0 {
-			continue
-		}
-		if cfkCanonicalID, err := CustomFieldLabelToID(cfk); err == nil {
-			cfk = cfkCanonicalID.StringBrackets()
-		}
-		if clause := inClause(cfk, cfv, false); clause != "" {
-			parts = append(parts, clause)
-		}
+	if clauses := j.clausesCustomFields(); len(clauses) > 0 {
+		parts = append(parts, clauses...)
 	}
-	for cfk, cfv := range j.CustomFieldExcl {
-		cfv = stringsutil.SliceCondenseSpace(cfv, true, false)
-		if len(cfv) == 0 {
-			continue
-		}
-		if cfkCanonicalID, err := CustomFieldLabelToID(cfk); err == nil {
-			cfk = cfkCanonicalID.StringBrackets()
-		}
-		if clause := inClause(cfk, cfv, true); clause != "" {
-			parts = append(parts, clause)
-		}
+	if clause := j.Any.String(); clause != "" {
+		parts = append(parts, clause)
 	}
-
 	parts = append(parts, j.Raw...)
-
-	if anyPart := j.Any.String(); anyPart != "" {
-		parts = append(parts, anyPart)
-	}
 
 	if len(parts) > 0 {
 		return strings.Join(parts, " AND ")
@@ -185,7 +161,7 @@ func (j JQL) String() string {
 	}
 }
 
-func (j JQL) createdClauses() []string {
+func (j JQL) clausesCreated() []string {
 	var clauses []string
 	if j.CreatedGT != nil {
 		clauses = append(clauses, fmtFieldOperatorDate(FieldCreatedDate, OperatorGT, *j.CreatedGT))
@@ -202,7 +178,7 @@ func (j JQL) createdClauses() []string {
 	return clauses
 }
 
-func (j JQL) updatedClauses() []string {
+func (j JQL) clausesUpdated() []string {
 	var clauses []string
 	if j.UpdatedGT != nil {
 		clauses = append(clauses, fmtFieldOperatorDate(FieldUpdated, OperatorGT, *j.UpdatedGT))
@@ -215,6 +191,35 @@ func (j JQL) updatedClauses() []string {
 	}
 	if j.UpdatedLTE != nil {
 		clauses = append(clauses, fmtFieldOperatorDate(FieldUpdated, OperatorLTE, *j.UpdatedLTE))
+	}
+	return clauses
+}
+
+func (j JQL) clausesCustomFields() []string {
+	var clauses []string
+	for cfk, cfv := range j.CustomFieldIncl {
+		cfv = stringsutil.SliceCondenseSpace(cfv, true, false)
+		if len(cfv) == 0 {
+			continue
+		}
+		if cfkCanonicalID, err := CustomFieldLabelToID(cfk); err == nil {
+			cfk = cfkCanonicalID.StringBrackets()
+		}
+		if clause := inClause(cfk, cfv, false); clause != "" {
+			clauses = append(clauses, clause)
+		}
+	}
+	for cfk, cfv := range j.CustomFieldExcl {
+		cfv = stringsutil.SliceCondenseSpace(cfv, true, false)
+		if len(cfv) == 0 {
+			continue
+		}
+		if cfkCanonicalID, err := CustomFieldLabelToID(cfk); err == nil {
+			cfk = cfkCanonicalID.StringBrackets()
+		}
+		if clause := inClause(cfk, cfv, true); clause != "" {
+			clauses = append(clauses, clause)
+		}
 	}
 	return clauses
 }
