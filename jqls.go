@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/grokify/mogo/text/markdown"
-	"github.com/grokify/mogo/time/timeutil"
 )
 
 type JQLs []JQL
@@ -20,32 +19,45 @@ func (jqls JQLs) JoinString(keyword string) string {
 }
 
 type JQLsReportMarkdownOpts struct {
+	IssuesWebURL   string
+	HeaderPrefix   string
+	TimeLocation   *time.Location
 	TimeZone       string
 	AddCount       bool
 	AddExplicitURL bool
+}
+
+func (opts JQLsReportMarkdownOpts) GetTimeLocation() (*time.Location, error) {
+	if opts.TimeLocation != nil {
+		return opts.TimeLocation, nil
+	} else if tz := strings.TrimSpace(opts.TimeZone); tz != "" {
+		return time.LoadLocation(tz)
+	} else {
+		return nil, nil
+	}
 }
 
 // ReportMarkdownLines provides Markdownlines for a set of JQLs.
 // The `JQLsReportMarkdownOpts.AddCount` option adds a static count to the report. This is useful when the
 // report isn't auto-updating, such as on a code repo.
 // The `JQLsReportMarkdownOpts.AddExplicitURL` option adds a URL which can be pasted into Confluence. This
-// will be interpreted to load a dynamic table in the Confluence page. This is not needed for git repo
-// pages.
-func (jqls JQLs) ReportMarkdownLines(issuesWebURL, headerPrefix string, opts JQLsReportMarkdownOpts) ([]string, error) {
+// will be interpreted to load a dynamic table in the Confluence page. This is not needed for git repo pages.
+func (jqls JQLs) ReportMarkdownLines(opts *JQLsReportMarkdownOpts) ([]string, error) {
+	if opts == nil {
+		opts = &JQLsReportMarkdownOpts{}
+	}
 	var lines []string
-	issuesWebURL = strings.TrimSpace(issuesWebURL) // should end with `issues/?`
-	timeZone := strings.TrimSpace(opts.TimeZone)
+	issuesWebURL := strings.TrimSpace(opts.IssuesWebURL) // should end with `issues/?`
+	timeLoc, err := opts.GetTimeLocation()
+	if err != nil {
+		return lines, err
+	}
 	for i, j := range jqls {
 		dtStr := ""
 		count := -1
-		dt := j.Meta.QueryTime
-		if !dt.IsZero() {
-			if timeZone != "" {
-				if dtTry, err := timeutil.TimeUpdateLocation(dt, timeZone); err != nil {
-					return lines, err
-				} else {
-					dt = dtTry
-				}
+		if dt := j.Meta.QueryTime; !dt.IsZero() {
+			if timeLoc != nil {
+				dt = dt.In(timeLoc)
 			}
 			dtStr = fmt.Sprintf(" at %s", dt.Format(time.RFC1123))
 			count = j.Meta.QueryTotalCount
@@ -55,7 +67,7 @@ func (jqls JQLs) ReportMarkdownLines(issuesWebURL, headerPrefix string, opts JQL
 		if name == "" {
 			name = fmt.Sprintf("JQL #%d", i+1)
 		}
-		lines = append(lines, "", fmt.Sprintf("%s%s", headerPrefix, name))
+		lines = append(lines, "", fmt.Sprintf("%s%s", opts.HeaderPrefix, name))
 
 		if key := strings.TrimSpace(j.Meta.Key); key != "" {
 			lines = append(lines, fmt.Sprintf("* Key: `%s`", key))
