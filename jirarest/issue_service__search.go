@@ -9,6 +9,7 @@ import (
 
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/gojira"
+	"github.com/grokify/mogo/pointer"
 	"github.com/grokify/mogo/time/month"
 	"github.com/grokify/mogo/type/maputil"
 	"github.com/grokify/mogo/type/slicesutil"
@@ -198,8 +199,8 @@ func (svc *IssueService) SearchIssuesByMonth(jql gojira.JQL, createdGTE, created
 		createdLT = timeSwap
 	}
 	for createdGTE.Before(createdLT) {
-		jql.CreatedGTE = createdGTE
-		jql.CreatedLT = month.MonthStart(createdGTE, 1)
+		jql.CreatedGTE = &createdGTE
+		jql.CreatedLT = pointer.Pointer(month.MonthStart(createdGTE, 1))
 		if ii, err := svc.SearchIssues(jql.String()); err != nil {
 			return err
 		} else if err := fnExec(ii, createdGTE); err != nil {

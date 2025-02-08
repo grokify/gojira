@@ -23,8 +23,14 @@ type JQLMeta struct {
 // JQL is a JQL builder. It will create a JQL string using `JQL.String()` from the supplied infomration.
 type JQL struct {
 	Meta            JQLMeta // Not part of JQL
-	CreatedGTE      time.Time
-	CreatedLT       time.Time
+	CreatedGT       *time.Time
+	CreatedGTE      *time.Time
+	CreatedLT       *time.Time
+	CreatedLTE      *time.Time
+	UpdatedGT       *time.Time
+	UpdatedGTE      *time.Time
+	UpdatedLT       *time.Time
+	UpdatedLTE      *time.Time
 	FiltersIncl     [][]string // outer level is `AND`, inner level is `IN`.
 	FiltersExcl     [][]string
 	IssuesIncl      [][]string
@@ -134,12 +140,13 @@ func (j JQL) String() string {
 		*/
 	}
 
-	if !j.CreatedGTE.IsZero() {
-		parts = append(parts, fmt.Sprintf("%s >= %s", FieldCreatedDate, j.CreatedGTE.Format(timeutil.RFC3339FullDate)))
+	if clauses := j.createdClauses(); len(clauses) > 0 {
+		parts = append(parts, clauses...)
 	}
-	if !j.CreatedLT.IsZero() {
-		parts = append(parts, fmt.Sprintf("%s < %s", FieldCreatedDate, j.CreatedLT.Format(timeutil.RFC3339FullDate)))
+	if clauses := j.updatedClauses(); len(clauses) > 0 {
+		parts = append(parts, clauses...)
 	}
+
 	for cfk, cfv := range j.CustomFieldIncl {
 		cfv = stringsutil.SliceCondenseSpace(cfv, true, false)
 		if len(cfv) == 0 {
@@ -176,6 +183,44 @@ func (j JQL) String() string {
 	} else {
 		return ""
 	}
+}
+
+func (j JQL) createdClauses() []string {
+	var clauses []string
+	if j.CreatedGT != nil {
+		clauses = append(clauses, fmtFieldOperatorDate(FieldCreatedDate, OperatorGT, *j.CreatedGT))
+	}
+	if j.CreatedGTE != nil {
+		clauses = append(clauses, fmtFieldOperatorDate(FieldCreatedDate, OperatorGTE, *j.CreatedGTE))
+	}
+	if j.CreatedLT != nil {
+		clauses = append(clauses, fmtFieldOperatorDate(FieldCreatedDate, OperatorLT, *j.CreatedLT))
+	}
+	if j.CreatedLTE != nil {
+		clauses = append(clauses, fmtFieldOperatorDate(FieldCreatedDate, OperatorLTE, *j.CreatedLTE))
+	}
+	return clauses
+}
+
+func (j JQL) updatedClauses() []string {
+	var clauses []string
+	if j.UpdatedGT != nil {
+		clauses = append(clauses, fmtFieldOperatorDate(FieldUpdated, OperatorGT, *j.UpdatedGT))
+	}
+	if j.UpdatedGTE != nil {
+		clauses = append(clauses, fmtFieldOperatorDate(FieldUpdated, OperatorGTE, *j.UpdatedGTE))
+	}
+	if j.UpdatedLT != nil {
+		clauses = append(clauses, fmtFieldOperatorDate(FieldUpdated, OperatorLT, *j.UpdatedLT))
+	}
+	if j.UpdatedLTE != nil {
+		clauses = append(clauses, fmtFieldOperatorDate(FieldUpdated, OperatorLTE, *j.UpdatedLTE))
+	}
+	return clauses
+}
+
+func fmtFieldOperatorDate(field, op string, dt time.Time) string {
+	return fmt.Sprintf("%s %s %s", field, op, dt.Format(timeutil.RFC3339FullDate))
 }
 
 func (j JQL) QueryString() string {

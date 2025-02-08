@@ -20,6 +20,7 @@ const (
 	FieldStatus      = "status"
 	FieldSummary     = "summary"
 	FieldType        = "type"
+	FieldUpdated     = "updated"
 
 	CalcCreatedAgeDays = "createdagedays"
 	CalcCreatedMonth   = "createdmonth"
@@ -61,6 +62,11 @@ const (
 
 	MetaStagePrefixReadyFor = "Ready for "
 	MetaStagePrefixIn       = "In "
+
+	OperatorGT  = ">"
+	OperatorGTE = ">="
+	OperatorLT  = "<"
+	OperatorLTE = "<="
 
 	MetaStageReadyForPlanning    = MetaStagePrefixReadyFor + StagePlanning
 	MetaStageInPlanning          = MetaStagePrefixIn + StagePlanning
