@@ -195,6 +195,10 @@ func (j JQL) clausesUpdated() []string {
 	return clauses
 }
 
+func fmtFieldOperatorDate(field, op string, dt time.Time) string {
+	return fmt.Sprintf("%s %s %s", field, op, dt.Format(timeutil.RFC3339FullDate))
+}
+
 func (j JQL) clausesCustomFields() []string {
 	var clauses []string
 	for cfk, cfv := range j.CustomFieldIncl {
@@ -222,10 +226,6 @@ func (j JQL) clausesCustomFields() []string {
 		}
 	}
 	return clauses
-}
-
-func fmtFieldOperatorDate(field, op string, dt time.Time) string {
-	return fmt.Sprintf("%s %s %s", field, op, dt.Format(timeutil.RFC3339FullDate))
 }
 
 func (j JQL) QueryString() string {
