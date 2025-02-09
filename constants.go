@@ -63,10 +63,14 @@ const (
 	MetaStagePrefixReadyFor = "Ready for "
 	MetaStagePrefixIn       = "In "
 
-	OperatorGT  = ">"
-	OperatorGTE = ">="
-	OperatorLT  = "<"
-	OperatorLTE = "<="
+	OperatorGT        = ">"
+	OperatorGTE       = ">="
+	OperatorLT        = "<"
+	OperatorLTE       = "<="
+	OperatorAND       = "AND"
+	operatorANDSpaces = " AND "
+	OperatorOR        = "OR"
+	operatorORSpaces  = " OR "
 
 	MetaStageReadyForPlanning    = MetaStagePrefixReadyFor + StagePlanning
 	MetaStageInPlanning          = MetaStagePrefixIn + StagePlanning
