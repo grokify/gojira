@@ -79,7 +79,7 @@ func (j JQLAndOrStringer) String() string {
 		}
 		andClauses = append(andClauses, addParen(strings.Join(orClausesStr, " OR ")))
 	}
-	return strings.Join(andClauses, " AND ")
+	return strings.TrimSpace(strings.Join(andClauses, " AND "))
 }
 
 func addParen(s string) string {
@@ -91,14 +91,33 @@ func addPrefixSuffix(prefix, suffix, s string) string {
 }
 
 func (j JQL) String() string {
-	var parts []string
+	var clauses []string
+	if thisClauses := j.clausesStandardFields(); len(thisClauses) > 0 {
+		clauses = append(clauses, thisClauses...)
+	}
+	if thisClauses := j.clausesCreated(); len(thisClauses) > 0 {
+		clauses = append(clauses, thisClauses...)
+	}
+	if thisClauses := j.clausesUpdated(); len(thisClauses) > 0 {
+		clauses = append(clauses, thisClauses...)
+	}
+	if thisClauses := j.clausesCustomFields(); len(thisClauses) > 0 {
+		clauses = append(clauses, thisClauses...)
+	}
+	if clause := j.Any.String(); clause != "" {
+		clauses = append(clauses, clause)
+	}
+	return strings.Join(append(clauses, j.Raw...), " AND ")
+}
+
+func (j JQL) clausesStandardFields() []string {
+	var clauses []string
 
 	type inclExclProc struct {
 		Field   string
 		Values  [][]string
 		Exclude bool
 	}
-
 	procs := []inclExclProc{
 		{Field: FieldFilter, Values: j.FiltersIncl, Exclude: false},
 		{Field: FieldFilter, Values: j.FiltersExcl, Exclude: true},
@@ -125,40 +144,12 @@ func (j JQL) String() string {
 		} else if len(proc.Values) > 0 {
 			for _, inClauseVals := range proc.Values {
 				if clause := inClause(proc.Field, inClauseVals, proc.Exclude); clause != "" {
-					parts = append(parts, clause)
+					clauses = append(clauses, clause)
 				}
 			}
 		}
-		/*
-			if len(proc.Values) == 0 {
-				continue
-			} else if field := strings.TrimSpace(proc.Field); field == "" {
-				panic("field is empty")
-				// } else if clause := inClause(proc.Field, proc.Values, proc.Exclude); clause != "" {
-				// parts = append(parts, clause)
-			}
-		*/
 	}
-
-	if clauses := j.clausesCreated(); len(clauses) > 0 {
-		parts = append(parts, clauses...)
-	}
-	if clauses := j.clausesUpdated(); len(clauses) > 0 {
-		parts = append(parts, clauses...)
-	}
-	if clauses := j.clausesCustomFields(); len(clauses) > 0 {
-		parts = append(parts, clauses...)
-	}
-	if clause := j.Any.String(); clause != "" {
-		parts = append(parts, clause)
-	}
-	parts = append(parts, j.Raw...)
-
-	if len(parts) > 0 {
-		return strings.Join(parts, " AND ")
-	} else {
-		return ""
-	}
+	return clauses
 }
 
 func (j JQL) clausesCreated() []string {
