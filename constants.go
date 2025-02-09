@@ -96,6 +96,8 @@ const (
 	JQLInSep      = ","
 
 	JQLStatusCategoryNeDone = "statusCategory != Done"
+
+	WebURLPathIssues = "issues/?"
 )
 
 func MetaStageOrder() []string {

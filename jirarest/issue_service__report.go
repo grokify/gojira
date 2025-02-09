@@ -1,6 +1,8 @@
 package jirarest
 
 import (
+	"net/url"
+
 	"github.com/grokify/gojira"
 )
 
@@ -13,7 +15,9 @@ func (svc *IssueService) JQLsReportMarkdownLines(jqls gojira.JQLs, opts *gojira.
 		if opts == nil {
 			opts = &gojira.JQLsReportMarkdownOpts{}
 		}
-		opts.IssuesWebURL = svc.WebURL()
+		if opts.IssuesWebURL == "" && svc.Client != nil && svc.Client.Config != nil {
+			opts.IssuesWebURL = svc.Client.Config.WebURLIssues(url.Values{})
+		}
 		return jqls.ReportMarkdownLines(opts)
 	}
 }
