@@ -6,7 +6,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/grokify/mogo/time/timeutil"
 	"github.com/grokify/mogo/type/slicesutil"
 	"github.com/grokify/mogo/type/stringsutil"
 	"github.com/grokify/mogo/type/stringsutil/join"
@@ -183,7 +182,7 @@ func (j JQL) conditionsDateFields() []string {
 			panic("operator is empty")
 		} else if proc.Time != nil && !proc.Time.IsZero() {
 			conditions = append(conditions,
-				fmt.Sprintf("%s %s %s", field, op, proc.Time.Format(timeutil.RFC3339FullDate)),
+				fmt.Sprintf("%s %s %s", field, op, proc.Time.Format(time.DateOnly)),
 			)
 		}
 	}
