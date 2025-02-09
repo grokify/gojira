@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/grokify/mogo/time/timeutil"
+	"github.com/grokify/mogo/type/slicesutil"
 	"github.com/grokify/mogo/type/stringsutil"
 	"github.com/grokify/mogo/type/stringsutil/join"
 )
@@ -57,13 +58,11 @@ type JQL struct {
 
 type JQLAndOrStringer [][]fmt.Stringer
 
-// JQLOrAndStringer combines `fmt.Stringer` slice of slice to create a JQL.
-// Outer slide is "AND", Inner slice is "OR".
-func (j JQLAndOrStringer) String() string {
+func (j JQLAndOrStringer) Fields() []string {
 	if len(j) == 0 {
-		return ""
+		return []string{}
 	}
-	var andClauses []string
+	var andConditions []string
 	for _, orClausesRaw := range j {
 		if len(orClausesRaw) == 0 {
 			continue
@@ -77,9 +76,21 @@ func (j JQLAndOrStringer) String() string {
 				orClausesStr = append(orClausesStr, addParen(orClauseStr))
 			}
 		}
-		andClauses = append(andClauses, addParen(strings.Join(orClausesStr, " OR ")))
+		andConditions = append(andConditions, addParen(strings.Join(orClausesStr, operatorORSpaces)))
 	}
-	return strings.TrimSpace(strings.Join(andClauses, " AND "))
+	return andConditions
+}
+
+// JQLOrAndStringer combines `fmt.Stringer` slice of slice to create a JQL.
+// Outer slide is "AND", Inner slice is "OR".
+func (j JQLAndOrStringer) String() string {
+	if len(j) == 0 {
+		return ""
+	} else if andConditions := j.Fields(); len(andConditions) == 0 {
+		return ""
+	} else {
+		return strings.TrimSpace(strings.Join(andConditions, operatorANDSpaces))
+	}
 }
 
 func addParen(s string) string {
@@ -91,27 +102,22 @@ func addPrefixSuffix(prefix, suffix, s string) string {
 }
 
 func (j JQL) String() string {
-	var clauses []string
-	if thisClauses := j.clausesStandardFields(); len(thisClauses) > 0 {
-		clauses = append(clauses, thisClauses...)
-	}
-	if thisClauses := j.clausesCreated(); len(thisClauses) > 0 {
-		clauses = append(clauses, thisClauses...)
-	}
-	if thisClauses := j.clausesUpdated(); len(thisClauses) > 0 {
-		clauses = append(clauses, thisClauses...)
-	}
-	if thisClauses := j.clausesCustomFields(); len(thisClauses) > 0 {
-		clauses = append(clauses, thisClauses...)
-	}
-	if clause := j.Any.String(); clause != "" {
-		clauses = append(clauses, clause)
-	}
-	return strings.TrimSpace(strings.Join(append(clauses, j.Raw...), " AND "))
+	conditions := slicesutil.AppendBulk(
+		[]string{},
+		[][]string{
+			j.conditionsStringFields(),
+			j.conditionsDateFields(),
+			j.conditionsCustomFields(),
+			j.Any.Fields(),
+			j.Raw,
+		},
+	)
+	conditions = stringsutil.SliceCondenseSpace(conditions, true, false)
+	return strings.TrimSpace(strings.Join(conditions, operatorANDSpaces))
 }
 
-func (j JQL) clausesStandardFields() []string {
-	var clauses []string
+func (j JQL) conditionsStringFields() []string {
+	var conditions []string
 
 	type inclExclProc struct {
 		Field   string
@@ -142,56 +148,50 @@ func (j JQL) clausesStandardFields() []string {
 		if field := strings.TrimSpace(proc.Field); field == "" {
 			panic("field is empty")
 		} else if len(proc.Values) > 0 {
-			for _, inClauseVals := range proc.Values {
-				if clause := inClause(proc.Field, inClauseVals, proc.Exclude); clause != "" {
-					clauses = append(clauses, clause)
+			for _, inConditionVals := range proc.Values {
+				if cond := inCondition(proc.Field, inConditionVals, proc.Exclude); cond != "" {
+					conditions = append(conditions, cond)
 				}
 			}
 		}
 	}
-	return clauses
+	return conditions
 }
 
-func (j JQL) clausesCreated() []string {
-	var clauses []string
-	if j.CreatedGT != nil {
-		clauses = append(clauses, fmtFieldOperatorDate(FieldCreatedDate, OperatorGT, *j.CreatedGT))
+func (j JQL) conditionsDateFields() []string {
+	var conditions []string
+
+	type dateProc struct {
+		Field    string
+		Operator string
+		Time     *time.Time
 	}
-	if j.CreatedGTE != nil {
-		clauses = append(clauses, fmtFieldOperatorDate(FieldCreatedDate, OperatorGTE, *j.CreatedGTE))
+	procs := []dateProc{
+		{Field: FieldCreatedDate, Operator: OperatorGT, Time: j.CreatedGT},
+		{Field: FieldCreatedDate, Operator: OperatorGTE, Time: j.CreatedGTE},
+		{Field: FieldCreatedDate, Operator: OperatorLT, Time: j.CreatedLT},
+		{Field: FieldCreatedDate, Operator: OperatorLTE, Time: j.CreatedLTE},
+		{Field: FieldUpdated, Operator: OperatorGT, Time: j.UpdatedGT},
+		{Field: FieldUpdated, Operator: OperatorGTE, Time: j.UpdatedGTE},
+		{Field: FieldUpdated, Operator: OperatorLT, Time: j.UpdatedLT},
+		{Field: FieldUpdated, Operator: OperatorLTE, Time: j.UpdatedLTE},
 	}
-	if j.CreatedLT != nil {
-		clauses = append(clauses, fmtFieldOperatorDate(FieldCreatedDate, OperatorLT, *j.CreatedLT))
+	for _, proc := range procs {
+		if field := strings.TrimSpace(proc.Field); field == "" {
+			panic("field is empty")
+		} else if op := strings.TrimSpace(proc.Operator); op == "" {
+			panic("operator is empty")
+		} else if proc.Time != nil && !proc.Time.IsZero() {
+			conditions = append(conditions,
+				fmt.Sprintf("%s %s %s", field, op, proc.Time.Format(timeutil.RFC3339FullDate)),
+			)
+		}
 	}
-	if j.CreatedLTE != nil {
-		clauses = append(clauses, fmtFieldOperatorDate(FieldCreatedDate, OperatorLTE, *j.CreatedLTE))
-	}
-	return clauses
+	return conditions
 }
 
-func (j JQL) clausesUpdated() []string {
-	var clauses []string
-	if j.UpdatedGT != nil {
-		clauses = append(clauses, fmtFieldOperatorDate(FieldUpdated, OperatorGT, *j.UpdatedGT))
-	}
-	if j.UpdatedGTE != nil {
-		clauses = append(clauses, fmtFieldOperatorDate(FieldUpdated, OperatorGTE, *j.UpdatedGTE))
-	}
-	if j.UpdatedLT != nil {
-		clauses = append(clauses, fmtFieldOperatorDate(FieldUpdated, OperatorLT, *j.UpdatedLT))
-	}
-	if j.UpdatedLTE != nil {
-		clauses = append(clauses, fmtFieldOperatorDate(FieldUpdated, OperatorLTE, *j.UpdatedLTE))
-	}
-	return clauses
-}
-
-func fmtFieldOperatorDate(field, op string, dt time.Time) string {
-	return fmt.Sprintf("%s %s %s", field, op, dt.Format(timeutil.RFC3339FullDate))
-}
-
-func (j JQL) clausesCustomFields() []string {
-	var clauses []string
+func (j JQL) conditionsCustomFields() []string {
+	var conditions []string
 	for cfk, cfv := range j.CustomFieldIncl {
 		cfv = stringsutil.SliceCondenseSpace(cfv, true, false)
 		if len(cfv) == 0 {
@@ -200,8 +200,8 @@ func (j JQL) clausesCustomFields() []string {
 		if cfkCanonicalID, err := CustomFieldLabelToID(cfk); err == nil {
 			cfk = cfkCanonicalID.StringBrackets()
 		}
-		if clause := inClause(cfk, cfv, false); clause != "" {
-			clauses = append(clauses, clause)
+		if cond := inCondition(cfk, cfv, false); cond != "" {
+			conditions = append(conditions, cond)
 		}
 	}
 	for cfk, cfv := range j.CustomFieldExcl {
@@ -212,18 +212,18 @@ func (j JQL) clausesCustomFields() []string {
 		if cfkCanonicalID, err := CustomFieldLabelToID(cfk); err == nil {
 			cfk = cfkCanonicalID.StringBrackets()
 		}
-		if clause := inClause(cfk, cfv, true); clause != "" {
-			clauses = append(clauses, clause)
+		if cond := inCondition(cfk, cfv, true); cond != "" {
+			conditions = append(conditions, cond)
 		}
 	}
-	return clauses
+	return conditions
 }
 
 func (j JQL) QueryString() string {
 	return "jql=" + url.QueryEscape(j.String())
 }
 
-func inClause(field string, values []string, exclude bool) string {
+func inCondition(field string, values []string, exclude bool) string {
 	field = strings.TrimSpace(field)
 	values = stringsutil.SliceCondenseSpace(values, true, true)
 	if field == "" || len(values) == 0 {
