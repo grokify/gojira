@@ -17,12 +17,12 @@ func NewConfigDefault() *Config {
 		WorkingDaysPerWeek: WorkingDaysPerWeekDefault}
 }
 
-func (c *Config) SecondsToDays(sec int) float32 {
+func (c *Config) SecondsToWorkingDays(sec int) float32 {
 	return float32(sec) / 60 / 60 / c.WorkingHoursPerDay
 }
 
-func (c *Config) SecondsToWeeks(sec int) float32 {
-	return c.SecondsToDays(sec) / c.WorkingDaysPerWeek
+func (c *Config) SecondsToWorkingWeeks(sec int) float32 {
+	return c.SecondsToWorkingDays(sec) / c.WorkingDaysPerWeek
 }
 
 func (c *Config) CapacityForDaysPeople(days, people float32) time.Duration {
