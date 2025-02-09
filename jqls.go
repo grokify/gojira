@@ -19,7 +19,7 @@ func (jqls JQLs) JoinString(keyword string) string {
 }
 
 type JQLsReportMarkdownOpts struct {
-	IssuesWebURL   string
+	IssuesWebURL   string // should end with `issues/?`, query string `jql=...` will be appended.
 	HeaderPrefix   string
 	TimeLocation   *time.Location
 	TimeZone       string
