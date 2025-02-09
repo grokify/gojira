@@ -107,7 +107,7 @@ func (j JQL) String() string {
 	if clause := j.Any.String(); clause != "" {
 		clauses = append(clauses, clause)
 	}
-	return strings.Join(append(clauses, j.Raw...), " AND ")
+	return strings.TrimSpace(strings.Join(append(clauses, j.Raw...), " AND "))
 }
 
 func (j JQL) clausesStandardFields() []string {
