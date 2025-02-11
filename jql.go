@@ -18,6 +18,7 @@ type JQLMeta struct {
 	FilterID        int
 	QueryTime       time.Time
 	QueryTotalCount int
+	Directions      []string
 }
 
 // JQL is a JQL builder. It will create a JQL string using `JQL.String()` from the supplied infomration.

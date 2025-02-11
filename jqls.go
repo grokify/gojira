@@ -78,6 +78,12 @@ func (jqls JQLs) ReportMarkdownLines(opts *JQLsReportMarkdownOpts) ([]string, er
 		if opts.AddCount && count > -1 {
 			lines = append(lines, fmt.Sprintf("* Issue Count: **%d**%s", count, dtStr))
 		}
+		if len(j.Meta.Directions) > 0 {
+			lines = append(lines, "* Directions")
+			for _, dir := range j.Meta.Directions {
+				lines = append(lines, dir)
+			}
+		}
 		js := strings.TrimSpace(j.String())
 		jq := strings.TrimSpace(j.QueryString())
 		if jq != "" {
