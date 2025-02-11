@@ -51,41 +51,46 @@ type JQL struct {
 	TypesExcl       [][]string
 	CustomFieldIncl map[string][]string // slice is `IN`
 	CustomFieldExcl map[string][]string
-	Any             JQLAndOrStringer
+	AnyIncl         JQLAndOrStringer
+	AnyExcl         JQLAndOrStringer
 	Raw             []string
 }
 
 type JQLAndOrStringer [][]fmt.Stringer
 
-func (j JQLAndOrStringer) Fields() []string {
+func (j JQLAndOrStringer) Fields(not bool) []string {
 	if len(j) == 0 {
 		return []string{}
 	}
 	var andConditions []string
-	for _, orClausesRaw := range j {
-		if len(orClausesRaw) == 0 {
+	for _, orCondsRaw := range j {
+		if len(orCondsRaw) == 0 {
 			continue
 		}
-		var orClausesStr []string
-		for _, orClauseRaw := range orClausesRaw {
-			orClauseStr := strings.TrimSpace(orClauseRaw.String())
-			if orClauseStr == "" {
-				continue
-			} else {
-				orClausesStr = append(orClausesStr, addParen(orClauseStr))
+		var orCondsStrs []string
+		for _, orCondRaw := range orCondsRaw {
+			if orCondStr := strings.TrimSpace(orCondRaw.String()); orCondStr != "" {
+				orCondsStrs = append(orCondsStrs, addParen(orCondStr))
 			}
 		}
-		andConditions = append(andConditions, addParen(strings.Join(orClausesStr, operatorORSpaces)))
+		if len(orCondsStrs) > 0 {
+			andCondition := addParen(strings.Join(orCondsStrs, operatorORSpaces))
+			if not {
+				andConditions = append(andConditions, addParen("NOT "+andCondition))
+			} else {
+				andConditions = append(andConditions, andCondition)
+			}
+		}
 	}
 	return andConditions
 }
 
 // JQLOrAndStringer combines `fmt.Stringer` slice of slice to create a JQL.
 // Outer slide is "AND", Inner slice is "OR".
-func (j JQLAndOrStringer) String() string {
+func (j JQLAndOrStringer) String(not bool) string {
 	if len(j) == 0 {
 		return ""
-	} else if andConditions := j.Fields(); len(andConditions) == 0 {
+	} else if andConditions := j.Fields(not); len(andConditions) == 0 {
 		return ""
 	} else {
 		return strings.TrimSpace(strings.Join(andConditions, operatorANDSpaces))
@@ -107,7 +112,8 @@ func (j JQL) String() string {
 			j.conditionsStringFields(),
 			j.conditionsDateFields(),
 			j.conditionsCustomFields(),
-			j.Any.Fields(),
+			j.AnyIncl.Fields(false),
+			j.AnyExcl.Fields(true),
 			j.Raw,
 		},
 	)
