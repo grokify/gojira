@@ -80,9 +80,7 @@ func (jqls JQLs) ReportMarkdownLines(opts *JQLsReportMarkdownOpts) ([]string, er
 		}
 		if len(j.Meta.Directions) > 0 {
 			lines = append(lines, "* Directions")
-			for _, dir := range j.Meta.Directions {
-				lines = append(lines, dir)
-			}
+			lines = append(lines, j.Meta.Directions...)
 		}
 		js := strings.TrimSpace(j.String())
 		jq := strings.TrimSpace(j.QueryString())
