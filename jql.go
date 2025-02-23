@@ -244,6 +244,7 @@ func inCondition(field string, values []string, exclude bool) string {
 			End:         "'",
 			SkipNesting: true,
 		}
+		// TODO: `field` should optionally quoted if there is a space.
 		return fmt.Sprintf("%s %s %s", field, operator, qtr.Quote(values[0]))
 	} else if len(values) > 1 {
 		operator := "IN"
