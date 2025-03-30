@@ -237,10 +237,13 @@ func (svc *IssueService) IssuePatchLabelRecursive(ctx context.Context, issueKeyO
 	}
 	im := NewIssueMore(iss)
 
-	labelExists := false
+	var labelExists bool
 	if im.LabelExists(label) {
 		labelExists = true
+	} else {
+		labelExists = false
 	}
+
 	svc.Client.LogOrNotAny(
 		ctx,
 		slog.LevelDebug,

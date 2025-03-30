@@ -142,9 +142,11 @@ func (set *IssuesSet) TableDefault(customCols *CustomTableCols, inclEpic bool, i
 		set.Config = gojira.NewConfigDefault()
 	}
 	initiativeType = strings.TrimSpace(initiativeType)
-	inclInitiative := false
+	var inclInitiative bool
 	if initiativeType != "" {
 		inclInitiative = true
+	} else {
+		inclInitiative = false
 	}
 	baseURL := strings.TrimSpace(set.Config.ServerURL)
 

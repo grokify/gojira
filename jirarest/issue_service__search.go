@@ -63,10 +63,7 @@ func (svc *IssueService) SearchChildrenIssuesSet(recursive, inclParents bool, pa
 	}
 	i := 0
 	recurseLimit := 1000
-	for {
-		if slices.Equal(maputil.Keys(seen), maputil.Keys(is.IssuesMap)) {
-			break
-		}
+	for !slices.Equal(maputil.Keys(seen), maputil.Keys(is.IssuesMap)) {
 		unseen := slicesutil.Sub(maputil.Keys(is.IssuesMap), maputil.Keys(seen))
 		if len(unseen) == 0 {
 			break
@@ -152,15 +149,12 @@ func (svc *IssueService) SearchIssuesPages(jql string, limit, offset, maxPages i
 		StartAt:    offset}
 
 	i := 0
-	for {
-		if maxPages > 0 && i >= maxPages {
-			break
-		}
+	for maxPages == 0 || i < maxPages {
 		ii, resp, err := svc.Client.JiraClient.Issue.Search(jql, &so)
 		if err != nil {
 			return issues, err
-		} else if resp.Response.StatusCode >= 300 {
-			return issues, fmt.Errorf("jira api status code (%d)", resp.Response.StatusCode)
+		} else if resp.StatusCode >= 300 {
+			return issues, fmt.Errorf("jira api status code (%d)", resp.StatusCode)
 		}
 		if svc.Client.LoggerZ != nil {
 			svc.Client.LoggerZ.Info().
@@ -231,11 +225,7 @@ func (svc *IssueService) SearchIssuesSetParents(set *IssuesSet) (*IssuesSet, err
 	parIDs := set.KeysParentsUnpopulated()
 
 	iter := 0
-	for {
-		if len(parIDs) == 0 {
-			break
-		}
-
+	for len(parIDs) > 0 {
 		if svc.Client.LoggerZ != nil {
 			svc.Client.LoggerZ.Info().
 				Int("iteration", iter).

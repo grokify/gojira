@@ -136,10 +136,7 @@ func (set *IssuesSet) LineageValidateKey(key string) ([]string, error) {
 		lineage = append(lineage, issKey)
 	}
 	parKey := im.ParentKey()
-	for {
-		if parKey == "" {
-			break
-		}
+	for parKey != "" {
 		lineage = append(lineage, parKey)
 		parIss, ok := set.IssueOrParent(parKey)
 		if !ok {
