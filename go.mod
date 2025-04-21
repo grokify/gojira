@@ -5,8 +5,8 @@ go 1.23.2
 require (
 	github.com/andygrunwald/go-jira v1.16.0
 	github.com/grokify/goauth v0.23.10
-	github.com/grokify/gocharts/v2 v2.23.2
-	github.com/grokify/mogo v0.68.6
+	github.com/grokify/gocharts/v2 v2.23.3
+	github.com/grokify/mogo v0.68.9
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/rs/zerolog v1.34.0
