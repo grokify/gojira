@@ -49,6 +49,16 @@ func NewClientGoauthCredentials(c *goauth.Credentials, addCustomFieldSet bool) (
 	}
 }
 
+func NewClientGoauthCredentialsSetFile(filename, accountkey string, addCustomFieldSet, inclAccountsOnError bool) (*Client, error) {
+	if creds, err := goauth.ReadCredentialsFromSetFile(filename, accountkey, inclAccountsOnError); err != nil {
+		return nil, err
+	} else if client, err := NewClientGoauthCredentials(&creds, addCustomFieldSet); err != nil {
+		return nil, err
+	} else {
+		return client, nil
+	}
+}
+
 func newClientFromClients(hclient *http.Client, jclient *jira.Client, serverURL string, addCustomFieldSet bool) (*Client, error) {
 	c := &Client{
 		HTTPClient: hclient,
