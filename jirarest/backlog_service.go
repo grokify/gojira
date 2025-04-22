@@ -1,6 +1,7 @@
 package jirarest
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -97,7 +98,7 @@ func NewBacklogService(client *Client) *BacklogService {
 			BaseURL:    client.Config.ServerURL}}
 }
 
-func (svc *BacklogService) GetBacklogIssuesResponse(boardID uint, qry *BoardBacklogParams) (*IssuesResponse, []byte, error) {
+func (svc *BacklogService) GetBacklogIssuesResponse(ctx context.Context, boardID uint, qry *BoardBacklogParams) (*IssuesResponse, []byte, error) {
 	if svc.sclient.HTTPClient == nil {
 		return nil, []byte{}, errors.New("client not set")
 	}
@@ -106,7 +107,7 @@ func (svc *BacklogService) GetBacklogIssuesResponse(boardID uint, qry *BoardBack
 		URL:    BacklogAPIURL(svc.Client.Config.ServerURL, boardID, nil),
 		Query:  qry.URLValues(),
 	}
-	resp, err := svc.sclient.Do(sreq)
+	resp, err := svc.sclient.Do(ctx, sreq)
 	if err != nil {
 		return nil, []byte{}, err
 	} else if resp.StatusCode >= 300 {
@@ -120,7 +121,7 @@ func (svc *BacklogService) GetBacklogIssuesResponse(boardID uint, qry *BoardBack
 	}
 }
 
-func (svc *BacklogService) GetBacklogIssuesAll(boardID uint, jql string) (*IssuesResponse, [][]byte, error) {
+func (svc *BacklogService) GetBacklogIssuesAll(ctx context.Context, boardID uint, jql string) (*IssuesResponse, [][]byte, error) {
 	iragg := &IssuesResponse{}
 	bb := [][]byte{}
 	issues := Issues{}
@@ -132,7 +133,7 @@ func (svc *BacklogService) GetBacklogIssuesAll(boardID uint, jql string) (*Issue
 	}
 
 	for {
-		ir, b, err := svc.GetBacklogIssuesResponse(boardID, opts)
+		ir, b, err := svc.GetBacklogIssuesResponse(ctx, boardID, opts)
 		if err != nil {
 			return iragg, bb, err
 		} else {
@@ -155,8 +156,8 @@ func (svc *BacklogService) GetBacklogIssuesAll(boardID uint, jql string) (*Issue
 	return iragg, bb, nil
 }
 
-func (svc *BacklogService) GetBacklogIssuesSetAll(boardID uint, jql string) (*IssuesSet, [][]byte, error) {
-	iir, b, err := svc.GetBacklogIssuesAll(boardID, jql)
+func (svc *BacklogService) GetBacklogIssuesSetAll(ctx context.Context, boardID uint, jql string) (*IssuesSet, [][]byte, error) {
+	iir, b, err := svc.GetBacklogIssuesAll(ctx, boardID, jql)
 	if err != nil {
 		return nil, b, err
 	}

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"time"
@@ -30,7 +31,7 @@ func main() {
 
 	svc := jirarest.NewBacklogService(jrClient)
 
-	is, _, err := svc.GetBacklogIssuesSetAll(opts.BoardID,
+	is, _, err := svc.GetBacklogIssuesSetAll(context.Background(), opts.BoardID,
 		// "type in (Bug,Story) AND status in (Ready,\"Engineering Design\",\"Ready for Grooming\")",
 		"type in (Bug,Story) AND status in (Ready)",
 	)

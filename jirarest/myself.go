@@ -17,11 +17,11 @@ import (
 
 const APIURLMyself = "/rest/api/3/myself"
 
-func (c *Client) Myself() (*jira.User, *http.Response, error) {
+func (c *Client) Myself(ctx context.Context) (*jira.User, *http.Response, error) {
 	usr := jira.User{}
 	if c.simpleClient == nil {
 		return nil, nil, ErrSimpleClientCannotBeNil
-	} else if resp, err := c.simpleClient.Do(httpsimple.Request{
+	} else if resp, err := c.simpleClient.Do(ctx, httpsimple.Request{
 		Method: http.MethodGet,
 		URL:    urlutil.JoinAbsolute(c.Config.ServerURL, APIURLMyself)}); err != nil {
 		return nil, nil, err

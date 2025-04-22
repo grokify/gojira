@@ -91,7 +91,7 @@ type IssuePatchRequestBodyField struct {
 
 // IssuePatch updates fields for an issue. See more here:
 // https://community.developer.atlassian.com/t/update-issue-custom-field-value-via-api-without-going-forge/71161
-func (svc *IssueService) IssuePatch(issueKeyOrID string, issueUpdateRequestBody IssuePatchRequestBody) (*http.Response, error) {
+func (svc *IssueService) IssuePatch(ctx context.Context, issueKeyOrID string, issueUpdateRequestBody IssuePatchRequestBody) (*http.Response, error) {
 	if err := issueUpdateRequestBody.Validate(); err != nil {
 		return nil, err
 	} else if issueKeyOrID = strings.TrimSpace(issueKeyOrID); issueKeyOrID == "" {
@@ -99,7 +99,7 @@ func (svc *IssueService) IssuePatch(issueKeyOrID string, issueUpdateRequestBody 
 	} else if issueUpdateRequestBody.Update == nil && len(issueUpdateRequestBody.Fields) == 0 {
 		return nil, errors.New("issue `update` or `fields` must be provided")
 	} else {
-		return svc.Client.simpleClient.Do(httpsimple.Request{
+		return svc.Client.simpleClient.Do(ctx, httpsimple.Request{
 			Method:   http.MethodPut, // This only updates certain fields but uses a PUT http method.
 			URL:      urlutil.JoinAbsolute(APIV3URLIssue, issueKeyOrID),
 			Body:     issueUpdateRequestBody,
@@ -158,7 +158,7 @@ func (svc *IssueService) IssuePatchCustomFieldRecursive(ctx context.Context, iss
 				"customFieldLabel", customFieldLabel,
 				"customFieldValue", customFieldValue)
 			reqBody := NewIssuePatchRequestBodyCustomField(customFieldLabel, customFieldValue)
-			if resp, err := svc.IssuePatch(issueKeyOrID, reqBody); err != nil {
+			if resp, err := svc.IssuePatch(ctx, issueKeyOrID, reqBody); err != nil {
 				return 0, nil
 			} else if resp.StatusCode >= 300 {
 				body, err := io.ReadAll(resp.Body)
@@ -266,7 +266,7 @@ func (svc *IssueService) IssuePatchLabelRecursive(ctx context.Context, issueKeyO
 				"labelAction", labelOperation,
 				"label", label)
 			reqBody := NewIssuePatchRequestBodyLabelAddRemove(label, removeLabel)
-			if resp, err := svc.IssuePatch(issueKeyOrID, reqBody); err != nil {
+			if resp, err := svc.IssuePatch(ctx, issueKeyOrID, reqBody); err != nil {
 				return count, err
 			} else if resp.StatusCode >= 300 {
 				body, err := io.ReadAll(resp.Body)
