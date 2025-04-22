@@ -197,6 +197,20 @@ func IssueProjectkeyTypeStatus(iss *jira.Issue) (string, string, string) {
 	return im.ProjectKey(), im.Type(), im.Status()
 }
 
+// HistogramSet provides a `*histogram.HistogramSets` given two histogram fields
+func (set *IssuesSet) HistogramSet(fieldSlug1, fieldSlug2 string) *histogram.HistogramSet {
+	return set.HistogramSetFunc(
+		func(iss *jira.Issue) (string, string) {
+			if iss == nil {
+				return "", ""
+			}
+			im := NewIssueMore(iss)
+			v1, _ := im.Value(fieldSlug1)
+			v2, _ := im.Value(fieldSlug2)
+			return v1, v2
+		})
+}
+
 // HistogramSetFunc provides a `*histogram.HistogramSet` given a provided function.
 func (set *IssuesSet) HistogramSetFunc(fn func(iss *jira.Issue) (cat1 string, cat2 string)) *histogram.HistogramSet {
 	if fn == nil {
@@ -213,15 +227,6 @@ func (set *IssuesSet) HistogramSetFunc(fn func(iss *jira.Issue) (cat1 string, ca
 // HistogramSetProjectType returns a list of histograms by Project and Type.
 func (set *IssuesSet) HistogramSetProjectType() *histogram.HistogramSet {
 	return set.HistogramSetFunc(IssueProjectkeyType)
-	/*
-		hset := histogram.NewHistogramSet(gojira.FieldIssuePlural)
-		for _, iss := range set.IssuesMap {
-			iss := iss
-			im := NewIssueMore(&iss)
-			hset.Add(im.ProjectKey(), im.Type(), 1)
-		}
-		return hset
-	*/
 }
 
 // HistogramSetsFunc provides a `*histogram.HistogramSets` given a provided function.
@@ -240,20 +245,6 @@ func (set *IssuesSet) HistogramSetsFunc(fn func(iss *jira.Issue) (cat1 string, c
 // HistogramSetsProjectTypeStatus provides issue counts by: Project, Type, and Status.
 func (set *IssuesSet) HistogramSetsProjectTypeStatus() *histogram.HistogramSets {
 	return set.HistogramSetsFunc(IssueProjectkeyTypeStatus)
-	/*
-		hsets := histogram.NewHistogramSets(gojira.FieldIssuePlural)
-		for _, iss := range set.IssuesMap {
-			iss := iss
-			im := NewIssueMore(&iss)
-			hsets.Add(
-				im.ProjectKey(),
-				im.Type(),
-				im.Status(),
-				1,
-				true)
-		}
-		return hsets
-	*/
 }
 
 func (set *IssuesSet) HistogramMap(stdKeys []string, calcFields []IssueCalcField) (*histogram.Histogram, error) {
@@ -365,8 +356,7 @@ func (set *IssuesSet) ExportWorkstreamXfieldStatusTablePivot(wsFuncMake Workstre
 	if err != nil {
 		return nil, err
 	}
-	// tbl := hss.TablePivot("issues", "Workstream", xfieldName, "Status: ", "", is.StatusesOrder(), true)
-	tbl := hss.TablePivot(histogram.TablePivotOpts{
+	tbl := hss.TablePivot(histogram.SetsTablePivotOpts{
 		TableName:           "issues",
 		ColNameHistogramSet: "Workstream",
 		ColNameHistogram:    xfieldName,
@@ -385,8 +375,7 @@ func (set *IssuesSet) ExportWorkstreamProjectkeyStatusTablePivot(wsFuncMake Work
 	if err != nil {
 		return nil, err
 	}
-	// tbl := hss.TablePivot("issues", "Workstream", "Project Key", "Status: ", "", is.StatusesOrder(), true)
-	tbl := hss.TablePivot(histogram.TablePivotOpts{
+	tbl := hss.TablePivot(histogram.SetsTablePivotOpts{
 		TableName:           "issues",
 		ColNameHistogramSet: "Workstream",
 		ColNameHistogram:    "Project Key",
@@ -407,7 +396,7 @@ func (set *IssuesSet) ExportWorkstreamTypeStatusTablePivot(wsFuncMake Workstream
 		return nil, err
 	}
 	// tbl := hss.TablePivot("issues", "Workstream", "Type", "Status: ", "", is.StatusesOrder(), true)
-	tbl := hss.TablePivot(histogram.TablePivotOpts{
+	tbl := hss.TablePivot(histogram.SetsTablePivotOpts{
 		TableName:           "issues",
 		ColNameHistogramSet: "Workstream",
 		ColNameHistogram:    "Type",
