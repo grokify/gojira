@@ -9,6 +9,7 @@ import (
 	"github.com/grokify/gocharts/v2/data/histogram"
 	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/encoding/jsonutil"
+	"github.com/grokify/mogo/type/slicesutil"
 	"github.com/grokify/mogo/type/stringsutil"
 )
 
@@ -68,6 +69,11 @@ func (ii Issues) Keys() []string {
 		keys = append(keys, im.Key())
 	}
 	return stringsutil.SliceCondenseSpace(keys, true, true)
+}
+
+func (ii Issues) KeysSplitVenn(keys []string) slicesutil.SplitVennResultOrdered[string] {
+	keys = stringsutil.SliceCondenseSpace(keys, true, true)
+	return slicesutil.SplitVenn2Sort(ii.Keys(), keys)
 }
 
 func (ii Issues) Metas(baseURL string, customFieldLabels []string) IssueMetas {
