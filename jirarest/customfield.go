@@ -109,15 +109,18 @@ func (cfs CustomFields) Table(name string) table.Table {
 	return tbl
 }
 
-func (cfs CustomFields) WriteTable(w io.Writer) {
+func (cfs CustomFields) WriteTable(w io.Writer) error {
 	cfs.SortByName(true)
 	tbl := cfs.Table("")
 	tw := tablewriter.NewWriter(w)
-	tw.SetRowLine(true)
-	tw.SetRowSeparator("-")
-	tw.SetHeader(tbl.Columns)
-	tw.AppendBulk(tbl.Rows)
-	tw.Render()
+	// tw.SetRowLine(true)
+	// tw.SetRowSeparator("-")
+	tw.Header(tbl.Columns)
+	if err := tw.Bulk(tbl.Rows); err != nil {
+		return err
+	} else {
+		return tw.Render()
+	}
 }
 
 // IssueFieldsCustomFieldString returns a string custom field, e.g "Epic Link"

@@ -71,9 +71,9 @@ func (ii Issues) Keys() []string {
 	return stringsutil.SliceCondenseSpace(keys, true, true)
 }
 
-func (ii Issues) KeysSplitVenn(keys []string) slicesutil.SplitVennResultOrdered[string] {
+func (ii Issues) KeysSplitVenn(keys []string) slicesutil.Venn2ResultOrdered[string] {
 	keys = stringsutil.SliceCondenseSpace(keys, true, true)
-	return slicesutil.SplitVenn2Sort(ii.Keys(), keys)
+	return slicesutil.Venn2Sort(ii.Keys(), keys)
 }
 
 func (ii Issues) Metas(baseURL string, customFieldLabels []string) IssueMetas {
