@@ -8,7 +8,7 @@ require (
 	github.com/grokify/gocharts/v2 v2.24.7
 	github.com/grokify/mogo v0.69.3
 	github.com/jessevdk/go-flags v1.6.1
-	github.com/olekukonko/tablewriter v1.0.2
+	github.com/olekukonko/tablewriter v1.0.4
 	github.com/rs/zerolog v1.34.0
 	golang.org/x/exp v0.0.0-20250506013437-ce4c2cf36ca6
 )
