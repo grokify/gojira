@@ -5,12 +5,12 @@ go 1.23.2
 require (
 	github.com/andygrunwald/go-jira v1.16.0
 	github.com/grokify/goauth v0.23.14
-	github.com/grokify/gocharts/v2 v2.24.8
-	github.com/grokify/mogo v0.70.0
+	github.com/grokify/gocharts/v2 v2.24.10
+	github.com/grokify/mogo v0.70.2
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/olekukonko/tablewriter v1.0.7
 	github.com/rs/zerolog v1.34.0
-	golang.org/x/exp v0.0.0-20250506013437-ce4c2cf36ca6
+	golang.org/x/exp v0.0.0-20250531010427-b6e5de432a8b
 )
 
 require (
