@@ -28,6 +28,10 @@ type JQL struct {
 	CreatedGTE      *time.Time
 	CreatedLT       *time.Time
 	CreatedLTE      *time.Time
+	DueGT           *time.Time
+	DueGTE          *time.Time
+	DueLT           *time.Time
+	DueLTE          *time.Time
 	UpdatedGT       *time.Time
 	UpdatedGTE      *time.Time
 	UpdatedLT       *time.Time
@@ -177,6 +181,10 @@ func (j JQL) conditionsDateFields() []string {
 		{Field: FieldCreatedDate, Operator: OperatorGTE, Time: j.CreatedGTE},
 		{Field: FieldCreatedDate, Operator: OperatorLT, Time: j.CreatedLT},
 		{Field: FieldCreatedDate, Operator: OperatorLTE, Time: j.CreatedLTE},
+		{Field: FieldDueDate, Operator: OperatorGT, Time: j.DueGT},
+		{Field: FieldDueDate, Operator: OperatorGTE, Time: j.DueGTE},
+		{Field: FieldDueDate, Operator: OperatorLT, Time: j.DueLT},
+		{Field: FieldDueDate, Operator: OperatorLTE, Time: j.DueLTE},
 		{Field: FieldUpdated, Operator: OperatorGT, Time: j.UpdatedGT},
 		{Field: FieldUpdated, Operator: OperatorGTE, Time: j.UpdatedGTE},
 		{Field: FieldUpdated, Operator: OperatorLT, Time: j.UpdatedLT},

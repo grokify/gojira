@@ -9,6 +9,7 @@ import (
 const (
 	// These are used by "GoJira" but not necessarily "Jira"
 	FieldCreatedDate = "createddate"
+	FieldDueDate     = "duedate"
 	FieldFilter      = "filter"
 	FieldIssue       = "issue" // issue keys
 	FieldKey         = "key"
