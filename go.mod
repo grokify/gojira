@@ -6,11 +6,11 @@ require (
 	github.com/andygrunwald/go-jira v1.16.0
 	github.com/grokify/goauth v0.23.14
 	github.com/grokify/gocharts/v2 v2.24.11
-	github.com/grokify/mogo v0.70.8
+	github.com/grokify/mogo v0.70.9
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/olekukonko/tablewriter v1.0.7
 	github.com/rs/zerolog v1.34.0
-	golang.org/x/exp v0.0.0-20250606033433-dcc06ee1d476
+	golang.org/x/exp v0.0.0-20250620022241-b7579e27df2b
 )
 
 require (
@@ -62,7 +62,7 @@ require (
 	golang.org/x/sys v0.33.0 // indirect
 	golang.org/x/text v0.26.0 // indirect
 	gonum.org/v1/gonum v0.16.0 // indirect
-	google.golang.org/api v0.237.0 // indirect
+	google.golang.org/api v0.238.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250603155806-513f23925822 // indirect
 	google.golang.org/grpc v1.73.0 // indirect
 	google.golang.org/protobuf v1.36.6 // indirect
