@@ -125,16 +125,18 @@ func (im *IssueMore) Key() string {
 // Keys returns a slice of all keys for this issue over time including the current
 // key and all previous keys. The return slice is deduped sorted.
 // This relies on pulling the changelog from the Jira API.
-func (im *IssueMore) Keys() []string {
-	var keys []string
+// NOTE: keys are sorted alphabetically, not by change date.
+func (im *IssueMore) Keys() (keys []string, hasChangelog bool) {
 	if im.issue == nil {
-		return []string{}
+		return
 	} else if key := im.Key(); key != "" {
 		keys = []string{key}
 	}
 
 	if im.issue.Changelog == nil {
-		return keys
+		return
+	} else {
+		hasChangelog = true
 	}
 
 	for _, history := range im.issue.Changelog.Histories {
@@ -154,7 +156,7 @@ func (im *IssueMore) Keys() []string {
 
 	keys = slicesutil.Dedupe(keys)
 	sort.Strings(keys)
-	return keys
+	return
 }
 
 func (im *IssueMore) KeyLinkWebMarkdown(baseURL string) string {
