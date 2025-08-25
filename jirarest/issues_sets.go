@@ -1,6 +1,8 @@
 package jirarest
 
 import (
+	"context"
+
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/gocharts/v2/data/table"
 	"github.com/grokify/mogo/type/maputil"
@@ -29,11 +31,11 @@ func (sets *IssuesSets) Upsert(setName string, set *IssuesSet) {
 	sets.Data[setName] = *set
 }
 
-func (sets *IssuesSets) UpsertIssueKeys(jrClient *Client, setName string, issueKeys []string) error {
+func (sets *IssuesSets) UpsertIssueKeys(ctx context.Context, jrClient *Client, setName string, issueKeys []string) error {
 	if jrClient == nil {
 		return ErrClientCannotBeNil
 	}
-	ii, err := jrClient.IssueAPI.Issues(issueKeys, false)
+	ii, err := jrClient.IssueAPI.Issues(ctx, issueKeys, nil)
 	if err != nil {
 		return err
 	}
