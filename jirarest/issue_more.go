@@ -128,13 +128,13 @@ func (im *IssueMore) Key() string {
 // NOTE: keys are sorted alphabetically, not by change date.
 func (im *IssueMore) Keys() (keys []string, hasChangelog bool) {
 	if im.issue == nil {
-		return
+		return keys, hasChangelog
 	} else if key := im.Key(); key != "" {
 		keys = []string{key}
 	}
 
 	if im.issue.Changelog == nil {
-		return
+		return keys, hasChangelog
 	} else {
 		hasChangelog = true
 	}
@@ -156,7 +156,7 @@ func (im *IssueMore) Keys() (keys []string, hasChangelog bool) {
 
 	keys = slicesutil.Dedupe(keys)
 	sort.Strings(keys)
-	return
+	return keys, hasChangelog
 }
 
 func (im *IssueMore) KeyLinkWebMarkdown(baseURL string) string {
