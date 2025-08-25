@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/grokify/gojira/cmd"
@@ -21,7 +22,7 @@ func main() {
 	jrClient, err := opts.Client()
 	logutil.FatalErr(errorsutil.Wrap(err, "Client"))
 
-	iss, err := jrClient.IssueAPI.Issue(opts.IssueKey)
+	iss, err := jrClient.IssueAPI.Issue(context.Background(), opts.IssueKey, nil)
 	logutil.FatalErr(err)
 
 	im := jirarest.NewIssueMore(iss)
