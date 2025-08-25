@@ -121,7 +121,7 @@ func (svc *IssueService) IssuePatchCustomFieldRecursive(ctx context.Context, iss
 	}
 	processChildrenTypes = stringsutil.SliceCondenseSpace(processChildrenTypes, true, true)
 	if iss == nil {
-		if issGet, err := svc.Issue(issueKeyOrID); err != nil {
+		if issGet, err := svc.Issue(ctx, issueKeyOrID, nil); err != nil {
 			return 0, err
 		} else {
 			iss = issGet
@@ -229,7 +229,7 @@ func (svc *IssueService) IssuePatchLabelRecursive(ctx context.Context, issueKeyO
 		return count, ErrIssueOrIssueKeyOrIssueIDRequired
 	}
 	if iss == nil {
-		if issGet, err := svc.Issue(issueKeyOrID); err != nil {
+		if issGet, err := svc.Issue(ctx, issueKeyOrID, nil); err != nil {
 			return 0, err
 		} else {
 			iss = issGet

@@ -1,6 +1,7 @@
 package jirarest
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"slices"
@@ -41,14 +42,16 @@ func (svc *IssueService) SearchChildrenIssues(parentKeys []string) (Issues, erro
 	}
 }
 
-func (svc *IssueService) SearchChildrenIssuesSet(recursive, inclParents bool, parentKeys ...string) (*IssuesSet, error) {
+func (svc *IssueService) SearchChildrenIssuesSet(ctx context.Context, parentKeys []string, opts *GetQueryOptions) (*IssuesSet, error) {
+	// func (svc *IssueService) SearchChildrenIssuesSet(recursive, inclParents bool, parentKeys ...string) (*IssuesSet, error) {
 	parentKeys = stringsutil.SliceCondenseSpace(parentKeys, true, true)
 	is := NewIssuesSet(svc.Client.Config)
 	if len(parentKeys) == 0 {
 		return is, nil
 	}
-	if inclParents {
-		if iss, err := svc.Issues(parentKeys, false); err != nil {
+
+	if opts.XIncludeParents {
+		if iss, err := svc.Issues(ctx, parentKeys, opts); err != nil {
 			return nil, err
 		} else if (len(iss)) == 0 {
 			return nil, fmt.Errorf("no issues found for (%d) keys", len(parentKeys))
@@ -56,6 +59,7 @@ func (svc *IssueService) SearchChildrenIssuesSet(recursive, inclParents bool, pa
 			return nil, err
 		}
 	}
+
 	seen := map[string]int{}
 	seen, err := searchChildrenIssuesSetInternal(svc, is, parentKeys, seen)
 	if err != nil {
