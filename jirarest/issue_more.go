@@ -14,6 +14,7 @@ import (
 	"github.com/grokify/mogo/encoding/jsonutil"
 	"github.com/grokify/mogo/pointer"
 	"github.com/grokify/mogo/time/timeutil"
+	"github.com/grokify/mogo/type/slicesutil"
 	"golang.org/x/exp/slices"
 )
 
@@ -119,6 +120,41 @@ func (im *IssueMore) Key() string {
 		return ""
 	}
 	return strings.TrimSpace(im.issue.Key)
+}
+
+// Keys returns a slice of all keys for this issue over time including the current
+// key and all previous keys. The return slice is deduped sorted.
+// This relies on pulling the changelog from the Jira API.
+func (im *IssueMore) Keys() []string {
+	var keys []string
+	if im.issue == nil {
+		return []string{}
+	} else if key := im.Key(); key != "" {
+		keys = []string{key}
+	}
+
+	if im.issue.Changelog == nil {
+		return keys
+	}
+
+	for _, history := range im.issue.Changelog.Histories {
+		for _, item := range history.Items {
+			if strings.ToLower(strings.TrimSpace(item.Field)) == "key" {
+				// if item.Field == "Key" {
+				// "fromString" is the old key, "toString" is the new key
+				if from := strings.TrimSpace(item.FromString); from != "" {
+					keys = append(keys, from)
+				}
+				if to := strings.TrimSpace(item.ToString); to != "" {
+					keys = append(keys, to)
+				}
+			}
+		}
+	}
+
+	keys = slicesutil.Dedupe(keys)
+	sort.Strings(keys)
+	return keys
 }
 
 func (im *IssueMore) KeyLinkWebMarkdown(baseURL string) string {
