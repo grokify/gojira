@@ -7,8 +7,8 @@ toolchain go1.24.5
 require (
 	github.com/andygrunwald/go-jira v1.16.0
 	github.com/grokify/goauth v0.23.19
-	github.com/grokify/gocharts/v2 v2.24.19
-	github.com/grokify/mogo v0.70.19
+	github.com/grokify/gocharts/v2 v2.24.20
+	github.com/grokify/mogo v0.70.21
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/olekukonko/tablewriter v1.0.9
 	github.com/rs/zerolog v1.34.0
@@ -62,7 +62,7 @@ require (
 	golang.org/x/image v0.30.0 // indirect
 	golang.org/x/net v0.43.0 // indirect
 	golang.org/x/oauth2 v0.30.0 // indirect
-	golang.org/x/sys v0.35.0 // indirect
+	golang.org/x/sys v0.36.0 // indirect
 	golang.org/x/text v0.28.0 // indirect
 	gonum.org/v1/gonum v0.16.0 // indirect
 	google.golang.org/api v0.248.0 // indirect
