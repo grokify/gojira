@@ -11,11 +11,11 @@ type CommentContainer struct {
 
 // Comment represents a comment
 type Comment struct {
-	Author       *User       `json:"author"`
-	Body         interface{} `json:"body"` // Can be string or ADF object
-	Created      string      `json:"created"`
-	ID           string      `json:"id"`
-	Self         string      `json:"self"`
-	UpdateAuthor *User       `json:"updateAuthor"`
-	Updated      string      `json:"updated"`
+	Author       *User  `json:"author"`
+	Body         any    `json:"body"` // Can be string or ADF object
+	Created      string `json:"created"`
+	ID           string `json:"id"`
+	Self         string `json:"self"`
+	UpdateAuthor *User  `json:"updateAuthor"`
+	Updated      string `json:"updated"`
 }

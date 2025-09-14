@@ -26,9 +26,9 @@ type Fields struct {
 	Components               []Component       `json:"components"`
 	Created                  string            `json:"created"`
 	Creator                  *User             `json:"creator"`
-	Description              interface{}       `json:"description"` // Can be string or ADF object
+	Description              any               `json:"description"` // Can be string or ADF object
 	DueDate                  *string           `json:"duedate"`
-	Environment              interface{}       `json:"environment"` // Can be string or ADF object
+	Environment              any               `json:"environment"` // Can be string or ADF object
 	FixVersions              []Version         `json:"fixVersions"`
 	IssueLinks               []IssueLink       `json:"issuelinks"`
 	IssueRestriction         *IssueRestriction `json:"issuerestriction"`

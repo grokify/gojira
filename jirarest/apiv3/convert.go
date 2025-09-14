@@ -8,7 +8,7 @@ import (
 )
 
 // ConvertToGoJiraIssue converts a V3 API Issue to a go-jira Issue
-func (issue *Issue) ConvertToGoJiraIssue() (*jira.Issue, error) {
+func (issue *Issue) ConvertToGoJiraIssue() *jira.Issue {
 	goJiraIssue := &jira.Issue{
 		Expand: issue.Expand,
 		ID:     issue.ID,
@@ -18,24 +18,30 @@ func (issue *Issue) ConvertToGoJiraIssue() (*jira.Issue, error) {
 	}
 
 	if issue.Fields != nil {
-		if err := convertFields(issue.Fields, goJiraIssue.Fields); err != nil {
-			return nil, fmt.Errorf("failed to convert fields: %w", err)
-		}
+		/*
+			if err := convertFields(issue.Fields, goJiraIssue.Fields); err != nil {
+				return nil, fmt.Errorf("failed to convert fields: %w", err)
+			}
+		*/
+		convertFields(issue.Fields, goJiraIssue.Fields)
 	}
 
-	return goJiraIssue, nil
+	return goJiraIssue
 }
 
 // convertFields converts V3 Fields to go-jira IssueFields
-func convertFields(v3Fields *Fields, goJiraFields *jira.IssueFields) error {
+func convertFields(v3Fields *Fields, goJiraFields *jira.IssueFields) {
 	// Summary
 	goJiraFields.Summary = v3Fields.Summary
 
 	// Description - handle ADF to string conversion
 	if v3Fields.Description != nil {
-		if desc, err := extractTextFromADF(v3Fields.Description); err == nil {
-			goJiraFields.Description = desc
-		}
+		/*
+			if desc, err := extractTextFromADF(v3Fields.Description); err == nil {
+				goJiraFields.Description = desc
+			}
+		*/
+		goJiraFields.Description = extractTextFromADF(v3Fields.Description)
 	}
 
 	// Issue Type
@@ -101,7 +107,7 @@ func convertFields(v3Fields *Fields, goJiraFields *jira.IssueFields) error {
 
 	// Initialize Unknowns for custom fields handling
 	if goJiraFields.Unknowns == nil {
-		goJiraFields.Unknowns = make(map[string]interface{})
+		goJiraFields.Unknowns = make(map[string]any)
 	}
 
 	// Copy custom fields to Unknowns
@@ -110,8 +116,6 @@ func convertFields(v3Fields *Fields, goJiraFields *jira.IssueFields) error {
 			goJiraFields.Unknowns[key] = value
 		}
 	}
-
-	return nil
 }
 
 // convertUser converts a V3 User to a go-jira User
@@ -132,27 +136,27 @@ func convertUser(v3User *User) *jira.User {
 }
 
 // extractTextFromADF extracts plain text from Atlassian Document Format (ADF) content
-func extractTextFromADF(content interface{}) (string, error) {
+func extractTextFromADF(content any) string {
 	if content == nil {
-		return "", nil
+		return ""
 	}
 
 	// If it's already a string, return as-is
 	if str, ok := content.(string); ok {
-		return str, nil
+		return str
 	}
 
 	// If it's an ADF object, try to extract text
-	if adfObj, ok := content.(map[string]interface{}); ok {
-		return extractTextFromADFMap(adfObj), nil
+	if adfObj, ok := content.(map[string]any); ok {
+		return extractTextFromADFMap(adfObj)
 	}
 
 	// Try to convert to string as fallback
-	return fmt.Sprintf("%v", content), nil
+	return fmt.Sprintf("%v", content)
 }
 
 // extractTextFromADFMap recursively extracts text from an ADF map structure
-func extractTextFromADFMap(adfMap map[string]interface{}) string {
+func extractTextFromADFMap(adfMap map[string]any) string {
 	var textParts []string
 
 	// Check for direct text content
@@ -164,9 +168,9 @@ func extractTextFromADFMap(adfMap map[string]interface{}) string {
 
 	// Check for content array
 	if content, exists := adfMap["content"]; exists {
-		if contentArray, ok := content.([]interface{}); ok {
+		if contentArray, ok := content.([]any); ok {
 			for _, item := range contentArray {
-				if itemMap, ok := item.(map[string]interface{}); ok {
+				if itemMap, ok := item.(map[string]any); ok {
 					if extractedText := extractTextFromADFMap(itemMap); extractedText != "" {
 						textParts = append(textParts, extractedText)
 					}

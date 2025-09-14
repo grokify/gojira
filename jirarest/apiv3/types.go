@@ -94,6 +94,6 @@ type CustomFieldOption struct {
 
 // IssueRestriction represents issue restrictions
 type IssueRestriction struct {
-	IssueRestrictions map[string]interface{} `json:"issuerestrictions"`
-	ShouldDisplay     bool                   `json:"shouldDisplay"`
+	IssueRestrictions map[string]any `json:"issuerestrictions"`
+	ShouldDisplay     bool           `json:"shouldDisplay"`
 }
