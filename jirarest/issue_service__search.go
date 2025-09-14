@@ -55,7 +55,6 @@ func (svc *IssueService) SearchIssues(jql string, retrieveAll bool) (Issues, err
 	}
 
 	var allIssues Issues
-	//startAt := 0
 	maxResults := MaxResults
 
 	nextPageToken := ""
@@ -65,7 +64,6 @@ func (svc *IssueService) SearchIssues(jql string, retrieveAll bool) (Issues, err
 			"jql":        {jql},
 			"maxResults": {fmt.Sprintf("%d", maxResults)},
 			"fields":     {"*all"},
-			// "startAt":    {fmt.Sprintf("%d", startAt)},
 		}
 		if nextPageToken != "" {
 			query["nextPageToken"] = []string{nextPageToken}
@@ -90,12 +88,6 @@ func (svc *IssueService) SearchIssues(jql string, retrieveAll bool) (Issues, err
 		if err != nil {
 			return nil, err
 		}
-		/*
-			fmt.Println(string(body))
-			err = os.WriteFile("issues_response.json", body, 0600)
-			logutil.FatalErr(err)
-			panic("Z")
-		*/
 
 		// Parse the response using the V3 typed structs
 		var v3Response apiv3.IssuesResponse
@@ -105,19 +97,14 @@ func (svc *IssueService) SearchIssues(jql string, retrieveAll bool) (Issues, err
 
 		// Convert V3 issues to go-jira Issues
 		for _, v3Issue := range v3Response.Issues {
-			goJiraIssue, err := v3Issue.ConvertToGoJiraIssue()
-			if err != nil {
-				return nil, fmt.Errorf("failed to convert V3 issue %s: %w", v3Issue.Key, err)
-			}
+			goJiraIssue := v3Issue.ConvertToGoJiraIssue()
+			/*
+				if err != nil {
+					return nil, fmt.Errorf("failed to convert V3 issue %s: %w", v3Issue.Key, err)
+				}
+			*/
 			allIssues = append(allIssues, *goJiraIssue)
 		}
-
-		// If not retrieving all results, or we've got all the results, break
-		/*
-			if !retrieveAll || len(v3Response.Issues) == 0 || v3Response.StartAt+len(v3Response.Issues) >= v3Response.Total {
-				break
-			}
-		*/
 
 		nextPageToken = strings.TrimSpace(v3Response.NextPageToken)
 		if v3Response.IsLast || nextPageToken == "" {
