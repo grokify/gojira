@@ -2,10 +2,11 @@ package jirarest
 
 import (
 	"github.com/grokify/gocharts/v2/data/histogram"
-	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/pointer"
 	"github.com/grokify/mogo/time/timeutil"
 	"github.com/grokify/mogo/type/stringsutil"
+
+	"github.com/grokify/gojira"
 )
 
 // Counts returns a `map[string]map[string]uint{}` where the first key
@@ -47,6 +48,21 @@ func (set *IssuesSet) CountsByCustomFieldValues(customField string) (map[string]
 		out[cfInfo.Value]++
 	}
 	return out, nil
+}
+
+func (set *IssuesSet) CountsByProjectAndCustomFieldValues(customField string) (*histogram.HistogramSet, error) {
+	hset := histogram.NewHistogramSet("")
+	for _, iss := range set.IssuesMap {
+		iss := iss
+		im := NewIssueMore(&iss)
+		project := im.Project()
+		if cfInfo, err := im.CustomField(customField); err != nil {
+			return nil, err
+		} else {
+			hset.Add(project, cfInfo.Value, 1)
+		}
+	}
+	return hset, nil
 }
 
 // CountsByProject returns `map[string]uint` representing issue counts by project.
