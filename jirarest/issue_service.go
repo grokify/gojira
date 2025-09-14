@@ -7,9 +7,10 @@ import (
 	"strings"
 
 	jira "github.com/andygrunwald/go-jira"
-	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/type/slicesutil"
 	"github.com/grokify/mogo/type/stringsutil"
+
+	"github.com/grokify/gojira"
 )
 
 type IssueService struct {
@@ -62,7 +63,7 @@ func (svc *IssueService) Issue(ctx context.Context, issueIDOrKey string, opts *G
 		jql := gojira.JQL{IssuesIncl: [][]string{{key}}}
 		if key == "" {
 			return nil, errors.New("issue key is required")
-		} else if iss, err := svc.SearchIssues(jql.String()); err != nil {
+		} else if iss, err := svc.SearchIssues(jql.String(), false); err != nil {
 			return nil, err
 		} else if len(iss) == 0 {
 			return nil, fmt.Errorf("key not found (%s)", key)

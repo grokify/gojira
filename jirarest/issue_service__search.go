@@ -2,23 +2,30 @@ package jirarest
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"net/http"
 	"slices"
 	"strings"
 	"time"
 
 	jira "github.com/andygrunwald/go-jira"
-	"github.com/grokify/gojira"
+	"github.com/grokify/mogo/net/http/httpsimple"
 	"github.com/grokify/mogo/pointer"
 	"github.com/grokify/mogo/time/month"
 	"github.com/grokify/mogo/type/maputil"
 	"github.com/grokify/mogo/type/slicesutil"
 	"github.com/grokify/mogo/type/stringsutil"
+
+	"github.com/grokify/gojira"
+	"github.com/grokify/gojira/jirarest/apiv3"
 )
 
+/*
 // SearchIssues returns all issues for a JQL query, automatically handling API pagination.
-func (svc *IssueService) SearchIssues(jql string) (Issues, error) {
+func (svc *IssueService) SearchIssuesDeprecated(jql string) (Issues, error) {
 	var issues Issues
 
 	// appendFunc will append jira issues to []jira.Issue
@@ -32,13 +39,101 @@ func (svc *IssueService) SearchIssues(jql string) (Issues, error) {
 	err := svc.Client.JiraClient.Issue.SearchPages(jql, &jira.SearchOptions{Expand: "epic"}, appendFunc)
 	return issues, err
 }
+*/
+
+// SearchIssues returns all issues for a JQL query using the V3 API endpoint /rest/api/3/search/jql.
+// If retrieveAll is true, it will paginate through all results until no more issues are available.
+func (svc *IssueService) SearchIssues(jql string, retrieveAll bool) (Issues, error) {
+	if svc.Client == nil {
+		return nil, ErrClientCannotBeNil
+	}
+	if svc.Client.simpleClient == nil {
+		return nil, ErrSimpleClientCannotBeNil
+	}
+	if strings.TrimSpace(jql) == "" {
+		return Issues{}, nil
+	}
+
+	var allIssues Issues
+	//startAt := 0
+	maxResults := MaxResults
+
+	nextPageToken := ""
+
+	for {
+		query := map[string][]string{
+			"jql":        {jql},
+			"maxResults": {fmt.Sprintf("%d", maxResults)},
+			"fields":     {"*all"},
+			// "startAt":    {fmt.Sprintf("%d", startAt)},
+		}
+		if nextPageToken != "" {
+			query["nextPageToken"] = []string{nextPageToken}
+		}
+
+		resp, err := svc.Client.simpleClient.Do(context.Background(), httpsimple.Request{
+			Method: http.MethodGet,
+			URL:    APIV3URLSearchJQL,
+			Query:  query,
+		})
+		if err != nil {
+			return nil, err
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode >= 300 {
+			return nil, fmt.Errorf("jira api status code (%d)", resp.StatusCode)
+		}
+
+		// Read response body
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return nil, err
+		}
+		/*
+			fmt.Println(string(body))
+			err = os.WriteFile("issues_response.json", body, 0600)
+			logutil.FatalErr(err)
+			panic("Z")
+		*/
+
+		// Parse the response using the V3 typed structs
+		var v3Response apiv3.IssuesResponse
+		if err := json.Unmarshal(body, &v3Response); err != nil {
+			return nil, err
+		}
+
+		// Convert V3 issues to go-jira Issues
+		for _, v3Issue := range v3Response.Issues {
+			goJiraIssue, err := v3Issue.ConvertToGoJiraIssue()
+			if err != nil {
+				return nil, fmt.Errorf("failed to convert V3 issue %s: %w", v3Issue.Key, err)
+			}
+			allIssues = append(allIssues, *goJiraIssue)
+		}
+
+		// If not retrieving all results, or we've got all the results, break
+		/*
+			if !retrieveAll || len(v3Response.Issues) == 0 || v3Response.StartAt+len(v3Response.Issues) >= v3Response.Total {
+				break
+			}
+		*/
+
+		nextPageToken = strings.TrimSpace(v3Response.NextPageToken)
+		if v3Response.IsLast || nextPageToken == "" {
+			break
+		}
+	}
+
+	return allIssues, nil
+}
 
 func (svc *IssueService) SearchChildrenIssues(parentKeys []string) (Issues, error) {
 	if parentKeys = stringsutil.SliceCondenseSpace(parentKeys, true, true); len(parentKeys) == 0 {
 		return Issues{}, errors.New("parentKeys cannot be empty")
 	} else {
 		jqlInfo := gojira.JQL{ParentsIncl: [][]string{parentKeys}}
-		return svc.SearchIssues(jqlInfo.String())
+		return svc.SearchIssues(jqlInfo.String(), true)
 	}
 }
 
@@ -101,7 +196,7 @@ func searchChildrenIssuesSetInternal(svc *IssueService, set *IssuesSet, parentKe
 func (svc *IssueService) SearchIssuesMulti(jqls ...string) (Issues, error) {
 	var issues Issues
 	for i, jql := range jqls {
-		ii, err := svc.SearchIssues(jql)
+		ii, err := svc.SearchIssues(jql, true)
 		if err != nil {
 			return issues, err
 		}
@@ -199,7 +294,7 @@ func (svc *IssueService) SearchIssuesByMonth(jql gojira.JQL, createdGTE, created
 	for createdGTE.Before(createdLT) {
 		jql.CreatedGTE = &createdGTE
 		jql.CreatedLT = pointer.Pointer(month.MonthStart(createdGTE, 1))
-		if ii, err := svc.SearchIssues(jql.String()); err != nil {
+		if ii, err := svc.SearchIssues(jql.String(), true); err != nil {
 			return err
 		} else if err := fnExec(ii, createdGTE); err != nil {
 			return err
@@ -211,7 +306,7 @@ func (svc *IssueService) SearchIssuesByMonth(jql gojira.JQL, createdGTE, created
 }
 
 func (svc *IssueService) SearchIssuesSet(jql string) (*IssuesSet, error) {
-	if ii, err := svc.SearchIssues(jql); err != nil {
+	if ii, err := svc.SearchIssues(jql, true); err != nil {
 		return nil, err
 	} else {
 		is := NewIssuesSet(svc.Client.Config)
