@@ -84,10 +84,18 @@ func NewClientGoauthBasicAuthFile(filename, credsKey string, addCustomFieldSet b
 	}
 }
 
-func NewCredentialsBasicAuthGoauthFile(filename, credsKey string) (*goauth.CredentialsBasicAuth, error) {
+func NewCredentialsGoauthFile(filename, credsKey string) (*goauth.Credentials, error) {
 	if cs, err := goauth.ReadFileCredentialsSet(filename, true); err != nil {
 		return nil, err
 	} else if creds, err := cs.Get(credsKey); err != nil {
+		return nil, err
+	} else {
+		return &creds, nil
+	}
+}
+
+func NewCredentialsBasicAuthGoauthFile(filename, credsKey string) (*goauth.CredentialsBasicAuth, error) {
+	if creds, err := NewCredentialsGoauthFile(filename, credsKey); err != nil {
 		return nil, err
 	} else {
 		return creds.Basic, nil
