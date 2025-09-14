@@ -2,15 +2,15 @@ package apiv3
 
 // Attachment represents an attachment
 type Attachment struct {
-	Author      *User  `json:"author"`
-	Content     string `json:"content"`
-	Created     string `json:"created"`
-	Filename    string `json:"filename"`
-	ID          string `json:"id"`
-	MimeType    string `json:"mimeType"`
-	Self        string `json:"self"`
-	Size        int    `json:"size"`
-	Thumbnail   string `json:"thumbnail"`
+	Author    *User  `json:"author"`
+	Content   string `json:"content"`
+	Created   string `json:"created"`
+	Filename  string `json:"filename"`
+	ID        string `json:"id"`
+	MimeType  string `json:"mimeType"`
+	Self      string `json:"self"`
+	Size      int    `json:"size"`
+	Thumbnail string `json:"thumbnail"`
 }
 
 // Component represents a component
