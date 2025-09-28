@@ -10,7 +10,7 @@ require (
 	github.com/grokify/gocharts/v2 v2.25.1
 	github.com/grokify/mogo v0.70.23
 	github.com/jessevdk/go-flags v1.6.1
-	github.com/olekukonko/tablewriter v1.0.9
+	github.com/olekukonko/tablewriter v1.1.0
 	github.com/rs/zerolog v1.34.0
 	golang.org/x/exp v0.0.0-20250911091902-df9299821621
 )
