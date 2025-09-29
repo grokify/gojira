@@ -29,7 +29,7 @@ type Client struct {
 	CustomFieldSet *CustomFieldSet
 }
 
-func NewClientBasicAuth(serverURL, username, password string, addCustomFieldSet bool) (*Client, error) {
+func NewClientFromBasicAuth(serverURL, username, password string, addCustomFieldSet bool) (*Client, error) {
 	if hclient, err := authutil.NewClientBasicAuth(username, password, false); err != nil {
 		return nil, err
 	} else if jclient, err := JiraClientBasicAuth(serverURL, username, password); err != nil {
@@ -39,20 +39,28 @@ func NewClientBasicAuth(serverURL, username, password string, addCustomFieldSet 
 	}
 }
 
-func NewClientGoauthCredentials(c *goauth.Credentials, addCustomFieldSet bool) (*Client, error) {
+func NewClientFromGoauthCLI(inclAccountsOnError, addCustomFieldSet bool) (*Client, error) {
+	if creds, err := goauth.NewCredentialsFromCLI(inclAccountsOnError); err != nil {
+		return nil, err
+	} else {
+		return NewClientFromGoauthCredentials(&creds, addCustomFieldSet)
+	}
+}
+
+func NewClientFromGoauthCredentials(c *goauth.Credentials, addCustomFieldSet bool) (*Client, error) {
 	if c == nil {
 		return nil, errors.New("goauth.Credentials cannot be nil")
 	} else if c.Type == goauth.TypeBasic && c.Basic != nil {
-		return NewClientBasicAuth(c.Basic.ServerURL, c.Basic.Username, c.Basic.Password, addCustomFieldSet)
+		return NewClientFromBasicAuth(c.Basic.ServerURL, c.Basic.Username, c.Basic.Password, addCustomFieldSet)
 	} else {
 		return nil, errors.New("auth method not supported or populated")
 	}
 }
 
 func NewClientGoauthCredentialsSetFile(filename, accountkey string, addCustomFieldSet, inclAccountsOnError bool) (*Client, error) {
-	if creds, err := goauth.ReadCredentialsFromSetFile(filename, accountkey, inclAccountsOnError); err != nil {
+	if creds, err := goauth.NewCredentialsFromSetFile(filename, accountkey, inclAccountsOnError); err != nil {
 		return nil, err
-	} else if client, err := NewClientGoauthCredentials(&creds, addCustomFieldSet); err != nil {
+	} else if client, err := NewClientFromGoauthCredentials(&creds, addCustomFieldSet); err != nil {
 		return nil, err
 	} else {
 		return client, nil
