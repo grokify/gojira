@@ -2,17 +2,13 @@ package jirarest
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
-	"net/http"
 	"slices"
 	"strings"
 	"time"
 
 	jira "github.com/andygrunwald/go-jira"
-	"github.com/grokify/mogo/net/http/httpsimple"
 	"github.com/grokify/mogo/pointer"
 	"github.com/grokify/mogo/time/month"
 	"github.com/grokify/mogo/type/maputil"
@@ -20,12 +16,48 @@ import (
 	"github.com/grokify/mogo/type/stringsutil"
 
 	"github.com/grokify/gojira"
-	"github.com/grokify/gojira/jirarest/apiv3"
 )
 
-/*
+const (
+	ExpandFieldChangelog = "changelog"
+	ExpandFieldComment   = "comment"
+	ExpandFieldEpic      = "epic"
+)
+
 // SearchIssues returns all issues for a JQL query, automatically handling API pagination.
-func (svc *IssueService) SearchIssuesDeprecated(jql string) (Issues, error) {
+func (svc *IssueService) SearchIssues(jql string, retrieveAll bool) (Issues, error) {
+	// New API described here: https://github.com/andygrunwald/go-jira/issues/715
+	var issues Issues
+
+	opts := &jira.SearchOptionsV2{
+		MaxResults: 50,
+		Expand:     ExpandFieldEpic, // CSV
+		Fields:     []string{"*all"},
+	}
+
+	// SearchPages will page through results and pass each issue to appendFunc
+	// In this example, we'll search for all the issues in the target project
+	for {
+		ii, resp, err := svc.Client.JiraClient.Issue.SearchV2JQLWithContext(context.Background(), jql, opts)
+		if err != nil {
+			return issues, err
+		} else if resp.StatusCode > 299 {
+			return issues, fmt.Errorf("api error http status code (%d)", resp.StatusCode)
+		} else {
+			issues = append(issues, ii...)
+		}
+		if resp.IsLast || strings.TrimSpace(resp.NextPageToken) == "" {
+			break
+		} else {
+			opts.NextPageToken = resp.NextPageToken
+		}
+	}
+	return issues, nil
+}
+
+// SearchIssuesDeprecated returns all issues for a JQL query, automatically handling API pagination.
+// This isn't usable for Atlassian cloud any more but is kept for on-premise use.
+func (svc *IssueService) SearchIssuesDeprecated(jql string, retrieveAll bool) (Issues, error) {
 	var issues Issues
 
 	// appendFunc will append jira issues to []jira.Issue
@@ -33,17 +65,20 @@ func (svc *IssueService) SearchIssuesDeprecated(jql string) (Issues, error) {
 		issues = append(issues, i)
 		return err
 	}
+	if !retrieveAll {
+		appendFunc = nil
+	}
 
 	// SearchPages will page through results and pass each issue to appendFunc
 	// In this example, we'll search for all the issues in the target project
 	err := svc.Client.JiraClient.Issue.SearchPages(jql, &jira.SearchOptions{Expand: "epic"}, appendFunc)
 	return issues, err
 }
-*/
 
+/*
 // SearchIssues returns all issues for a JQL query using the V3 API endpoint /rest/api/3/search/jql.
 // If retrieveAll is true, it will paginate through all results until no more issues are available.
-func (svc *IssueService) SearchIssues(jql string, retrieveAll bool) (Issues, error) {
+func (svc *IssueService) SearchIssuesNew(jql string, retrieveAll bool) (Issues, error) {
 	if svc.Client == nil {
 		return nil, ErrClientCannotBeNil
 	}
@@ -98,11 +133,6 @@ func (svc *IssueService) SearchIssues(jql string, retrieveAll bool) (Issues, err
 		// Convert V3 issues to go-jira Issues
 		for _, v3Issue := range v3Response.Issues {
 			goJiraIssue := v3Issue.ConvertToGoJiraIssue()
-			/*
-				if err != nil {
-					return nil, fmt.Errorf("failed to convert V3 issue %s: %w", v3Issue.Key, err)
-				}
-			*/
 			allIssues = append(allIssues, *goJiraIssue)
 		}
 
@@ -114,6 +144,7 @@ func (svc *IssueService) SearchIssues(jql string, retrieveAll bool) (Issues, err
 
 	return allIssues, nil
 }
+*/
 
 func (svc *IssueService) SearchChildrenIssues(parentKeys []string) (Issues, error) {
 	if parentKeys = stringsutil.SliceCondenseSpace(parentKeys, true, true); len(parentKeys) == 0 {
