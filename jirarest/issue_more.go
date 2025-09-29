@@ -218,6 +218,14 @@ func (im *IssueMore) Resolution() string {
 	return im.issue.Fields.Resolution.Name
 }
 
+func (im *IssueMore) ResolutionTime() time.Time {
+	if im.issue == nil || im.issue.Fields == nil {
+		return time.Time{}
+	} else {
+		return time.Time(im.issue.Fields.Resolutiondate)
+	}
+}
+
 func (im *IssueMore) Status() string {
 	if im.issue == nil || im.issue.Fields == nil || im.issue.Fields.Status == nil {
 		return ""
