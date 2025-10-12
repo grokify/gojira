@@ -6,13 +6,13 @@ toolchain go1.24.5
 
 require (
 	github.com/andygrunwald/go-jira v1.17.0
-	github.com/grokify/goauth v0.23.22
-	github.com/grokify/gocharts/v2 v2.25.4
-	github.com/grokify/mogo v0.71.1
+	github.com/grokify/goauth v0.23.23
+	github.com/grokify/gocharts/v2 v2.25.5
+	github.com/grokify/mogo v0.71.3
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/olekukonko/tablewriter v1.1.0
 	github.com/rs/zerolog v1.34.0
-	golang.org/x/exp v0.0.0-20251002181428-27f1f14c8bb9
+	golang.org/x/exp v0.0.0-20251009144603-d2f985daa21b
 )
 
 require (
@@ -59,15 +59,15 @@ require (
 	go.opentelemetry.io/otel v1.38.0 // indirect
 	go.opentelemetry.io/otel/metric v1.38.0 // indirect
 	go.opentelemetry.io/otel/trace v1.38.0 // indirect
-	golang.org/x/crypto v0.42.0 // indirect
-	golang.org/x/image v0.31.0 // indirect
-	golang.org/x/net v0.44.0 // indirect
-	golang.org/x/oauth2 v0.31.0 // indirect
-	golang.org/x/sys v0.36.0 // indirect
-	golang.org/x/text v0.29.0 // indirect
+	golang.org/x/crypto v0.43.0 // indirect
+	golang.org/x/image v0.32.0 // indirect
+	golang.org/x/net v0.46.0 // indirect
+	golang.org/x/oauth2 v0.32.0 // indirect
+	golang.org/x/sys v0.37.0 // indirect
+	golang.org/x/text v0.30.0 // indirect
 	gonum.org/v1/gonum v0.16.0 // indirect
-	google.golang.org/api v0.251.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20251002232023-7c0ddcbb5797 // indirect
-	google.golang.org/grpc v1.75.1 // indirect
+	google.golang.org/api v0.252.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20251007200510-49b9836ed3ff // indirect
+	google.golang.org/grpc v1.76.0 // indirect
 	google.golang.org/protobuf v1.36.10 // indirect
 )
