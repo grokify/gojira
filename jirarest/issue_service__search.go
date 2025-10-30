@@ -2,13 +2,18 @@ package jirarest
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"net/http"
 	"slices"
 	"strings"
 	"time"
 
 	jira "github.com/andygrunwald/go-jira"
+	"github.com/grokify/gojira/jirarest/apiv3"
+	"github.com/grokify/mogo/net/http/httpsimple"
 	"github.com/grokify/mogo/pointer"
 	"github.com/grokify/mogo/time/month"
 	"github.com/grokify/mogo/type/maputil"
@@ -75,10 +80,9 @@ func (svc *IssueService) SearchIssuesDeprecated(jql string, retrieveAll bool) (I
 	return issues, err
 }
 
-/*
-// SearchIssues returns all issues for a JQL query using the V3 API endpoint /rest/api/3/search/jql.
+// SearchIssuesAPIV3 returns all issues for a JQL query using the V3 API endpoint /rest/api/3/search/jql.
 // If retrieveAll is true, it will paginate through all results until no more issues are available.
-func (svc *IssueService) SearchIssuesNew(jql string, retrieveAll bool) (Issues, error) {
+func (svc *IssueService) SearchIssuesAPIV3(jql string, retrieveAll bool) (Issues, error) {
 	if svc.Client == nil {
 		return nil, ErrClientCannotBeNil
 	}
@@ -144,7 +148,6 @@ func (svc *IssueService) SearchIssuesNew(jql string, retrieveAll bool) (Issues, 
 
 	return allIssues, nil
 }
-*/
 
 func (svc *IssueService) SearchChildrenIssues(parentKeys []string) (Issues, error) {
 	if parentKeys = stringsutil.SliceCondenseSpace(parentKeys, true, true); len(parentKeys) == 0 {

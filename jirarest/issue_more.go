@@ -13,6 +13,7 @@ import (
 	"github.com/grokify/gojira/jiraweb"
 	"github.com/grokify/mogo/encoding/jsonutil"
 	"github.com/grokify/mogo/pointer"
+	"github.com/grokify/mogo/time/duration"
 	"github.com/grokify/mogo/time/timeutil"
 	"github.com/grokify/mogo/type/slicesutil"
 	"golang.org/x/exp/slices"
@@ -269,7 +270,7 @@ func (im *IssueMore) Value(fieldSlug string) (string, bool) {
 		if tm.IsZeroAny() {
 			return "0", true
 		} else {
-			days := timeutil.DurationDays(time.Since(t))
+			days := duration.DurationDays(time.Since(t))
 			return strconv.Itoa(int(days)), true
 		}
 	case gojira.FieldCreatedDate:

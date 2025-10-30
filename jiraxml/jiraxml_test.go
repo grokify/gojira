@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/grokify/mogo/time/duration"
 	"github.com/grokify/mogo/time/timeutil"
 )
 
@@ -108,7 +109,7 @@ func TestReadFile(t *testing.T) {
 
 func testReadFileDuration(t *testing.T, d Duration, hoursPerDay, daysPerWeek float32) {
 	if len(strings.TrimSpace(d.Display)) != 0 {
-		di, err := timeutil.ParseDurationInfo(d.Display)
+		di, err := duration.ParseDurationInfo(d.Display)
 		if err != nil {
 			t.Errorf("timeutil.ParseDurationInfo(\"%s\") error: (%s)", d.Display, err.Error())
 		}
