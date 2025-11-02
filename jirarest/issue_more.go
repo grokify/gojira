@@ -20,11 +20,11 @@ import (
 )
 
 type IssueMore struct {
-	issue *jira.Issue
+	Issue *jira.Issue
 }
 
 func NewIssueMore(iss *jira.Issue) IssueMore {
-	return IssueMore{issue: iss}
+	return IssueMore{Issue: iss}
 }
 
 func (im *IssueMore) AdditionalFields(additionalFieldNames []string) map[string]*string {
@@ -41,33 +41,33 @@ func (im *IssueMore) AdditionalFields(additionalFieldNames []string) map[string]
 }
 
 func (im *IssueMore) AssigneeName() string {
-	if im.issue == nil || im.issue.Fields == nil || im.issue.Fields.Assignee == nil {
+	if im.Issue == nil || im.Issue.Fields == nil || im.Issue.Fields.Assignee == nil {
 		return ""
 	}
-	return im.issue.Fields.Assignee.DisplayName
+	return im.Issue.Fields.Assignee.DisplayName
 }
 
 func (im *IssueMore) CreateTime() time.Time {
-	if im.issue == nil || im.issue.Fields == nil {
+	if im.Issue == nil || im.Issue.Fields == nil {
 		return time.Time{}
 	}
-	return time.Time(im.issue.Fields.Created)
+	return time.Time(im.Issue.Fields.Created)
 }
 
 func (im *IssueMore) CreatorName() string {
-	if im.issue == nil || im.issue.Fields == nil || im.issue.Fields.Creator == nil {
+	if im.Issue == nil || im.Issue.Fields == nil || im.Issue.Fields.Creator == nil {
 		return ""
 	}
-	return im.issue.Fields.Creator.DisplayName
+	return im.Issue.Fields.Creator.DisplayName
 }
 
 // CustomField takes a custom value key such as `customfield_12345`.`
 func (im *IssueMore) CustomField(customFieldLabel string) (IssueCustomField, error) {
 	cf := IssueCustomField{}
-	if im.issue == nil {
+	if im.Issue == nil {
 		return cf, errors.New("issue not set")
 	}
-	err := GetUnmarshalCustomValue(*im.issue, customFieldLabel, &cf)
+	err := GetUnmarshalCustomValue(*im.Issue, customFieldLabel, &cf)
 	return cf, err
 }
 
@@ -87,40 +87,40 @@ func (im *IssueMore) CustomFieldStringOrDefault(customFieldLabel, def string) st
 }
 
 func (im *IssueMore) EpicKey() string {
-	if im.issue == nil || im.issue.Fields == nil || im.issue.Fields.Epic == nil {
+	if im.Issue == nil || im.Issue.Fields == nil || im.Issue.Fields.Epic == nil {
 		return ""
 	} else {
-		return im.issue.Fields.Epic.Key
+		return im.Issue.Fields.Epic.Key
 	}
 }
 
 func (im *IssueMore) EpicName() string {
-	if im.issue == nil || im.issue.Fields == nil || im.issue.Fields.Epic == nil {
+	if im.Issue == nil || im.Issue.Fields == nil || im.Issue.Fields.Epic == nil {
 		return ""
-	} else if strings.TrimSpace(im.issue.Fields.Epic.Name) != "" {
-		return im.issue.Fields.Epic.Name
+	} else if strings.TrimSpace(im.Issue.Fields.Epic.Name) != "" {
+		return im.Issue.Fields.Epic.Name
 	} else {
 		return ""
 	}
 }
 
 func (im *IssueMore) EpicNameOrSummary() string {
-	if im.issue == nil || im.issue.Fields == nil || im.issue.Fields.Epic == nil {
+	if im.Issue == nil || im.Issue.Fields == nil || im.Issue.Fields.Epic == nil {
 		return ""
-	} else if strings.TrimSpace(im.issue.Fields.Epic.Name) != "" {
-		return im.issue.Fields.Epic.Name
-	} else if strings.TrimSpace(im.issue.Fields.Epic.Summary) != "" {
-		return im.issue.Fields.Epic.Summary
+	} else if strings.TrimSpace(im.Issue.Fields.Epic.Name) != "" {
+		return im.Issue.Fields.Epic.Name
+	} else if strings.TrimSpace(im.Issue.Fields.Epic.Summary) != "" {
+		return im.Issue.Fields.Epic.Summary
 	} else {
 		return ""
 	}
 }
 
 func (im *IssueMore) Key() string {
-	if im.issue == nil {
+	if im.Issue == nil {
 		return ""
 	}
-	return strings.TrimSpace(im.issue.Key)
+	return strings.TrimSpace(im.Issue.Key)
 }
 
 // Keys returns a slice of all keys for this issue over time including the current
@@ -128,19 +128,19 @@ func (im *IssueMore) Key() string {
 // This relies on pulling the changelog from the Jira API.
 // NOTE: keys are sorted alphabetically, not by change date.
 func (im *IssueMore) Keys() (keys []string, hasChangelog bool) {
-	if im.issue == nil {
+	if im.Issue == nil {
 		return keys, hasChangelog
 	} else if key := im.Key(); key != "" {
 		keys = []string{key}
 	}
 
-	if im.issue.Changelog == nil {
+	if im.Issue.Changelog == nil {
 		return keys, hasChangelog
 	} else {
 		hasChangelog = true
 	}
 
-	for _, history := range im.issue.Changelog.Histories {
+	for _, history := range im.Issue.Changelog.Histories {
 		for _, item := range history.Items {
 			if strings.ToLower(strings.TrimSpace(item.Field)) == "key" {
 				// if item.Field == "Key" {
@@ -175,12 +175,12 @@ func (im *IssueMore) KeyURLWeb(baseURL string) string {
 }
 
 func (im *IssueMore) Labels(sortAsc bool) []string {
-	if im.issue == nil || im.issue.Fields == nil || len(im.issue.Fields.Labels) == 0 {
+	if im.Issue == nil || im.Issue.Fields == nil || len(im.Issue.Fields.Labels) == 0 {
 		return []string{}
-	} else if !sortAsc || len(im.issue.Fields.Labels) == 1 {
-		return im.issue.Fields.Labels
+	} else if !sortAsc || len(im.Issue.Fields.Labels) == 1 {
+		return im.Issue.Fields.Labels
 	} else {
-		labels := im.issue.Fields.Labels
+		labels := im.Issue.Fields.Labels
 		sort.Strings(labels)
 		return labels
 	}
@@ -192,67 +192,67 @@ func (im *IssueMore) LabelExists(label string) bool {
 }
 
 func (im *IssueMore) ParentKey() string {
-	if im.issue == nil || im.issue.Fields == nil || im.issue.Fields.Parent == nil {
+	if im.Issue == nil || im.Issue.Fields == nil || im.Issue.Fields.Parent == nil {
 		return ""
 	}
-	return strings.TrimSpace(im.issue.Fields.Parent.Key)
+	return strings.TrimSpace(im.Issue.Fields.Parent.Key)
 }
 
 func (im *IssueMore) Project() string {
-	if im.issue == nil || im.issue.Fields == nil {
+	if im.Issue == nil || im.Issue.Fields == nil {
 		return ""
 	}
-	return im.issue.Fields.Project.Name
+	return im.Issue.Fields.Project.Name
 }
 
 func (im *IssueMore) ProjectKey() string {
-	if im.issue == nil || im.issue.Fields == nil {
+	if im.Issue == nil || im.Issue.Fields == nil {
 		return ""
 	}
-	return im.issue.Fields.Project.Key
+	return im.Issue.Fields.Project.Key
 }
 
 func (im *IssueMore) Resolution() string {
-	if im.issue == nil || im.issue.Fields == nil || im.issue.Fields.Resolution == nil {
+	if im.Issue == nil || im.Issue.Fields == nil || im.Issue.Fields.Resolution == nil {
 		return ""
 	}
-	return im.issue.Fields.Resolution.Name
+	return im.Issue.Fields.Resolution.Name
 }
 
 func (im *IssueMore) ResolutionTime() time.Time {
-	if im.issue == nil || im.issue.Fields == nil {
+	if im.Issue == nil || im.Issue.Fields == nil {
 		return time.Time{}
 	} else {
-		return time.Time(im.issue.Fields.Resolutiondate)
+		return time.Time(im.Issue.Fields.Resolutiondate)
 	}
 }
 
 func (im *IssueMore) Status() string {
-	if im.issue == nil || im.issue.Fields == nil || im.issue.Fields.Status == nil {
+	if im.Issue == nil || im.Issue.Fields == nil || im.Issue.Fields.Status == nil {
 		return ""
 	}
-	return im.issue.Fields.Status.Name
+	return im.Issue.Fields.Status.Name
 }
 
 func (im *IssueMore) Summary() string {
-	if im.issue == nil {
+	if im.Issue == nil {
 		return ""
 	}
-	return im.issue.Fields.Summary
+	return im.Issue.Fields.Summary
 }
 
 func (im *IssueMore) Type() string {
-	if im.issue == nil {
+	if im.Issue == nil {
 		return ""
 	}
-	return im.issue.Fields.Type.Name
+	return im.Issue.Fields.Type.Name
 }
 
 func (im *IssueMore) UpdateTime() time.Time {
-	if im.issue == nil || im.issue.Fields == nil {
+	if im.Issue == nil || im.Issue.Fields == nil {
 		return time.Time{}
 	}
-	return time.Time(im.issue.Fields.Updated)
+	return time.Time(im.Issue.Fields.Updated)
 }
 
 func (im *IssueMore) Value(fieldSlug string) (string, bool) {
@@ -336,5 +336,5 @@ func (im *IssueMore) Meta(serverURL string, additionalFieldNames []string) Issue
 }
 
 func (im *IssueMore) WriteFileJSON(filename string, perm os.FileMode, prefix, indent string) error {
-	return jsonutil.MarshalFile(filename, im.issue, prefix, indent, perm)
+	return jsonutil.MarshalFile(filename, im.Issue, prefix, indent, perm)
 }
