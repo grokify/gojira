@@ -35,15 +35,6 @@ func NewIssuesSet(cfg *gojira.Config) *IssuesSet {
 	}
 }
 
-// StatusesOrder returns the status order from `StageConfig{}`.
-func (set *IssuesSet) StatusesOrder() []string {
-	if set.Config != nil && set.Config.StatusConfig != nil {
-		return set.Config.StatusConfig.StageConfig.Order()
-	} else {
-		return []string{}
-	}
-}
-
 // AddIssuesFile reads a `Issues{}` JSON file and adds it to the `IssuesSet{}`.
 func (set *IssuesSet) AddIssuesFile(filename string) error {
 	if ii, err := IssuesReadFileJSON(filename); err != nil {
@@ -289,6 +280,28 @@ func (set *IssuesSet) IssuesSetHighestType(issueType string) (*IssuesSet, error)
 	}
 	new.Parents = set.Parents
 	return new, nil
+}
+
+// StatusesOrder returns the status order from `StageConfig{}`.
+func (set *IssuesSet) StatusesOrder() []string {
+	if set.Config != nil && set.Config.StatusConfig != nil {
+		return set.Config.StatusConfig.StageConfig.Order()
+	} else {
+		return []string{}
+	}
+}
+
+func (set *IssuesSet) Summaries(ascSort bool) []string {
+	var out []string
+	for _, iss := range set.IssuesMap {
+		iss := iss
+		issMore := NewIssueMore(&iss)
+		out = append(out, issMore.Summary())
+	}
+	if ascSort {
+		sort.Strings(out)
+	}
+	return out
 }
 
 // WriteFileJSON writes the `IssuesSet{}` as a JSON file.
