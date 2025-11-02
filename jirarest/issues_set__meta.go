@@ -21,7 +21,7 @@ func (set *IssuesSet) Types(inclBase, inclParents bool) []string {
 
 func (set *IssuesSet) types() []string {
 	types := map[string]int{}
-	for _, iss := range set.IssuesMap {
+	for _, iss := range set.Items {
 		iss := iss
 		im := NewIssueMore(&iss)
 		types[im.Type()]++
@@ -59,7 +59,7 @@ func (set *IssuesSet) keysForTypes(types []string) []string {
 		typeMap[t]++
 	}
 	var keys []string
-	for _, iss := range set.IssuesMap {
+	for _, iss := range set.Items {
 		iss := iss
 		im := NewIssueMore(&iss)
 		t := im.Type()

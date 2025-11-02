@@ -183,8 +183,8 @@ func (svc *IssueService) SearchChildrenIssuesSet(ctx context.Context, parentKeys
 	}
 	i := 0
 	recurseLimit := 1000
-	for !slices.Equal(maputil.Keys(seen), maputil.Keys(is.IssuesMap)) {
-		unseen := slicesutil.Sub(maputil.Keys(is.IssuesMap), maputil.Keys(seen))
+	for !slices.Equal(maputil.Keys(seen), maputil.Keys(is.Items)) {
+		unseen := slicesutil.Sub(maputil.Keys(is.Items), maputil.Keys(seen))
 		if len(unseen) == 0 {
 			break
 		}

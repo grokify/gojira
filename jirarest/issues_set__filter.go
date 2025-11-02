@@ -15,7 +15,7 @@ func (set *IssuesSet) FilterByStatus(inclStatuses, exclStatuses []string) (*Issu
 	for _, s := range exclStatuses {
 		exclStatusesMap[s]++
 	}
-	for _, iss := range set.IssuesMap {
+	for _, iss := range set.Items {
 		im := NewIssueMore(pointer.Pointer(iss))
 		// ifs := IssueFieldsSimple{Fields: iss.Fields}
 		statusName := im.Status()
@@ -40,7 +40,7 @@ func (set *IssuesSet) FilterStatus(inclStatuses ...string) (*IssuesSet, error) {
 	if len(inclStatuses) == 0 {
 		return n, nil
 	}
-	for _, iss := range set.IssuesMap {
+	for _, iss := range set.Items {
 		im := NewIssueMore(pointer.Pointer(iss))
 		if slices.Index(inclStatuses, im.Status()) >= 0 {
 			err := n.Add(iss)
@@ -58,7 +58,7 @@ func (set *IssuesSet) FilterByType(inclTypes ...string) (*IssuesSet, error) {
 	if len(inclTypes) == 0 {
 		return out, nil
 	}
-	for _, iss := range set.IssuesMap {
+	for _, iss := range set.Items {
 		im := NewIssueMore(pointer.Pointer(iss))
 		if slices.Index(inclTypes, im.Type()) >= 0 {
 			err := out.Add(iss)

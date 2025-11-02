@@ -37,7 +37,7 @@ func main() {
 	)
 	logutil.FatalErr(errorsutil.Wrap(err, "GetBacklogIssuesSetAll"))
 
-	fmt.Printf("COUNT (%d)\n", len(is.IssuesMap))
+	fmt.Printf("COUNT (%d)\n", len(is.Items))
 
 	countsByStatus := is.Counts()
 	fmtutil.MustPrintJSON(countsByStatus)

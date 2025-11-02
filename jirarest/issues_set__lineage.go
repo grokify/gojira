@@ -57,7 +57,7 @@ func (set *IssuesSet) LineageValidateSet() (popLineage []string, unpopLineage []
 	}
 	popLineage = stringsutil.SliceCondenseSpace(popLineage, true, true)
 	unpopLineage = stringsutil.SliceCondenseSpace(unpopLineage, true, true)
-	if len(popLineage) == len(set.IssuesMap) && len(unpopLineage) == 0 {
+	if len(popLineage) == len(set.Items) && len(unpopLineage) == 0 {
 		allValid = true
 		return popLineage, unpopLineage, allValid
 	}

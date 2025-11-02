@@ -76,11 +76,11 @@ func (set *IssuesSet) RetrieveIssues(client *Client, ids []string) error {
 }
 
 func (set *IssuesSet) IssueOrParent(key string) (*jira.Issue, bool) {
-	if iss, ok := set.IssuesMap[key]; ok {
+	if iss, ok := set.Items[key]; ok {
 		return &iss, true
 	} else if set.Parents == nil {
 		return nil, false
-	} else if iss, ok := set.Parents.IssuesMap[key]; ok {
+	} else if iss, ok := set.Parents.Items[key]; ok {
 		return &iss, true
 	} else {
 		return nil, false
@@ -89,7 +89,7 @@ func (set *IssuesSet) IssueOrParent(key string) (*jira.Issue, bool) {
 
 func (set *IssuesSet) KeysParents() []string {
 	var parKeys []string
-	for _, iss := range set.IssuesMap {
+	for _, iss := range set.Items {
 		im := NewIssueMore(pointer.Pointer(iss))
 		if parKey := im.ParentKey(); parKey != "" {
 			parKeys = append(parKeys, parKey)

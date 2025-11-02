@@ -16,9 +16,9 @@ import (
 )
 
 type IssuesSet struct {
-	Config    *gojira.Config
-	IssuesMap map[string]jira.Issue
-	Parents   *IssuesSet
+	Config  *gojira.Config
+	Items   map[string]jira.Issue
+	Parents *IssuesSet
 }
 
 func NewIssuesSet(cfg *gojira.Config) *IssuesSet {
@@ -26,11 +26,11 @@ func NewIssuesSet(cfg *gojira.Config) *IssuesSet {
 		cfg = gojira.NewConfigDefault()
 	}
 	return &IssuesSet{
-		Config:    cfg,
-		IssuesMap: map[string]jira.Issue{},
+		Config: cfg,
+		Items:  map[string]jira.Issue{},
 		Parents: &IssuesSet{
-			Config:    cfg,
-			IssuesMap: map[string]jira.Issue{},
+			Config: cfg,
+			Items:  map[string]jira.Issue{},
 		},
 	}
 }
@@ -45,14 +45,14 @@ func (set *IssuesSet) AddIssuesFile(filename string) error {
 }
 
 func (set *IssuesSet) Add(issues ...jira.Issue) error {
-	if set.IssuesMap == nil {
-		set.IssuesMap = map[string]jira.Issue{}
+	if set.Items == nil {
+		set.Items = map[string]jira.Issue{}
 	}
 	for _, iss := range issues {
 		if key := strings.TrimSpace(iss.Key); key == "" {
 			return errors.New("no key")
 		} else {
-			set.IssuesMap[key] = iss
+			set.Items[key] = iss
 		}
 	}
 	return nil
@@ -64,7 +64,7 @@ func (set *IssuesSet) IssueFirst() (jira.Issue, error) {
 	keys := set.Keys()
 	if len(keys) == 0 {
 		return jira.Issue{}, errors.New("no issues present")
-	} else if iss, ok := set.IssuesMap[keys[0]]; ok {
+	} else if iss, ok := set.Items[keys[0]]; ok {
 		return iss, nil
 	} else {
 		panic(fmt.Sprintf("issue key from map not found (%s)", keys[0]))
@@ -73,7 +73,7 @@ func (set *IssuesSet) IssueFirst() (jira.Issue, error) {
 
 // KeyExists returns a boolean representing the existence of an issue key.
 func (set *IssuesSet) KeyExists(key string, inclParents bool) bool {
-	if _, ok := set.IssuesMap[key]; ok {
+	if _, ok := set.Items[key]; ok {
 		return true
 	} else if !inclParents || set.Parents == nil {
 		return false
@@ -83,8 +83,8 @@ func (set *IssuesSet) KeyExists(key string, inclParents bool) bool {
 }
 
 // Keys returns a slice of sorted issue keys.
-func (set *IssuesSet) Keys() []string             { return maputil.Keys(set.IssuesMap) }
-func (set *IssuesSet) Len() int                   { return len(set.IssuesMap) }
+func (set *IssuesSet) Keys() []string             { return maputil.Keys(set.Items) }
+func (set *IssuesSet) Len() int                   { return len(set.Items) }
 func (set *IssuesSet) LenParents() int            { return len(set.KeysParents()) }
 func (set *IssuesSet) LenParentsPopulated() int   { return len(set.KeysParentsPopulated()) }
 func (set *IssuesSet) LenParentsUnpopulated() int { return len(set.KeysParentsUnpopulated()) }
@@ -109,7 +109,7 @@ func (set *IssuesSet) LenLineageTopKeysUnpopulated() int {
 func (set *IssuesSet) LenMap() map[string]int {
 	lenParentsSet := 0
 	if set.Parents != nil {
-		lenParentsSet = len(set.Parents.IssuesMap)
+		lenParentsSet = len(set.Parents.Items)
 	}
 	return map[string]int{
 		"len":                       set.Len(),
@@ -124,7 +124,7 @@ func (set *IssuesSet) LenMap() map[string]int {
 
 func (set *IssuesSet) EpicKeys(customFieldID string) []string {
 	var keys []string
-	for _, iss := range set.IssuesMap {
+	for _, iss := range set.Items {
 		if iss.Fields == nil {
 			continue
 		}
@@ -142,7 +142,7 @@ func (set *IssuesSet) EpicKeys(customFieldID string) []string {
 }
 
 func (set *IssuesSet) InflateEpicKeys(customFieldEpicLinkID string) {
-	for k, iss := range set.IssuesMap {
+	for k, iss := range set.Items {
 		if iss.Fields == nil {
 			continue
 		}
@@ -156,7 +156,7 @@ func (set *IssuesSet) InflateEpicKeys(customFieldEpicLinkID string) {
 			}
 			iss.Fields.Epic.Key = epicKey
 		}
-		set.IssuesMap[k] = iss
+		set.Items[k] = iss
 	}
 }
 
@@ -165,7 +165,7 @@ func (set *IssuesSet) InflateEpics(jclient *jira.Client, customFieldIDEpicLink s
 	epicKeys := set.EpicKeys(customFieldIDEpicLink)
 	var newEpicKeys []string
 	for _, key := range epicKeys {
-		if _, ok := set.IssuesMap[key]; !ok {
+		if _, ok := set.Items[key]; !ok {
 			newEpicKeys = append(newEpicKeys, key)
 		}
 	}
@@ -175,7 +175,7 @@ func (set *IssuesSet) InflateEpics(jclient *jira.Client, customFieldIDEpicLink s
 		return err
 	}
 
-	for k, iss := range set.IssuesMap {
+	for k, iss := range set.Items {
 		issEpicKey := strings.TrimSpace(IssueFieldsCustomFieldString(iss.Fields, customFieldIDEpicLink))
 		if issEpicKey == "" {
 			continue
@@ -185,7 +185,7 @@ func (set *IssuesSet) InflateEpics(jclient *jira.Client, customFieldIDEpicLink s
 			panic("not found")
 		}
 		iss.Fields.Epic = &epic
-		set.IssuesMap[k] = iss
+		set.Items[k] = iss
 	}
 	return nil
 }
@@ -196,10 +196,10 @@ func (set *IssuesSet) Issue(key string) (jira.Issue, error) {
 	if key == "" {
 		return jira.Issue{}, errors.New("key not provided")
 	}
-	if iss, ok := set.IssuesMap[key]; ok {
+	if iss, ok := set.Items[key]; ok {
 		return iss, nil
 	} else if set.Parents != nil {
-		if iss, ok := set.Parents.IssuesMap[key]; ok {
+		if iss, ok := set.Parents.Items[key]; ok {
 			return iss, nil
 		}
 	}
@@ -210,12 +210,12 @@ func (set *IssuesSet) Issue(key string) (jira.Issue, error) {
 func (set *IssuesSet) Issues(keys ...string) Issues {
 	var ii Issues
 	if len(keys) == 0 {
-		for _, iss := range set.IssuesMap {
+		for _, iss := range set.Items {
 			ii = append(ii, iss)
 		}
 	} else {
 		for _, key := range keys {
-			if iss, ok := set.IssuesMap[key]; ok {
+			if iss, ok := set.Items[key]; ok {
 				ii = append(ii, iss)
 			}
 		}
@@ -225,7 +225,7 @@ func (set *IssuesSet) Issues(keys ...string) Issues {
 
 func (set *IssuesSet) IssueMetas(customFieldLabels []string) IssueMetas {
 	var imetas IssueMetas
-	for _, iss := range set.IssuesMap {
+	for _, iss := range set.Items {
 		iss := iss
 		issMore := NewIssueMore(&iss)
 		issMeta := issMore.Meta(set.Config.ServerURL, customFieldLabels)
@@ -237,7 +237,7 @@ func (set *IssuesSet) IssueMetas(customFieldLabels []string) IssueMetas {
 func (set *IssuesSet) IssueMores(keys ...string) IssueMores {
 	var ims IssueMores
 	if len(keys) == 0 {
-		for _, iss := range set.IssuesMap {
+		for _, iss := range set.Items {
 			im := NewIssueMore(&iss)
 			ims = append(ims, im)
 		}
@@ -246,7 +246,7 @@ func (set *IssuesSet) IssueMores(keys ...string) IssueMores {
 			k = strings.TrimSpace(k)
 			if k == "" {
 				continue
-			} else if iss, ok := set.IssuesMap[k]; ok {
+			} else if iss, ok := set.Items[k]; ok {
 				im := NewIssueMore(&iss)
 				ims = append(ims, im)
 			}
@@ -257,7 +257,7 @@ func (set *IssuesSet) IssueMores(keys ...string) IssueMores {
 
 func (set *IssuesSet) IssuesSetHighestType(issueType string) (*IssuesSet, error) {
 	new := NewIssuesSet(set.Config)
-	for _, iss := range set.IssuesMap {
+	for _, iss := range set.Items {
 		iss := iss
 		issMore := NewIssueMore(&iss)
 		issMeta := issMore.Meta(set.Config.ServerURL, []string{})
@@ -293,7 +293,7 @@ func (set *IssuesSet) StatusesOrder() []string {
 
 func (set *IssuesSet) Summaries(ascSort bool) []string {
 	var out []string
-	for _, iss := range set.IssuesMap {
+	for _, iss := range set.Items {
 		iss := iss
 		issMore := NewIssueMore(&iss)
 		out = append(out, issMore.Summary())

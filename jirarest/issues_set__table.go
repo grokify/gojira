@@ -173,7 +173,7 @@ func (set *IssuesSet) TableDefault(customCols *CustomTableCols, inclEpic bool, i
 		}
 	}
 
-	for key, iss := range set.IssuesMap {
+	for key, iss := range set.Items {
 		issMore := NewIssueMore(pointer.Pointer(iss))
 		issMeta := issMore.Meta(baseURL, customFieldLabels)
 
@@ -271,7 +271,7 @@ func (set *IssuesSet) Table(cols CustomTableCols) (*table.Table, error) {
 			tbl.FormatMap[i] = table.FormatDate
 		}
 	}
-	for _, iss := range set.IssuesMap {
+	for _, iss := range set.Items {
 		issMore := NewIssueMore(pointer.Pointer(iss))
 		var row []string
 		for _, col := range cols.Cols {

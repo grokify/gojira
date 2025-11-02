@@ -36,10 +36,10 @@ func (set *IssuesSet) RetrieveChildrenOfType(client *Client, parentTypes, baseTy
 			if childKey == "" || set.KeyExists(childKey, true) {
 				continue
 			} else if slices.Index(baseTypes, im.Type()) > -1 {
-				set.IssuesMap[childKey] = c
+				set.Items[childKey] = c
 				continue
 			} else { // not base type.
-				set.Parents.IssuesMap[childKey] = c
+				set.Parents.Items[childKey] = c
 				unknownChildrenKeys = append(unknownChildrenKeys, childKey)
 			}
 		}

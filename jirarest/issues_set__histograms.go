@@ -17,7 +17,7 @@ import (
 func (set *IssuesSet) TimeSeriesCreatedMonth() *timeseries.TimeSeries {
 	ts := timeseries.NewTimeSeries("by month")
 	ts.Interval = timeutil.IntervalMonth
-	for _, iss := range set.IssuesMap {
+	for _, iss := range set.Items {
 		iss := iss
 		im := NewIssueMore(&iss)
 		ts.AddInt64(im.CreateTime(), 1)
@@ -83,7 +83,7 @@ func (set *IssuesSet) TimeSeriesSetCreatedMonthByKey(cumulative, inflate, popLas
 	}
 	tss := timeseries.NewTimeSeriesSet("By Project By Month")
 	tss.Interval = timeutil.IntervalMonth
-	for _, iss := range set.IssuesMap {
+	for _, iss := range set.Items {
 		iss := iss
 		tssKey, err := fnKey(iss)
 		if err != nil {
@@ -105,7 +105,7 @@ func (set *IssuesSet) HistogramMapFunc(fn func(iss *jira.Issue) (map[string]stri
 		return nil, ErrFunctionCannotBeNil
 	}
 	hist := histogram.NewHistogram(gojira.FieldIssuePlural)
-	for _, iss := range set.IssuesMap {
+	for _, iss := range set.Items {
 		if m, err := fn(&iss); err != nil {
 			return nil, err
 		} else {
@@ -217,7 +217,7 @@ func (set *IssuesSet) HistogramSetFunc(fn func(iss *jira.Issue) (cat1 string, ca
 		fn = IssueProjectkeyType
 	}
 	hset := histogram.NewHistogramSet(gojira.FieldIssuePlural)
-	for _, iss := range set.IssuesMap {
+	for _, iss := range set.Items {
 		cat1, cat2 := fn(&iss)
 		hset.Add(cat1, cat2, 1)
 	}
@@ -235,7 +235,7 @@ func (set *IssuesSet) HistogramSetsFunc(fn func(iss *jira.Issue) (cat1 string, c
 		fn = IssueProjectkeyTypeStatus
 	}
 	hsets := histogram.NewHistogramSets(gojira.FieldIssuePlural)
-	for _, iss := range set.IssuesMap {
+	for _, iss := range set.Items {
 		cat1, cat2, cat3 := fn(&iss)
 		hsets.Add(cat1, cat2, cat3, 1, true)
 	}
@@ -254,7 +254,7 @@ func (set *IssuesSet) HistogramMap(stdKeys []string, calcFields []IssueCalcField
 
 func (set *IssuesSet) ExportWorkstreamFilter(wsFuncMake WorkstreamFuncMake, wsFuncIncl WorkstreamFuncIncl, customFieldLabels []string) (*IssuesSet, error) {
 	out := NewIssuesSet(set.Config)
-	for _, iss := range set.IssuesMap {
+	for _, iss := range set.Items {
 		iss := iss
 		im := NewIssueMore(&iss)
 		key := im.Key()
@@ -317,7 +317,7 @@ func (set *IssuesSet) ExportWorkstreamXfieldStatusHistogramSets(
 			statusCategoryFunc = set.Config.StatusConfig.MetaStage
 		}
 	}
-	for _, iss := range set.IssuesMap {
+	for _, iss := range set.Items {
 		iss := iss
 		im := NewIssueMore(&iss)
 		key := im.Key()

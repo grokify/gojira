@@ -4,7 +4,7 @@ import "sort"
 
 func (set *IssuesSet) KeysByField(fieldLabel string) map[string]SliceMore {
 	out := map[string]SliceMore{}
-	for _, iss := range set.IssuesMap {
+	for _, iss := range set.Items {
 		im := NewIssueMore(&iss)
 		if v, ok := im.Value(fieldLabel); ok {
 			if _, ok := out[v]; !ok {
