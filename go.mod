@@ -10,7 +10,7 @@ require (
 	github.com/grokify/gocharts/v2 v2.26.1
 	github.com/grokify/mogo v0.71.7
 	github.com/jessevdk/go-flags v1.6.1
-	github.com/olekukonko/tablewriter v1.1.0
+	github.com/olekukonko/tablewriter v1.1.1
 	github.com/rs/zerolog v1.34.0
 	golang.org/x/exp v0.0.0-20251023183803-a4bb9ffd2546
 )
@@ -19,6 +19,7 @@ require (
 	cloud.google.com/go/auth v0.17.0 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.8 // indirect
 	cloud.google.com/go/compute/metadata v0.9.0 // indirect
+	github.com/clipperhouse/displaywidth v0.3.1 // indirect
 	github.com/clipperhouse/stringish v0.1.1 // indirect
 	github.com/clipperhouse/uax29/v2 v2.3.0 // indirect
 	github.com/fatih/color v1.18.0 // indirect
@@ -47,7 +48,6 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/richardlehane/mscfb v1.0.4 // indirect
 	github.com/richardlehane/msoleps v1.0.4 // indirect
-	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/tiendc/go-deepcopy v1.7.1 // indirect
 	github.com/trivago/tgo v1.0.7 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
