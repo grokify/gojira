@@ -86,6 +86,14 @@ func (im *IssueMore) CustomFieldStringOrDefault(customFieldLabel, def string) st
 	}
 }
 
+func (im *IssueMore) Description() string {
+	if im.Issue == nil || im.Issue.Fields == nil {
+		return ""
+	} else {
+		return im.Issue.Fields.Description
+	}
+}
+
 func (im *IssueMore) EpicKey() string {
 	if im.Issue == nil || im.Issue.Fields == nil || im.Issue.Fields.Epic == nil {
 		return ""

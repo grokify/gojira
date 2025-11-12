@@ -1,11 +1,14 @@
 package apiv3
 
 import (
-	"fmt"
+	"encoding/json"
 	"strings"
+	"time"
 
 	jira "github.com/andygrunwald/go-jira"
 )
+
+const layoutISO8601TZNC = "2006-01-02T15:04:05.000-0700" // Compact RFC3339-like
 
 // ConvertToGoJiraIssue converts a V3 API Issue to a go-jira Issue
 func (issue *Issue) ConvertToGoJiraIssue() *jira.Issue {
@@ -41,7 +44,13 @@ func convertFields(v3Fields *Fields, goJiraFields *jira.IssueFields) {
 				goJiraFields.Description = desc
 			}
 		*/
-		goJiraFields.Description = extractTextFromADF(v3Fields.Description)
+		goJiraFields.Description = extractTextFromADFManual(v3Fields.Description)
+	}
+
+	if c := strings.TrimSpace(v3Fields.Created); c != "" {
+		if dt, err := time.Parse(layoutISO8601TZNC, c); err == nil {
+			goJiraFields.Created = jira.Time(dt)
+		}
 	}
 
 	// Issue Type
@@ -136,6 +145,22 @@ func convertUser(v3User *User) *jira.User {
 }
 
 // extractTextFromADF extracts plain text from Atlassian Document Format (ADF) content
+func extractTextFromADFManual(content any) string {
+	b, err := json.Marshal(content)
+	if err != nil {
+		return ""
+	}
+	desc := Description{}
+	err = json.Unmarshal(b, &desc)
+	if err != nil {
+		return ""
+	} else {
+		return desc.String()
+	}
+}
+
+/*
+// extractTextFromADF extracts plain text from Atlassian Document Format (ADF) content
 func extractTextFromADF(content any) string {
 	if content == nil {
 		return ""
@@ -181,3 +206,5 @@ func extractTextFromADFMap(adfMap map[string]any) string {
 
 	return strings.Join(textParts, " ")
 }
+
+*/
