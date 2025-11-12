@@ -12,7 +12,7 @@ type Config struct {
 	ServerURL          string
 	WorkingHoursPerDay float32
 	WorkingDaysPerWeek float32
-	StatusConfig       *StatusConfig
+	StatusConfig       *StatusCategoryConfig
 }
 
 func NewConfigDefault() *Config {
