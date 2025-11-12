@@ -7,7 +7,7 @@ toolchain go1.24.5
 require (
 	github.com/andygrunwald/go-jira v1.17.0
 	github.com/grokify/goauth v0.23.25
-	github.com/grokify/gocharts/v2 v2.26.1
+	github.com/grokify/gocharts/v2 v2.26.4
 	github.com/grokify/mogo v0.71.8
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/olekukonko/tablewriter v1.1.1
