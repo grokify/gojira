@@ -3,6 +3,8 @@ package jirarest
 import (
 	"errors"
 	"fmt"
+	"slices"
+	"strings"
 	"time"
 
 	jira "github.com/andygrunwald/go-jira"
@@ -245,6 +247,53 @@ func (set *IssuesSet) HistogramSetsFunc(fn func(iss *jira.Issue) (cat1 string, c
 // HistogramSetsProjectTypeStatus provides issue counts by: Project, Type, and Status.
 func (set *IssuesSet) HistogramSetsProjectTypeStatus() *histogram.HistogramSets {
 	return set.HistogramSetsFunc(IssueProjectkeyTypeStatus)
+}
+
+func (set *IssuesSet) HistogramByStatus() *histogram.Histogram {
+	out := histogram.NewHistogram("")
+	for _, iss := range set.Items {
+		im := NewIssueMore(&iss)
+		out.Add(im.Status(), 1)
+	}
+	return out
+}
+
+// HistogramByStatusCategory returns a `histogram.Histogram` based on issue counts or custom counts.
+func (set *IssuesSet) HistogramByStatusCategory(statusCategories gojira.StatusCategories, matchMore bool, customCounts map[string]int) (*histogram.Histogram, error) {
+	out := histogram.NewHistogram("")
+	if len(statusCategories.CategoryOrder) > 0 {
+		out.Order = slices.Clone(statusCategories.CategoryOrder)
+	}
+	for _, iss := range set.Items {
+		im := NewIssueMore(&iss)
+		status := im.Status()
+		statusCategory := ""
+		if !matchMore {
+			if sc, ok := statusCategories.MapStatusToCategory[status]; ok {
+				statusCategory = sc
+			} else {
+				statusCategory = statusCategories.UnknownCategory
+			}
+		} else {
+			status = strings.ToLower(strings.TrimSpace(status))
+			for tryStatus, tryCat := range statusCategories.MapStatusToCategory {
+				tryStatus = strings.ToLower(strings.TrimSpace(tryStatus))
+				if tryStatus == status {
+					statusCategory = tryCat
+				}
+			}
+		}
+		if len(customCounts) == 0 {
+			out.Add(statusCategory, 1)
+		} else {
+			if customCount, ok := customCounts[im.Key()]; ok {
+				out.Add(statusCategory, customCount)
+			} else {
+				return nil, fmt.Errorf("no custom count for key (%s)", im.Key())
+			}
+		}
+	}
+	return out, nil
 }
 
 func (set *IssuesSet) HistogramMap(stdKeys []string, calcFields []IssueCalcField) (*histogram.Histogram, error) {
