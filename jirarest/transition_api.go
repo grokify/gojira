@@ -84,8 +84,7 @@ func (svc *IssueService) DoTransitionWithNameAndPayload(ctx context.Context, iss
 	} else if resp.StatusCode > 299 {
 		return fmt.Errorf("bad api response status code (%d)", resp.StatusCode)
 	}
-	txns := Transitions(possibleTxns)
-	wantTxn, err := txns.GetByName(updateTransitionName)
+	wantTxn, err := possibleTxns.GetByName(updateTransitionName)
 	if err != nil {
 		return errorsutil.Wrapf(err, "jira id (%s)", issueID)
 	}
