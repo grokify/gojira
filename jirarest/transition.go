@@ -95,3 +95,12 @@ func (txns Transitions) MapNameToID() map[string]string {
 	}
 	return out
 }
+
+func (txns Transitions) Names() []string {
+	var out []string
+	for _, txn := range txns {
+		out = append(out, txn.Name)
+	}
+	sort.Strings(out)
+	return out
+}
