@@ -9,6 +9,10 @@ import (
 
 var rxJiraTicket = regexp.MustCompile(`([A-Z]+\-[0-9]+)`)
 
+func KeyIsValid(id string) bool {
+	return rxJiraTicket.MatchString(id)
+}
+
 func ParseKeys(s string, unique, asc bool) []string {
 	var keys []string
 	m := rxJiraTicket.FindAllStringSubmatch(s, -1)
