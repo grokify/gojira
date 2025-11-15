@@ -14,6 +14,16 @@ import (
 	"github.com/grokify/gojira"
 )
 
+type TransitionOptionSet struct {
+	ContinueOnUnlistedStatus  bool                        `json:"continueOnUnlistedStatus"`
+	StatusToTransitionOptions map[string]TransitionOption `json:"items,omitempty"` // map status => TransitionOption
+}
+
+type TransitionOption struct {
+	TransitionName    string             `json:"transitionName,omitempty"`
+	TransitionPayload *TransitionPayload `json:"transitionPayload,omitempty"`
+}
+
 type TransitionPayload struct {
 	Transition jira.TransitionPayload  `json:"transition,omitempty"`
 	Fields     map[string]any          `json:"fields,omitempty"`
@@ -68,30 +78,78 @@ func (svc *IssueService) GetTransitions(ctx context.Context, id string, expandTr
 	}
 }
 
-func (svc *IssueService) DoTransitionWithNameAndPayload(ctx context.Context, issueID, updateTransitionName string, payload *TransitionPayload) error {
-	issue, resp, err := svc.Client.JiraClient.Issue.Get(issueID, nil)
+type issueTxnInfo struct {
+	Key                     string
+	Status                  string
+	PossibleTransitionNames []string
+}
+
+func (info issueTxnInfo) String() string {
+	b, err := json.Marshal(info)
 	if err != nil {
-		return err
-	} else if resp.StatusCode > 299 {
-		return fmt.Errorf("bad api response status code (%d)", resp.StatusCode)
+		panic(err)
+	} else {
+		return string(b)
 	}
-	if issue.Fields.Status.Name == updateTransitionName {
-		return nil
+}
+
+func (svc *IssueService) DoTransitions(ctx context.Context, issueIDs []string, opts TransitionOptionSet) error {
+	for _, issueID := range issueIDs {
+		issue, resp, err := svc.Client.JiraClient.Issue.Get(issueID, nil)
+		if err != nil {
+			return err
+		} else if resp.StatusCode > 299 {
+			return fmt.Errorf("bad api response status code (%d)", resp.StatusCode)
+		}
+		im := NewIssueMore(issue)
+		status := im.Status()
+		txnOpts, ok := opts.StatusToTransitionOptions[status]
+		if !ok {
+			if opts.ContinueOnUnlistedStatus {
+				continue
+			} else {
+				return fmt.Errorf("no txnOptions for status (%s) id (%s)", status, issueID)
+			}
+		}
+		if err := svc.DoTransitionWithNameAndPayload(
+			ctx, issueID, issue, txnOpts.TransitionName, txnOpts.TransitionPayload,
+		); err != nil {
+			return err
+		}
 	}
+	return nil
+}
+
+func (svc *IssueService) DoTransitionWithNameAndPayload(ctx context.Context, issueID string, issue *jira.Issue, updateTransitionName string, payload *TransitionPayload) error {
+	if issue == nil {
+		if issueTry, resp, err := svc.Client.JiraClient.Issue.Get(issueID, nil); err != nil {
+			return err
+		} else if resp.StatusCode > 299 {
+			return fmt.Errorf("bad api response status code (%d)", resp.StatusCode)
+		} else {
+			issue = issueTry
+		}
+	}
+	im := NewIssueMore(issue)
+	status := im.Status()
+	issTxnMeta := issueTxnInfo{
+		Key:    issueID,
+		Status: status}
 	possibleTxns, resp, err := svc.GetTransitions(ctx, issueID, true)
 	if err != nil {
 		return err
 	} else if resp.StatusCode > 299 {
 		return fmt.Errorf("bad api response status code (%d)", resp.StatusCode)
 	}
+	issTxnMeta.PossibleTransitionNames = possibleTxns.Names()
 	wantTxn, err := possibleTxns.GetByName(updateTransitionName)
 	if err != nil {
-		return errorsutil.Wrapf(err, "jira id (%s)", issueID)
+		return errorsutil.Wrapf(err, "jiraTxnInfo (%s)", issTxnMeta.String())
 	}
 	if payload != nil {
 		payload.Transition.ID = wantTxn.ID
 		if resp, err = svc.Client.JiraClient.Issue.DoTransitionWithPayloadWithContext(ctx, issueID, *payload); err != nil {
-			return err
+			return errorsutil.Wrapf(err, "meta (%s)", issTxnMeta.String())
 		} else if resp.StatusCode > 299 {
 			return fmt.Errorf("bad api response status code (%d)", resp.StatusCode)
 		}
