@@ -1,7 +1,11 @@
 package jirarest
 
 import (
+	"sort"
+
+	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/pointer"
+	"github.com/grokify/mogo/type/slicesutil"
 	"golang.org/x/exp/slices"
 )
 
@@ -32,6 +36,18 @@ func (set *IssuesSet) FilterByStatus(inclStatuses, exclStatuses []string) (*Issu
 		}
 	}
 	return filteredIssuesSet, nil
+}
+
+func (set *IssuesSet) FilterByStatusCategory(scatsRef gojira.StatusCategories, scatsIncl []string) (*IssuesSet, error) {
+	var inclStatuses []string
+	for _, scatIncl := range scatsIncl {
+		if scatStatuses, ok := scatsRef.MapCategoryToStatuses[scatIncl]; ok {
+			inclStatuses = append(inclStatuses, scatStatuses...)
+		}
+	}
+	inclStatuses = slicesutil.Dedupe(inclStatuses)
+	sort.Strings(inclStatuses)
+	return set.FilterByStatus(inclStatuses, []string{})
 }
 
 /*
