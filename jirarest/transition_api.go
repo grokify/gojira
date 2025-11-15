@@ -16,12 +16,12 @@ import (
 
 type TransitionOptionSet struct {
 	ContinueOnUnlistedStatus  bool                        `json:"continueOnUnlistedStatus"`
-	StatusToTransitionOptions map[string]TransitionOption `json:"items,omitempty"` // map status => TransitionOption
+	StatusToTransitionOptions map[string]TransitionOption `json:"statusToTransitionOptions,omitempty"`
 }
 
 type TransitionOption struct {
-	TransitionName    string             `json:"transitionName,omitempty"`
-	TransitionPayload *TransitionPayload `json:"transitionPayload,omitempty"`
+	Name    string             `json:"name,omitempty"`
+	Payload *TransitionPayload `json:"payload,omitempty"`
 }
 
 type TransitionPayload struct {
@@ -112,7 +112,7 @@ func (svc *IssueService) DoTransitions(ctx context.Context, issueIDs []string, o
 			}
 		}
 		if err := svc.DoTransitionWithNameAndPayload(
-			ctx, issueID, issue, txnOpts.TransitionName, txnOpts.TransitionPayload,
+			ctx, issueID, issue, txnOpts.Name, txnOpts.Payload,
 		); err != nil {
 			return err
 		}
