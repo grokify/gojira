@@ -37,7 +37,7 @@ type TransitionsAPIReponse struct {
 	Transitions []Transition `json:"transitions"`
 }
 
-func (svc *IssueService) GetTransitionsWithContext(ctx context.Context, id string, expandTransitionsFields bool) (Transitions, *jira.Response, error) {
+func (svc *IssueService) GetTransitions(ctx context.Context, id string, expandTransitionsFields bool) (Transitions, *jira.Response, error) {
 	if expandTransitionsFields {
 		if !gojira.KeyIsValid(id) {
 			return nil, nil, fmt.Errorf("id is not a valid Jira key (%s)", id)
@@ -78,7 +78,7 @@ func (svc *IssueService) DoTransitionWithNameAndPayload(ctx context.Context, iss
 	if issue.Fields.Status.Name == updateTransitionName {
 		return nil
 	}
-	possibleTxns, resp, err := svc.GetTransitionsWithContext(ctx, issueID, true)
+	possibleTxns, resp, err := svc.GetTransitions(ctx, issueID, true)
 	if err != nil {
 		return err
 	} else if resp.StatusCode > 299 {
