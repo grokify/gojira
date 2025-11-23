@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/url"
 	"sort"
+	"strings"
 
 	"github.com/grokify/mogo/type/slicesutil"
 	"github.com/grokify/mogo/type/stringsutil"
@@ -127,16 +128,6 @@ func (ss *StatusCategoryConfig) StatusesInDevelopmentAndDone() []string { // not
 	return stringsutil.SliceCondenseSpace(statuses, true, true)
 }
 
-/*
-func DefaultStatusesMapSlice() map[string][]string {
-	return map[string][]string{
-		StatusOpen:       {StatusOpen},
-		StatusInProgress: {StatusInProgress},
-		StatusDone:       {StatusDone},
-	}
-}
-*/
-
 type StatusCategories struct {
 	CategoryOrder         []string
 	UnknownCategory       string
@@ -180,4 +171,24 @@ func (sc *StatusCategories) buildMapStatusToCategory() {
 		}
 	}
 	sc.MapStatusToCategory = out
+}
+
+func (sc *StatusCategories) StatusesForCategories(cats []string, matchLCTrimSpace bool) []string {
+	var out []string
+	for _, wantCat := range cats {
+		if matchLCTrimSpace {
+			wantCat = strings.ToLower(strings.TrimSpace(wantCat))
+		}
+		for tryCat, statuses := range sc.MapCategoryToStatuses {
+			if matchLCTrimSpace {
+				tryCat = strings.ToLower(strings.TrimSpace(tryCat))
+			}
+			if tryCat == wantCat {
+				out = append(out, statuses...)
+			}
+		}
+	}
+	out = slicesutil.Dedupe(out)
+	sort.Strings(out)
+	return out
 }
