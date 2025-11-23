@@ -186,17 +186,27 @@ func (im *IssueMore) Labels(sortAsc bool) []string {
 	if im.Issue == nil || im.Issue.Fields == nil || len(im.Issue.Fields.Labels) == 0 {
 		return []string{}
 	} else if !sortAsc || len(im.Issue.Fields.Labels) == 1 {
-		return im.Issue.Fields.Labels
+		return slices.Clone(im.Issue.Fields.Labels)
 	} else {
-		labels := im.Issue.Fields.Labels
+		labels := slices.Clone(im.Issue.Fields.Labels)
 		sort.Strings(labels)
 		return labels
 	}
 }
 
-func (im *IssueMore) LabelExists(label string) bool {
+func (im *IssueMore) LabelExists(label string, matchToLowerTrimSpace bool) bool {
 	labels := im.Labels(true)
-	return slices.Contains(labels, label)
+	if !matchToLowerTrimSpace {
+		return slices.Contains(labels, label)
+	}
+	label = strings.ToLower(strings.TrimSpace(label))
+	for _, lblTry := range labels {
+		lblTry = strings.ToLower(strings.TrimSpace(lblTry))
+		if lblTry == label {
+			return true
+		}
+	}
+	return false
 }
 
 func (im *IssueMore) ParentKey() string {
