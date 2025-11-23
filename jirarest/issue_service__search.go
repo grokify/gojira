@@ -29,6 +29,27 @@ const (
 	ExpandFieldEpic      = "epic"
 )
 
+func (svc *IssueService) SearchIssuesSetWithFileCache(
+	filename string, forceReload, reloadOnError bool, cfg *gojira.Config, prefix, indent, jql string, retrieveAll bool) (*IssuesSet, error) {
+	if !forceReload {
+		if is, err := IssuesSetReadFileJSON(filename); err != nil && !reloadOnError {
+			return nil, err
+		} else if err == nil {
+			return is, nil
+		}
+	}
+	if ii, err := svc.SearchIssues(jql, retrieveAll); err != nil {
+		return nil, err
+	} else {
+		is := NewIssuesSet(cfg)
+		if err := is.Add(ii...); err != nil {
+			return nil, err
+		} else {
+			return is, is.WriteFileJSON(filename, prefix, indent)
+		}
+	}
+}
+
 // SearchIssues returns all issues for a JQL query, automatically handling API pagination.
 func (svc *IssueService) SearchIssues(jql string, retrieveAll bool) (Issues, error) {
 	// New API described here: https://github.com/andygrunwald/go-jira/issues/715
