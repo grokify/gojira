@@ -20,6 +20,7 @@ const (
 	FieldResolution  = "resolution"
 	FieldStatus      = "status"
 	FieldSummary     = "summary"
+	FieldText        = "text"
 	FieldType        = "type"
 	FieldUpdated     = "updated"
 
@@ -72,6 +73,8 @@ const (
 	operatorANDSpaces = " AND "
 	OperatorOR        = "OR"
 	operatorORSpaces  = " OR "
+	OperatorLike      = "~"
+	OperatorNotLike   = "!~"
 
 	MetaStageReadyForPlanning    = MetaStagePrefixReadyFor + StagePlanning
 	MetaStageInPlanning          = MetaStagePrefixIn + StagePlanning

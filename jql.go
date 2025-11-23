@@ -54,6 +54,10 @@ type JQL struct {
 	StatusesExcl    [][]string
 	TypesIncl       [][]string
 	TypesExcl       [][]string
+	SummaryLike     []string
+	SummaryNotLike  []string
+	TextLike        []string
+	TextNotLike     []string
 	CustomFieldIncl map[string][]string // slice is `IN`
 	CustomFieldExcl map[string][]string
 	AnyIncl         JQLAndOrStringer
@@ -116,6 +120,7 @@ func (j JQL) String() string {
 		[][]string{
 			j.conditionsStringFields(),
 			j.conditionsDateFields(),
+			j.conditionsLikeNotLike(),
 			j.conditionsCustomFields(),
 			j.AnyIncl.Fields(false),
 			j.AnyExcl.Fields(true),
@@ -201,6 +206,24 @@ func (j JQL) conditionsDateFields() []string {
 			)
 		}
 	}
+	return conditions
+}
+
+func (j JQL) conditionsLikeNotLike() []string {
+	var conditions []string
+	for _, v := range j.SummaryLike {
+		conditions = append(conditions, fmt.Sprintf("%s %s \"%s\"", FieldSummary, OperatorLike, v))
+	}
+	for _, v := range j.SummaryNotLike {
+		conditions = append(conditions, fmt.Sprintf("%s %s \"%s\"", FieldSummary, OperatorNotLike, v))
+	}
+	for _, v := range j.TextLike {
+		conditions = append(conditions, fmt.Sprintf("%s %s \"%s\"", FieldText, OperatorLike, v))
+	}
+	for _, v := range j.TextNotLike {
+		conditions = append(conditions, fmt.Sprintf("%s %s \"%s\"", FieldText, OperatorNotLike, v))
+	}
+
 	return conditions
 }
 
