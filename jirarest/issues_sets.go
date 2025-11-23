@@ -3,8 +3,6 @@ package jirarest
 import (
 	"context"
 	"slices"
-	"strconv"
-	"strings"
 
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/gocharts/v2/charts/text/progressbarchart"
@@ -38,70 +36,8 @@ func (sets *IssuesSets) AddIssuesSetFilterKeys(name string, iset *IssuesSet, key
 }
 
 func (sets *IssuesSets) BarChartsText(inclProgress, inclFunnel bool, startNumber *int) (string, error) {
-	var sb strings.Builder
-	var useNumber bool
-	nextNum := 0
-	if startNumber != nil {
-		useNumber = true
-		nextNum = *startNumber
-	}
-	if inclProgress {
-		var parts []string
-		if useNumber {
-			parts = append(parts, strconv.Itoa(nextNum)+".")
-			nextNum++
-		}
-		if sets.Name != "" {
-			parts = append(parts, sets.Name)
-		}
-		parts = append(parts, "Progress")
-		if _, err := sb.WriteString(strings.Join(parts, " ") + "\n\n"); err != nil {
-			return "", err
-		}
-		if cht := sets.BarChartTextProgress(); strings.TrimSpace(cht) != "" {
-			if _, err := sb.WriteString(cht); err != nil {
-				return "", err
-			}
-		}
-	}
-	if inclFunnel {
-		if inclProgress {
-			if _, err := sb.WriteString("\n\n"); err != nil {
-				return "", err
-			}
-		}
-		var parts []string
-
-		if useNumber {
-			parts = append(parts, strconv.Itoa(nextNum)+".")
-		}
-		if sets.Name != "" {
-			parts = append(parts, sets.Name)
-		}
-		parts = append(parts, "Funnel")
-		if _, err := sb.WriteString(strings.Join(parts, " ") + "\n\n"); err != nil {
-			return "", err
-		}
-		if cht := sets.BarChartTextFunnel(); strings.TrimSpace(cht) != "" {
-			if _, err := sb.WriteString(cht); err != nil {
-				return "", err
-			}
-		}
-	}
-
-	return sb.String(), nil
-}
-
-func (sets *IssuesSets) BarChartTextProgress() string {
 	h := sets.Histogram()
-	tasks := progressbarchart.NewTasksFromHistogram(h)
-	return tasks.ProgressBarChartText()
-}
-
-func (sets *IssuesSets) BarChartTextFunnel() string {
-	h := sets.Histogram()
-	tasks := progressbarchart.NewTasksFunnelFromHistogram(h)
-	return tasks.ProgressBarChartText()
+	return progressbarchart.ChartsTextFromHistogram(h, true, inclProgress, inclFunnel, startNumber)
 }
 
 func (sets *IssuesSets) Histogram() *histogram.Histogram {
