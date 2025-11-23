@@ -238,7 +238,7 @@ func (svc *IssueService) IssuePatchLabelRecursive(ctx context.Context, issueKeyO
 	im := NewIssueMore(iss)
 
 	var labelExists bool
-	if im.LabelExists(label) {
+	if im.LabelExists(label, false) {
 		labelExists = true
 	} else {
 		labelExists = false
@@ -253,7 +253,7 @@ func (svc *IssueService) IssuePatchLabelRecursive(ctx context.Context, issueKeyO
 		"labelAction", labelOperation,
 		"label", label,
 		"labelExists", labelExists)
-	if (removeLabel && im.LabelExists(label)) || (!removeLabel && !im.LabelExists(label)) {
+	if (removeLabel && im.LabelExists(label, false)) || (!removeLabel && !im.LabelExists(label, false)) {
 		if skipUpdate {
 			count++
 		} else {
