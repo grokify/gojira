@@ -83,7 +83,40 @@ func (set *IssuesSet) KeyExists(key string, inclParents bool) bool {
 }
 
 // Keys returns a slice of sorted issue keys.
-func (set *IssuesSet) Keys() []string             { return maputil.Keys(set.Items) }
+func (set *IssuesSet) Keys() []string { return maputil.Keys(set.Items) }
+
+func (set *IssuesSet) KeysFilterLabelIncl(label string, matchToLowerTrimSpace bool) []string {
+	var out []string
+	for _, iss := range set.Items {
+		im := NewIssueMore(&iss)
+		if im.LabelExists(label, matchToLowerTrimSpace) {
+			out = append(out, im.Key())
+		}
+	}
+	return out
+}
+
+func (set *IssuesSet) KeysFilterSummaryNotLike(matchesAnd []string) []string {
+	var out []string
+	for _, iss := range set.Items {
+		im := NewIssueMore(&iss)
+		summaryLc := strings.ToLower(im.Summary())
+		filterMatch := true
+		for _, m := range matchesAnd {
+			m = strings.ToLower(m)
+			if strings.Contains(summaryLc, m) {
+				filterMatch = false
+			}
+		}
+		if filterMatch {
+			out = append(out, im.Key())
+		}
+	}
+	out = slicesutil.Dedupe(out)
+	sort.Strings(out)
+	return out
+}
+
 func (set *IssuesSet) Len() int                   { return len(set.Items) }
 func (set *IssuesSet) LenParents() int            { return len(set.KeysParents()) }
 func (set *IssuesSet) LenParentsPopulated() int   { return len(set.KeysParentsPopulated()) }

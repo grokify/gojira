@@ -1,13 +1,33 @@
 package jirarest
 
 import (
+	"fmt"
 	"sort"
+	"strings"
 
 	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/pointer"
 	"github.com/grokify/mogo/type/slicesutil"
 	"golang.org/x/exp/slices"
 )
+
+func (set *IssuesSet) FilterByKeys(keys []string, errOnUnfound bool) (*IssuesSet, error) {
+	filteredIssuesSet := NewIssuesSet(set.Config)
+	var keysNotFound []string
+	for _, key := range keys {
+		if iss, ok := set.Items[key]; ok {
+			filteredIssuesSet.Items[key] = iss
+		} else if errOnUnfound {
+			keysNotFound = append(keysNotFound, key)
+		}
+	}
+	if len(keysNotFound) > 0 {
+		keysNotFound = slicesutil.Dedupe(keysNotFound)
+		sort.Strings(keysNotFound)
+		return nil, fmt.Errorf("key not found (%s)", strings.Join(keysNotFound, ","))
+	}
+	return filteredIssuesSet, nil
+}
 
 func (set *IssuesSet) FilterByStatus(inclStatuses, exclStatuses []string) (*IssuesSet, error) {
 	filteredIssuesSet := NewIssuesSet(set.Config)
