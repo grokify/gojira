@@ -249,6 +249,15 @@ func (set *IssuesSet) HistogramSetsProjectTypeStatus() *histogram.HistogramSets 
 	return set.HistogramSetsFunc(IssueProjectkeyTypeStatus)
 }
 
+func (set *IssuesSet) HistogramByCustomField(cf, def string) *histogram.Histogram {
+	out := histogram.NewHistogram("")
+	for _, iss := range set.Items {
+		im := NewIssueMore(&iss)
+		out.Add(im.CustomFieldStringOrDefault(cf, def), 1)
+	}
+	return out
+}
+
 func (set *IssuesSet) HistogramByStatus() *histogram.Histogram {
 	out := histogram.NewHistogram("")
 	for _, iss := range set.Items {
