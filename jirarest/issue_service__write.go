@@ -107,6 +107,22 @@ func (svc *IssueService) IssuePatch(ctx context.Context, issueKeyOrID string, is
 	}
 }
 
+// IssuesPatch updates fields for multiple issues. See more here:
+// https://community.developer.atlassian.com/t/update-issue-custom-field-value-via-api-without-going-forge/71161
+func (svc *IssueService) IssuesPatch(ctx context.Context, issueKeyOrID []string, issueUpdateRequestBody IssuePatchRequestBody) error {
+	issueKeyOrID = stringsutil.SliceCondenseSpace(issueKeyOrID, true, true)
+	if len(issueKeyOrID) == 0 {
+		return errors.New("ids cannot be empty")
+	}
+	for _, id := range issueKeyOrID {
+		_, err := svc.IssuePatch(ctx, id, issueUpdateRequestBody)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // IssuePatchCustomFieldRecursive updates an issue, and optionally child issues, with a
 // custom field value.
 func (svc *IssueService) IssuePatchCustomFieldRecursive(ctx context.Context, issueKeyOrID string, iss *jira.Issue, customFieldLabel, customFieldValue string, processChildren bool, processChildrenTypes []string, skipUpdate bool) (int, error) {
@@ -211,6 +227,19 @@ func (svc *IssueService) IssuePatchCustomFieldRecursive(ctx context.Context, iss
 	}
 
 	return count, nil
+}
+
+func (svc *IssueService) IssuesPatchAddLabel(ctx context.Context, issues []jira.Issue, label string, skipUpdate bool) (int, error) {
+	n := 0
+	for _, iss := range issues {
+		im := NewIssueMore(&iss)
+		if ni, err := svc.IssuePatchLabelRecursive(ctx, im.Key(), &iss, label, false, false, []string{}, skipUpdate); err != nil {
+			return n, err
+		} else {
+			n += ni
+		}
+	}
+	return n, nil
 }
 
 // IssuePatchLabelRecursive updates fields for an issue. See more here:
