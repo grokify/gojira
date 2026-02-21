@@ -14,25 +14,25 @@ func main() {
 	opts := cmd.Options{}
 	_, err := flags.Parse(&opts)
 	if err != nil {
-		slog.Error(err.Error())
+		slog.Error("failed to parse flags", "error", err)
 		os.Exit(1)
 	}
 
 	jrClient, err := opts.Client()
 	if err != nil {
-		slog.Error(err.Error())
+		slog.Error("failed to create client", "error", err)
 		os.Exit(2)
 	}
 
 	cfs, err := jrClient.CustomFieldAPI.GetCustomFields()
 	if err != nil {
-		slog.Error(err.Error())
+		slog.Error("failed to get custom fields", "error", err)
 		os.Exit(3)
 	}
 
 	err = cfs.WriteTable(os.Stdout)
 	if err != nil {
-		slog.Error(err.Error())
+		slog.Error("failed to write table", "error", err)
 		os.Exit(4)
 	}
 
@@ -40,7 +40,7 @@ func main() {
 		ids := strings.Split(opts.Customfield, ",")
 		filtered := cfs.FilterByIDs(ids...)
 		if err := filtered.WriteTable(os.Stdout); err != nil {
-			slog.Error(err.Error())
+			slog.Error("failed to write filtered table", "error", err)
 			os.Exit(5)
 		}
 	}
@@ -49,7 +49,7 @@ func main() {
 		names := strings.Split(opts.CustomfieldName, ",")
 		filtered := cfs.FilterByNames(names...)
 		if err := filtered.WriteTable(os.Stdout); err != nil {
-			slog.Error(err.Error())
+			slog.Error("failed to write filtered table", "error", err)
 			os.Exit(6)
 		}
 	}
@@ -57,13 +57,13 @@ func main() {
 	// Get Epic Link Custom Field
 	cfName, err := jrClient.CustomFieldAPI.GetCustomFieldEpicLink()
 	if err != nil {
-		slog.Error(err.Error())
+		slog.Error("failed to get epic link custom field", "error", err)
 		os.Exit(7)
 	}
 
 	cfsName := jirarest.CustomFields{cfName}
 	if err := cfsName.WriteTable(os.Stdout); err != nil {
-		slog.Error(err.Error())
+		slog.Error("failed to write table", "error", err)
 		os.Exit(8)
 	}
 
