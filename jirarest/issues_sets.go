@@ -90,10 +90,10 @@ func (sets *IssuesSets) TableSet(
 			return nil, err
 		}
 		tbl, err := hmap.TableMap(tblColsMapKeys, contColumnName, fnRowSort)
-		tbl.Name = setName
 		if err != nil {
 			return nil, err
 		}
+		tbl.Name = setName
 		if err = ts.Add(tbl); err != nil {
 			return nil, err
 		}
