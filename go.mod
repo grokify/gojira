@@ -9,7 +9,7 @@ require (
 	github.com/grokify/mogo v0.73.3
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/olekukonko/errors v1.2.0
-	github.com/olekukonko/tablewriter v1.1.3
+	github.com/olekukonko/tablewriter v1.1.4
 	github.com/rs/zerolog v1.34.0
 	golang.org/x/exp v0.0.0-20260218203240-3dfff04db8fa
 )
