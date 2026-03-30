@@ -10,7 +10,7 @@ require (
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/olekukonko/errors v1.2.0
 	github.com/olekukonko/tablewriter v1.1.4
-	github.com/rs/zerolog v1.34.0
+	github.com/rs/zerolog v1.35.0
 	golang.org/x/exp v0.0.0-20260312153236-7ab1446f8b90
 )
 
