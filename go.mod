@@ -1,12 +1,12 @@
 module github.com/grokify/gojira
 
-go 1.25.0
+go 1.26.0
 
 require (
 	github.com/andygrunwald/go-jira v1.17.0
 	github.com/grokify/goauth v0.23.29
 	github.com/grokify/gocharts/v2 v2.27.0
-	github.com/grokify/mogo v0.74.0
+	github.com/grokify/mogo v0.74.1
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/olekukonko/errors v1.2.0
 	github.com/olekukonko/tablewriter v1.1.4
@@ -60,7 +60,7 @@ require (
 	go.opentelemetry.io/otel/metric v1.40.0 // indirect
 	go.opentelemetry.io/otel/trace v1.40.0 // indirect
 	golang.org/x/crypto v0.49.0 // indirect
-	golang.org/x/image v0.37.0 // indirect
+	golang.org/x/image v0.38.0 // indirect
 	golang.org/x/net v0.52.0 // indirect
 	golang.org/x/oauth2 v0.35.0 // indirect
 	golang.org/x/sys v0.42.0 // indirect
