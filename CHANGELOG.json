@@ -1,0 +1,472 @@
+{
+  "irVersion": "1.0",
+  "project": "gojira",
+  "repository": "https://github.com/grokify/gojira",
+  "versioning": "semver",
+  "commitConvention": "conventional",
+  "maintainers": ["grokify", "johncwang@gmail.com"],
+  "releases": [
+    {
+      "version": "v0.29.0",
+      "date": "2026-04-11",
+      "highlights": [
+        { "description": "New `gojira` CLI with search, get, patch, export, fields, and stats commands" },
+        { "description": "Package refactoring: `jirarest` → `rest`, `jiraxml` → `xml`, `jiraweb` → `web`" },
+        { "description": "MkDocs documentation site with Material theme" }
+      ],
+      "breaking": [
+        { "description": "Package imports changed: `gojira/jirarest` → `gojira/rest`, `gojira/jiraxml` → `gojira/xml`, `gojira/jiraweb` → `gojira/web`", "commit": "5fcf3ed" }
+      ],
+      "added": [
+        { "description": "`gojira` CLI with `search`, `get`, `patch`, `export`, `fields`, `stats` subcommands", "commit": "10b40a2" },
+        { "description": "`stats` command for issue aggregation by field with TOON, JSON, table output", "commit": "a910dee" },
+        { "description": "`patch` command for updating issue fields and labels", "commit": "910e502" },
+        { "description": "`export` command for exporting issues to JSON or XLSX", "commit": "910e502" },
+        { "description": "`fields` command for listing and filtering custom fields", "commit": "910e502" }
+      ],
+      "documentation": [
+        { "description": "MkDocs documentation site with CLI reference, SDK guide, and JQL examples", "commit": "c9b2902" },
+        { "description": "README updated with documentation site link and CLI examples", "commit": "5b7c648" }
+      ],
+      "tests": [
+        { "description": "Unit and integration tests for rest package", "commit": "12bf737" }
+      ]
+    },
+    {
+      "version": "v0.28.0",
+      "date": "2025-12-12",
+      "highlights": [
+        { "description": "Issue transitions API for workflow automation" },
+        { "description": "Status category filtering and histograms" }
+      ],
+      "added": [
+        { "description": "`IssueService.DoTransitions()` for batch issue transitions", "commit": "350db95" },
+        { "description": "`IssueService.DoTransitionWithNameAndPayload()` for named transitions", "commit": "48b51bc" },
+        { "description": "`IssueService.GetTransitions()` to retrieve available transitions", "commit": "f066b2d" },
+        { "description": "`Transition{}`, `Transitions{}` types for workflow management", "commit": "59e1796" },
+        { "description": "`IssuesSet.FilterByStatusCategory()` for category-based filtering", "commit": "7640a46" },
+        { "description": "`IssuesSet.HistogramByStatus()`, `IssuesSet.HistogramByStatusCategory()`", "commit": "f7e0fdf" },
+        { "description": "`IssuesSet.HistogramByCustomField()`", "commit": "af1d8ab" },
+        { "description": "`IssueService.IssuesPatch()`, `IssueService.IssuesPatchAddLabel()` for batch updates", "commit": "9944a42" },
+        { "description": "`IssueService.SearchIssuesSetWithFileCache()` for cached searches", "commit": "38dd2f3" },
+        { "description": "`IssuesSet.FilterByKeys()`, `IssuesSet.KeysFilterLabelIncl()`, `IssuesSet.KeysFilterSummaryNotLike()`", "commit": "f6a59f9" },
+        { "description": "`IssueMore.Description()`", "commit": "edf1a04" },
+        { "description": "`IssuesSet.Summaries()`", "commit": "6bcf571" },
+        { "description": "`IssueMore.ResolutionTime()`", "commit": "adc5a25" },
+        { "description": "`JQL.SummaryLike`, `JQL.SummaryNotLike`, `JQL.TextLike`, `JQL.TextNotLike`", "commit": "7ba5f3a" },
+        { "description": "`StatusCategories.StatusesForCategories()`", "commit": "46ea60f" },
+        { "description": "`IssuesSets.Histogram()`, `IssuesSets.BarChartsText()`", "commit": "d77c98a" }
+      ],
+      "changed": [
+        { "description": "Externalized `IssueMore.Issue` attribute for direct access", "commit": "8f21c6a" },
+        { "description": "Renamed attribute `IssuesSet.Items`", "commit": "72f52c2" }
+      ]
+    },
+    {
+      "version": "v0.27.0",
+      "date": "2025-09-14",
+      "highlights": [
+        { "description": "Jira REST API v3 search endpoint support" },
+        { "description": "Enhanced issue changelog with expand options" }
+      ],
+      "added": [
+        { "description": "`NewCredentialsGoauthFile()` for credential file reading", "commit": "5f6798b" },
+        { "description": "`IssuesSet.CountsByProjectAndCustomFieldValues()`", "commit": "02e93d1" },
+        { "description": "`IssueMore.Keys()` returning existence of changelog", "commit": "3b8f712" },
+        { "description": "`GetQueryOptions{}` with `ExpandChangelog` flag for `IssueService.Issue()` and `IssueService.Issues()`", "commit": "2afbf69" }
+      ],
+      "changed": [
+        { "description": "Updated for `/rest/api/3/search/jql` endpoint", "commit": "b151797" }
+      ]
+    },
+    {
+      "version": "v0.26.0",
+      "date": "2025-08-25",
+      "highlights": [
+        { "description": "JQL due date filtering and enhanced JQL report generation" }
+      ],
+      "added": [
+        { "description": "`JQL.DueGT`, `JQL.DueGTE`, `JQL.DueLT`, `JQL.DueLTE` for due date filtering", "commit": "d81e743" },
+        { "description": "`JQLMeta.Directions` for report customization", "commit": "e95380a" },
+        { "description": "`NewClientGoauthCredentialsSetFile()`", "commit": "96c3089" },
+        { "description": "`Issues.KeysSplitVenn()`", "commit": "54f055b" },
+        { "description": "`IssuesSet.HistogramSet()`", "commit": "31c0cca" }
+      ]
+    },
+    {
+      "version": "v0.25.0",
+      "date": "2025-02-11",
+      "highlights": [
+        { "description": "Enhanced config methods and JQL `AnyExcl` support" }
+      ],
+      "added": [
+        { "description": "`Config.SecondsToWorkingDays()`, `Config.SecondsToWorkingWeeks()`", "commit": "4fd08c0" },
+        { "description": "`Config.WebURLIssues()`", "commit": "b384605" },
+        { "description": "`JQL.AnyExcl` for generic exclusion conditions", "commit": "cd5fea9" }
+      ]
+    },
+    {
+      "version": "v0.24.0",
+      "date": "2025-02-09",
+      "highlights": [
+        { "description": "Enhanced JQL builder with updated and created date filters" }
+      ],
+      "added": [
+        { "description": "`JQL.UpdatedGT`, `JQL.UpdatedGTE`, `JQL.UpdatedLT`, `JQL.UpdatedLTE` for update date filtering", "commit": "c8a3b43" },
+        { "description": "`JQL.CreatedGT`, `JQL.CreatedLT` for additional created date filtering", "commit": "c8a3b43" },
+        { "description": "`JQLStatusCategoryNeDone` constant", "commit": "d4f2ac1" },
+        { "description": "`IssueService.WebURL()`", "commit": "f4bfdd4" },
+        { "description": "`JQLsReportMarkdownOpts.GetTimeLocation()`", "commit": "7ac2ffb" }
+      ]
+    },
+    {
+      "version": "v0.23.0",
+      "date": "2025-02-02",
+      "highlights": [
+        { "description": "JQL metadata and reporting enhancements" }
+      ],
+      "added": [
+        { "description": "`JQL.Name`, `JQL.FilterID` fields", "commit": "4150116" },
+        { "description": "`IssueService.JQLResultsTotalCount()`", "commit": "d7a2623" },
+        { "description": "`JQLMeta{}`, `JQLAndOrStringer{}`, `JQL.QueryString()`", "commit": "a234741" },
+        { "description": "`IssueService.JQLsAddMetadata()`", "commit": "d653935" },
+        { "description": "`JQLMeta.QueryTime`, `JQLMeta.QueryTotalCount`", "commit": "951325e" },
+        { "description": "`JQLs.ReportMarkdownLines()` for JQL report generation", "commit": "5b39075" },
+        { "description": "`IssueService.JQLsReportMarkdownLines()`", "commit": "8527c9a" }
+      ]
+    },
+    {
+      "version": "v0.22.0",
+      "date": "2024-11-23",
+      "added": [
+        { "description": "`IssueMores{}` type for working with multiple IssueMore instances", "commit": "2344fda" }
+      ],
+      "changed": [
+        { "description": "Renamed `IssuesSet.Get()` to `IssuesSet.Issue()`", "commit": "0370443" }
+      ]
+    },
+    {
+      "version": "v0.21.0",
+      "date": "2024-11-20",
+      "highlights": [
+        { "description": "Enhanced client creation and custom field support" }
+      ],
+      "added": [
+        { "description": "`NewClientFromGoauthCredentials()`", "commit": "449f1db" },
+        { "description": "`CustomFieldService.GetCustomFieldSet()`, `CustomFieldSet.IDToName()`, `CustomFieldSet.CreateFuncIssueToMap()`", "commit": "c51cd95" },
+        { "description": "`ErrNotFound`, `ErrKeyNotFound` error types", "commit": "2880494" },
+        { "description": "`JQL.CustomFieldExcl` for custom field exclusions", "commit": "add4985" }
+      ],
+      "changed": [
+        { "description": "Updated `SearchChildrenIssuesSet()` with `inclParents` param", "commit": "a6d5e25" },
+        { "description": "Updated `IssueService.Issues()` with `skipNotFound` param", "commit": "ce1fc24" },
+        { "description": "Added `addCustomFieldSet` param to `NewClientBasicAuth()`, `NewClientGoauthCredentials()`", "commit": "fc931c5" }
+      ]
+    },
+    {
+      "version": "v0.20.0",
+      "date": "2024-09-09",
+      "highlights": [
+        { "description": "Histogram and aggregation function enhancements" }
+      ],
+      "added": [
+        { "description": "`IssuesSet.HistogramSetsFunc()`, `IssuesSet.HistogramSetFunc()`", "commit": "7d4d3c6" },
+        { "description": "`IssuesSet.HistogramMapFunc()`", "commit": "e4a1b80" },
+        { "description": "`IssueMore.ValueOrDefault()`", "commit": "fb95aa7" },
+        { "description": "`IssuesSets{}` type", "commit": "d83c2f3" },
+        { "description": "`IssuesSets.UpsertIssueKeys()`", "commit": "959382b" }
+      ],
+      "changed": [
+        { "description": "Fixed `ExportWorkstreamFilter` misspelling", "commit": "1fce50d" }
+      ]
+    },
+    {
+      "version": "v0.19.0",
+      "date": "2024-09-08",
+      "highlights": [
+        { "description": "Label filtering and recursive patching" },
+        { "description": "`jiraweb` package for URL and markdown link building" }
+      ],
+      "added": [
+        { "description": "`JQL.LabelsIncl`, `JQL.LabelsExcl` for label filtering", "commit": "7bca12d" },
+        { "description": "`IssuesSet.KeysByField()`", "commit": "06c6070" },
+        { "description": "`Client.LogOrNotAny()` for structured logging", "commit": "135f7fc" },
+        { "description": "`IssueService.IssuePatchLabelRecursive()`", "commit": "e0ba721" },
+        { "description": "`IssueService.IssuePatchCustomFieldRecursive()`", "commit": "aeab976" }
+      ],
+      "changed": [
+        { "description": "Refactored API service names for consistency", "commit": "b4fa8c1" },
+        { "description": "Moved URL and markdown link building to `jiraweb` package", "commit": "6e23de2" }
+      ]
+    },
+    {
+      "version": "v0.18.0",
+      "date": "2024-09-08",
+      "highlights": [
+        { "description": "Issue API refactoring and custom field enhancements" }
+      ],
+      "added": [
+        { "description": "`IssueAPI{}` service for issue operations", "commit": "0e39fb4" },
+        { "description": "`Client.CustomFieldAPI` and `Client.CustomFieldSet`", "commit": "ff6054a" },
+        { "description": "`CustomFieldSet{}`, `NewCustomFieldSet()`", "commit": "3359935" },
+        { "description": "`IssueAPI.IssuePatch()` for issue updates", "commit": "d9575a2" },
+        { "description": "`IssueMore.Value()` support for issue Type", "commit": "036f2d4" }
+      ],
+      "changed": [
+        { "description": "Refactored issue APIs to `IssueAPI{}`", "commit": "0e39fb4" },
+        { "description": "Updated to use `goauth.Options{}`", "commit": "702ef47" }
+      ]
+    },
+    {
+      "version": "v0.17.0",
+      "date": "2024-08-18",
+      "highlights": [
+        { "description": "Custom field support in JQL builder" },
+        { "description": "Time series data by custom field and project" }
+      ],
+      "added": [
+        { "description": "`JQL.CreatedLT`, `FieldCreated` constant", "commit": "e61e870" },
+        { "description": "`Client.SearchIssuesByMonth()`", "commit": "8554242" },
+        { "description": "`JQL.CustomFieldIncl` for custom field filtering", "commit": "da54c0c" },
+        { "description": "`IssuesSet.TimeSeriesSetCreatedMonthByCustomField()`, `IssuesSet.TimeSeriesSetCreatedMonthByProject()`", "commit": "854c7c6" },
+        { "description": "`IssuesSet.Table()`", "commit": "a816ce9" }
+      ],
+      "changed": [
+        { "description": "Moved custom fields from `jirarest` to `gojira` package", "commit": "154f5db" }
+      ]
+    },
+    {
+      "version": "v0.16.0",
+      "date": "2024-05-27",
+      "highlights": [
+        { "description": "Stage configuration and meta-stage counting" }
+      ],
+      "added": [
+        { "description": "`StageConfig{}` for workflow stage configuration", "commit": "86e6b38" },
+        { "description": "`IssuesSet.CountsByProjectAndMetaStage()`", "commit": "37a2bb8" }
+      ],
+      "changed": [
+        { "description": "Updated to use `goauth.StatusConfig`", "commit": "dff1f2c" }
+      ]
+    },
+    {
+      "version": "v0.15.0",
+      "date": "2024-05-10",
+      "highlights": [
+        { "description": "Enhanced client creation and issue retrieval" }
+      ],
+      "added": [
+        { "description": "`NewClientBasicAuth()` for direct credential authentication", "commit": "d47dfa8" },
+        { "description": "`Client.SearchChildrenIssuesSet()`", "commit": "d47dfa8" },
+        { "description": "`Client.Myself()` for current user info", "commit": "f9da2f5" },
+        { "description": "`Client.Issues()` to retrieve issues by keys", "commit": "9a16bdb" },
+        { "description": "`IssuesSet.TimeSeriesCreatedMonth()`", "commit": "53beb56" }
+      ]
+    },
+    {
+      "version": "v0.14.0",
+      "date": "2024-02-05",
+      "highlights": [
+        { "description": "Agile stage and meta-stage support" }
+      ],
+      "added": [
+        { "description": "Stage and MetaStage support for agile workflow tracking", "commit": "9ff84b5" },
+        { "description": "`IssuesSet.CountsByMetaStage()`, `CountWithTypeFilter()`, `CountsByWorkstream()`", "commit": "ca7a15b" },
+        { "description": "`IssuesSet.ExportWorkstreamFilter()`", "commit": "5507f59" },
+        { "description": "`ErrIssueKeyCannotBeEmpty`, `ErrIssuesSetCannotBeNil` errors", "commit": "4f985ec" }
+      ],
+      "documentation": [
+        { "description": "Added agile methodology diagrams from Asana, eSparkBiz, BISS, Mendix", "commit": "e3bff89" }
+      ]
+    },
+    {
+      "version": "v0.13.0",
+      "date": "2024-02-02",
+      "added": [
+        { "description": "`StatusesSet.Order` for custom status ordering", "commit": "441c65e" },
+        { "description": "`IssuesSet.StatusesOrder()` support", "commit": "685f4fd" }
+      ]
+    },
+    {
+      "version": "v0.12.0",
+      "date": "2024-01-21",
+      "highlights": [
+        { "description": "Enhanced JQL builder and statuses set" }
+      ],
+      "added": [
+        { "description": "`StatusesSet{}` type for status management", "commit": "fbd43e4" },
+        { "description": "`IssuesSet.IssueFirst()`", "commit": "bf0bc7b" },
+        { "description": "`Client.SearchChildrenIssues()`", "commit": "573689a" },
+        { "description": "`IssuesSet.KeyExists()`", "commit": "7bdf31e" },
+        { "description": "`Issues.Keys()`", "commit": "848da3a" },
+        { "description": "`IssuesSet.RetrieveChildrenOfType()`", "commit": "a92f5d3" },
+        { "description": "`IssuesSet.Types()`, `IssuesSet.KeysForTypes()`", "commit": "1964724" }
+      ],
+      "changed": [
+        { "description": "Enhanced `JQL{}` for consistency and more generic JQL building", "commit": "ccb7b1e" }
+      ]
+    },
+    {
+      "version": "v0.11.0",
+      "date": "2023-12-24",
+      "highlights": [
+        { "description": "Custom field value counting and project meta" }
+      ],
+      "added": [
+        { "description": "`IssueMore.LabelExists()`", "commit": "3f71723" },
+        { "description": "`IssuesSet.CountsByCustomFieldValues()`", "commit": "41893f6" },
+        { "description": "`IssuesSet.HistogramMapProjectTypeStatus()`, `TableSetProjectTypeStatus()`", "commit": "94e0270" },
+        { "description": "`JQL{}` filter support", "commit": "196cee7" },
+        { "description": "`ProjectMeta{}` type", "commit": "fa82181" }
+      ]
+    },
+    {
+      "version": "v0.10.0",
+      "date": "2023-12-17",
+      "highlights": [
+        { "description": "JQL builder and enhanced issue set operations" }
+      ],
+      "added": [
+        { "description": "`JQL{}` builder with `JQL.String()` for programmatic JQL construction", "commit": "fa16b39" },
+        { "description": "`JQLStringsSimple()` for splitting long JQL queries", "commit": "ee99ba5" },
+        { "description": "`IssuesSet.IssueOrParent()`, `KeysParents()`, `KeysParentsPopulated()`, `KeysParentsUnpopulated()`", "commit": "fd2b802" },
+        { "description": "`IssuesSet.LineageValidateKey()`, `LineageValidateSet()`, `LineageTopKeysPopulated()`, `LineageTopKeysUnpopulated()`", "commit": "dcae990" },
+        { "description": "`Client.SearchIssuesPage()` with pagination support", "commit": "394b72c" },
+        { "description": "`Client.Logger` for logging support", "commit": "394b72c" }
+      ]
+    },
+    {
+      "version": "v0.9.0",
+      "date": "2023-12-17",
+      "highlights": [
+        { "description": "Issue metadata and parent issue support" }
+      ],
+      "added": [
+        { "description": "`IssueMore.Labels()`", "commit": "bccaca4" },
+        { "description": "`IssueMetas{}`, `IssueMetas.HighestType()`, `IssueMetas.HighestAboveEpic()`", "commit": "f891565" },
+        { "description": "`IssueMeta.BuildKeyURL()`, `IssueMeta.KeyLinkMarkdown()`", "commit": "f891565" },
+        { "description": "`Issues.Metas()`", "commit": "3d65abe" },
+        { "description": "`Client.IssuesSetAddParents()`, `Client.SearchIssuesSetParents()`", "commit": "cad34bf" },
+        { "description": "`IssuesSet.GetLineage()`", "commit": "3297440" },
+        { "description": "`IssuesSet.Get()`, `IssuesSet.IssueMetas()`, `IssuesSet.HistogramSetProjectType()`, `IssuesSet.TableSet()`", "commit": "6545bd1" },
+        { "description": "`IssuesSetReadFileJSON()`", "commit": "6545bd1" },
+        { "description": "Jira issue type constants", "commit": "d7fc1e7" },
+        { "description": "`cmd/jiraissuemeta` for issue metadata CLI", "commit": "2020a24" },
+        { "description": "`cmd/jirabacklog` for backlog CLI", "commit": "acf5d0c" }
+      ],
+      "changed": [
+        { "description": "Incorporated `IssueFieldsSimple{}` into `IssueMore{}`", "commit": "3ec8514" }
+      ]
+    },
+    {
+      "version": "v0.8.0",
+      "date": "2023-10-30",
+      "added": [
+        { "description": "`IssueMore.CustomField()` for custom field access", "commit": "0c4d295" }
+      ],
+      "changed": [
+        { "description": "Refactored `Config`, `Client`, `BacklogService`, `CustomFieldsService`", "commit": "c0aeaae" }
+      ]
+    },
+    {
+      "version": "v0.7.0",
+      "date": "2023-10-28",
+      "highlights": [
+        { "description": "IssueMore wrapper and parent issue retrieval" }
+      ],
+      "added": [
+        { "description": "`IssuesSet.WriteFileJSON()`", "commit": "66fdea8" },
+        { "description": "`IssueMore{}`, `IssueMeta{}` types", "commit": "6309b19" },
+        { "description": "`IssuesSet.RetrieveParentsIssuesSet()`", "commit": "60b2f67" },
+        { "description": "`Issues.WriteFileJSON()`, `IssuesReadFileJSON()`", "commit": "5e86826" },
+        { "description": "`IssuesSet.CountsByProjectKey()`", "commit": "ff6e9d4" }
+      ]
+    },
+    {
+      "version": "v0.6.0",
+      "date": "2023-08-27",
+      "highlights": [
+        { "description": "REST API client with go-jira wrapper" },
+        { "description": "Backlog and custom field services" }
+      ],
+      "added": [
+        { "description": "`cmd/customfields` CLI for custom field queries", "commit": "9b0ddf9" },
+        { "description": "`Config.CapacityForDaysPeople()`", "commit": "bb66c16" },
+        { "description": "`CustomFields{}`, `GetCustomField()`", "commit": "7081ce0" },
+        { "description": "`SearchIssuesSetForJQL()`", "commit": "efd6576" },
+        { "description": "`BacklogService{}`, `BoardBacklogParams{}`, `BacklogService.GetBacklogIssuesSetAll()`", "commit": "e648e0e" },
+        { "description": "`IssuesSet.Counts()`, `IssuesSet.CountsByProject()`", "commit": "79b3ec3" }
+      ],
+      "changed": [
+        { "description": "Moved `Config{}` and constants to top-level `gojira` package", "commit": "2831852" },
+        { "description": "Moved generic time code to top-level `gojira` package", "commit": "db9325d" },
+        { "description": "Moved `TimeStats{}` from `jirarest` to `gojira`", "commit": "3f4d1d4" }
+      ]
+    },
+    {
+      "version": "v0.5.0",
+      "date": "2023-08-20",
+      "highlights": [
+        { "description": "Initial REST API support with go-jira integration" },
+        { "description": "IssuesSet for issue aggregation and analysis" }
+      ],
+      "added": [
+        { "description": "`Issues.ValidateKeys()`", "commit": "695787f" },
+        { "description": "`ReadFileWithDate()`, `Issue.GetKey()`, `Duration.Days()`", "commit": "ce87f2c" },
+        { "description": "`Config{}` with `WorkingHoursPerDay` and `WorkingDaysPerWeek`", "commit": "70b1f0b" },
+        { "description": "`DurationInfo{}` for Jira human-readable time", "commit": "5bf908d" },
+        { "description": "`IssuesSet{}` for issue aggregation", "commit": "db7ceaf" },
+        { "description": "Project API support with `ProjectsAPIResponse{}`", "commit": "f9c949b" },
+        { "description": "`jirarest` package for go-jira wrapper", "commit": "2fbc72d" }
+      ],
+      "changed": [
+        { "description": "Renamed module to `gojira` from `go-jiraxml` due to REST focus", "commit": "9e73cf8" },
+        { "description": "Moved `jiraxml` from root folder for consistency with `jirarest`", "commit": "9885ebc" }
+      ]
+    },
+    {
+      "version": "v0.4.0",
+      "date": "2023-07-31",
+      "highlights": [
+        { "description": "API to XML struct conversion and time series histograms" }
+      ],
+      "added": [
+        { "description": "Initial support for API to XML struct conversion", "commit": "16390c4" },
+        { "description": "`Issues.TSRHistogramSets()`, `TSRTable()`, `TSRWriteCSV()`", "commit": "88a311c" }
+      ]
+    },
+    {
+      "version": "v0.3.0",
+      "date": "2023-07-30",
+      "added": [
+        { "description": "`Issue{}` fields for richer issue data", "commit": "a80ad14" }
+      ],
+      "changed": [
+        { "description": "Renamed to use `Issues` and `Issue` in place of generic `Items` and `Item`", "commit": "1d0fc21" }
+      ]
+    },
+    {
+      "version": "v0.2.0",
+      "date": "2023-07-30",
+      "added": [
+        { "description": "Custom `hoursPerDay` and `daysPerWeek` functionality", "commit": "dbe545c" },
+        { "description": "`XML.TrimSpace()`, `Item.TrimSpace()`", "commit": "20c4898" }
+      ],
+      "documentation": [
+        { "description": "Added hours per day and days per week documentation", "commit": "420f8c1" }
+      ]
+    },
+    {
+      "version": "v0.1.0",
+      "date": "2023-07-29",
+      "highlights": [
+        { "description": "Initial release - Jira XML parser for Go" }
+      ],
+      "added": [
+        { "description": "Initial Jira XML parsing functionality", "commit": "66257e8" },
+        { "description": "CI/CD workflows", "commit": "905e802" },
+        { "description": "`jiraxml` package tests", "commit": "768ad2f" }
+      ]
+    }
+  ]
+}
