@@ -10,7 +10,7 @@ require (
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/olekukonko/errors v1.2.0
 	github.com/olekukonko/tablewriter v1.1.4
-	github.com/rs/zerolog v1.35.0
+	github.com/spf13/cobra v1.10.2
 	golang.org/x/exp v0.0.0-20260312153236-7ab1446f8b90
 )
 
@@ -36,6 +36,7 @@ require (
 	github.com/googleapis/gax-go/v2 v2.17.0 // indirect
 	github.com/grokify/base36 v1.0.5 // indirect
 	github.com/huandu/xstrings v1.5.0 // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
@@ -47,6 +48,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/richardlehane/mscfb v1.0.6 // indirect
 	github.com/richardlehane/msoleps v1.0.6 // indirect
+	github.com/spf13/pflag v1.0.9 // indirect
 	github.com/tiendc/go-deepcopy v1.7.2 // indirect
 	github.com/trivago/tgo v1.0.7 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect

@@ -22,10 +22,10 @@ func TestCustomFieldKeyCanonical(t *testing.T) {
 	for _, tt := range customFieldKeyCanonicalTests {
 		try, err := CustomFieldKeyCanonical(tt.v)
 		if err != nil {
-			t.Errorf("jirarest.CustomFieldKeyCanonical(\"%s\"): want (%s), error (%s)", tt.v, tt.want, err.Error())
+			t.Errorf("rest.CustomFieldKeyCanonical(\"%s\"): want (%s), error (%s)", tt.v, tt.want, err.Error())
 		}
 		if try != tt.want {
-			t.Errorf("jirarest.CustomFieldKeyCanonical(\"%s\"): want (%s), got (%s)", tt.v, tt.want, try)
+			t.Errorf("rest.CustomFieldKeyCanonical(\"%s\"): want (%s), got (%s)", tt.v, tt.want, try)
 		}
 	}
 }

@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"github.com/grokify/goauth"
-	"github.com/grokify/gojira/jirarest"
+	"github.com/grokify/gojira/rest"
 	flags "github.com/jessevdk/go-flags"
 )
 
@@ -18,8 +18,8 @@ type Options struct {
 	CustomfieldName   string `short:"n" long:"customfield name" description:"Custom field name"` // 'Epic Link'
 }
 
-func (opts Options) Client() (*jirarest.Client, error) {
-	return jirarest.NewClientGoauthBasicAuthFile(
+func (opts Options) Client() (*rest.Client, error) {
+	return rest.NewClientGoauthBasicAuthFile(
 		opts.Options.CredsPath,
 		opts.Options.Account,
 		len(opts.AddCustomFieldSet) > 0)

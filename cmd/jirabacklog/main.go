@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/grokify/gojira/cmd"
-	"github.com/grokify/gojira/jirarest"
+	"github.com/grokify/gojira/rest"
 	"github.com/grokify/mogo/errors/errorsutil"
 	"github.com/grokify/mogo/fmt/fmtutil"
 	"github.com/grokify/mogo/log/logutil"
@@ -29,7 +29,7 @@ func main() {
 	// cfg := gojira.NewConfigDefault()
 	// cfg.BaseURL = jrClient.Config.ServerURL
 
-	svc := jirarest.NewBacklogService(jrClient)
+	svc := rest.NewBacklogService(jrClient)
 
 	is, _, err := svc.GetBacklogIssuesSetAll(context.Background(), opts.BoardID,
 		// "type in (Bug,Story) AND status in (Ready,\"Engineering Design\",\"Ready for Grooming\")",

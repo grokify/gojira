@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/grokify/gojira/cmd"
-	"github.com/grokify/gojira/jirarest"
+	"github.com/grokify/gojira/rest"
 	flags "github.com/jessevdk/go-flags"
 )
 
@@ -61,7 +61,7 @@ func main() {
 		os.Exit(7)
 	}
 
-	cfsName := jirarest.CustomFields{cfName}
+	cfsName := rest.CustomFields{cfName}
 	if err := cfsName.WriteTable(os.Stdout); err != nil {
 		slog.Error("failed to write table", "error", err)
 		os.Exit(8)
