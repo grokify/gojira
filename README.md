@@ -5,6 +5,7 @@
 [![Go SAST][go-sast-svg]][go-sast-url]
 [![Go Report Card][goreport-svg]][goreport-url]
 [![Docs][docs-godoc-svg]][docs-godoc-url]
+[![Docs Site][docs-site-svg]][docs-site-url]
 [![Visualization][viz-svg]][viz-url]
 [![License][license-svg]][license-url]
 
@@ -18,6 +19,8 @@
  [goreport-url]: https://goreportcard.com/report/github.com/grokify/gojira
  [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/grokify/gojira
  [docs-godoc-url]: https://pkg.go.dev/github.com/grokify/gojira
+ [docs-site-svg]: https://img.shields.io/badge/docs-MkDocs-blue.svg
+ [docs-site-url]: https://grokify.github.io/gojira/
  [viz-svg]: https://img.shields.io/badge/visualizaton-Go-blue.svg
  [viz-url]: https://mango-dune-07a8b7110.1.azurestaticapps.net/?repo=grokify%2Fgojira
  [loc-svg]: https://tokei.rs/b1/github/grokify/gojira
@@ -57,6 +60,15 @@ gojira search --jql "project = FOO AND status = Open"
 
 # Get a specific issue
 gojira get ISSUE-123
+
+# Show statistics by field
+gojira stats --jql "project = FOO" --by status --format table
+
+# Update an issue
+gojira patch ISSUE-123 --set priority=High --add-label urgent
+
+# Export issues to XLSX
+gojira export --jql "project = FOO" --xlsx report.xlsx
 
 # Output formats
 gojira search --jql "assignee = currentUser()" --table  # Human-readable
@@ -99,10 +111,10 @@ import "github.com/grokify/gojira"
 
 // Build JQL programmatically
 jql := gojira.JQL{
-    Project: "FOO",
-    Status:  "Open",
+    ProjectsIncl: [][]string{{"FOO"}},
+    StatusesIncl: [][]string{{"Open", "In Progress"}},
 }
-query := jql.String() // "project = FOO AND status = Open"
+query := jql.String() // "project = 'FOO' AND status IN ('Open', 'In Progress')"
 ```
 
 ## Package Structure
@@ -113,6 +125,15 @@ query := jql.String() // "project = FOO AND status = Open"
 | `gojira/rest` | REST API client | go-jira SDK |
 | `gojira/xml` | XML export parser | None |
 | `gojira/web` | URL helpers | None |
+
+## Documentation
+
+Full documentation is available at **[grokify.github.io/gojira](https://grokify.github.io/gojira/)**:
+
+- [CLI Reference](https://grokify.github.io/gojira/cli/) - All commands and flags
+- [SDK Guide](https://grokify.github.io/gojira/sdk/) - Using GoJira as a library
+- [AI Agents Guide](https://grokify.github.io/gojira/guides/ai-agents/) - Integration with LLMs
+- [JQL Examples](https://grokify.github.io/gojira/guides/jql-examples/) - Common query patterns
 
 ## Use Cases
 
@@ -196,20 +217,20 @@ Stage the following stages (from [Asana](https://asana.com/resources/agile-metho
 
 Not all the stages need to be used, however, the stages that are used can be understood in a canonical way.
 
-![](docs/agile-methodology_asana.png)
+![](docs/assets/images/agile-methodology_asana.png)
 *image courtesy of Asana*
 
 An alternate, but related agile methodology is avialable from [eSparkBiz](https://www.esparkinfo.com/blog/difference-between-product-backlog-grooming-and-sprint-planning.html):
 
-![](docs/agile-methodology_esparkbiz.png)
+![](docs/assets/images/agile-methodology_esparkbiz.png)
 *image courtesy of eSparkBiz*
 
 As well as from [BISS](https://handbook.bosphorusiss.com/way-of-working/process-design/agile-software-development-lifecycle/):
 
-![](docs/agile-methodology_biss.png)
+![](docs/assets/images/agile-methodology_biss.png)
 *image courtesy of BISS*
 
 This is described as ["The 5 Stages of the Agile Software Development Lifecycle"](https://www.mendix.com/blog/agile-software-development-lifecycle-stages/) by Mendix.
 
-![](docs/agile-methodology_mendix.png)
+![](docs/assets/images/agile-methodology_mendix.png)
 *image courtesy of Mendix*
