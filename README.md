@@ -22,14 +22,101 @@
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
  [license-url]: https://github.com/grokify/gojira/blob/master/LICENSE
 
-This module contains code to access Jira, parsing both the JSON API via [`github.com/andygrunwald/go-jira`](https://github.com/andygrunwald/go-jira) in `jirarest` and code to parse a Jira XML file in `jiraxml`.
+GoJira is a Go SDK and CLI for Jira that provides:
 
-Various aggregate staticstics and reports are calculated/generated.
+- **REST API client** (`rest/`) - wrapper around [`go-jira`](https://github.com/andygrunwald/go-jira) with additional utilities
+- **XML parser** (`xml/`) - parse Jira XML exports when API access is unavailable
+- **JQL builder** (root package) - programmatically construct JQL queries
+- **CLI tool** (`cmd/gojira/`) - command-line interface optimized for AI agents and humans
+
+## Installation
+
+```bash
+# Install the CLI
+go install github.com/grokify/gojira/cmd/gojira@latest
+
+# Use as a library
+go get github.com/grokify/gojira
+```
+
+## Quick Start
+
+### CLI Usage
+
+```bash
+# Set credentials via environment variables
+export JIRA_URL=https://your-instance.atlassian.net
+export JIRA_USER=your-email@example.com
+export JIRA_TOKEN=your-api-token
+
+# Search issues with JQL
+gojira search --jql "project = FOO AND status = Open"
+
+# Get a specific issue
+gojira get ISSUE-123
+
+# Output formats
+gojira search --jql "assignee = currentUser()" --table  # Human-readable
+gojira search --jql "project = FOO" --json              # Machine-readable (default)
+gojira search --jql "project = FOO" --toon              # Token-optimized for LLMs
+```
+
+### Library Usage
+
+```go
+import "github.com/grokify/gojira/rest"
+
+// Create client with basic auth
+client, err := rest.NewClientFromBasicAuth(
+    "https://your-instance.atlassian.net",
+    "your-email@example.com",
+    "your-api-token",
+    false,
+)
+if err != nil {
+    log.Fatal(err)
+}
+
+// Search issues
+issues, err := client.IssueAPI.SearchIssues("project = FOO", false)
+if err != nil {
+    log.Fatal(err)
+}
+
+for _, issue := range issues {
+    im := rest.NewIssueMore(&issue)
+    fmt.Printf("%s: %s [%s]\n", im.Key(), im.Summary(), im.Status())
+}
+```
+
+### JQL Builder
+
+```go
+import "github.com/grokify/gojira"
+
+// Build JQL programmatically
+jql := gojira.JQL{
+    Project: "FOO",
+    Status:  "Open",
+}
+query := jql.String() // "project = FOO AND status = Open"
+```
+
+## Package Structure
+
+| Package | Description | Dependencies |
+|---------|-------------|--------------|
+| `gojira` | JQL builder, config, constants | None (lightweight) |
+| `gojira/rest` | REST API client | go-jira SDK |
+| `gojira/xml` | XML export parser | None |
+| `gojira/web` | URL helpers | None |
 
 ## Use Cases
 
-1. Programmatically construct JQL
-1. Generate Markdown Reports from JQLs for addition to git repos or Confluence
+1. Programmatically construct JQL queries
+1. Generate Markdown reports from JQL results
+1. Parse Jira XML exports when API access is unavailable
+1. Automate Jira operations via CLI (ideal for AI agents)
 
 ## URL Formats
 
