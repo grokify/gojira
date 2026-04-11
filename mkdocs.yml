@@ -62,6 +62,9 @@ nav:
   - Guides:
       - AI Agents: guides/ai-agents.md
       - JQL Examples: guides/jql-examples.md
+  - Releases:
+      - v0.29.0: releases/v0.29.0.md
+      - v0.28.0: releases/v0.28.0.md
 
 extra:
   social:
