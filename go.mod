@@ -8,9 +8,10 @@ require (
 	github.com/grokify/gocharts/v2 v2.27.0
 	github.com/grokify/mogo v0.74.1
 	github.com/jessevdk/go-flags v1.6.1
-	github.com/olekukonko/errors v1.2.0
+	github.com/olekukonko/errors v1.3.0
 	github.com/olekukonko/tablewriter v1.1.4
 	github.com/spf13/cobra v1.10.2
+	github.com/toon-format/toon-go v0.0.0-20251202084852-7ca0e27c4e8c
 	golang.org/x/exp v0.0.0-20260410095643-746e56fc9e2f
 )
 
@@ -50,7 +51,6 @@ require (
 	github.com/richardlehane/msoleps v1.0.6 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
 	github.com/tiendc/go-deepcopy v1.7.2 // indirect
-	github.com/toon-format/toon-go v0.0.0-20251202084852-7ca0e27c4e8c // indirect
 	github.com/trivago/tgo v1.0.7 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/quicktemplate v1.8.0 // indirect
