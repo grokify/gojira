@@ -34,12 +34,16 @@ GoJira is a Go SDK and CLI for Jira that provides:
 - **XML parser** (`xml/`) - parse Jira XML exports when API access is unavailable
 - **JQL builder** (root package) - programmatically construct JQL queries
 - **CLI tool** (`cmd/gojira/`) - command-line interface optimized for AI agents and humans
+- **MCP server** (`cmd/gojira-mcp/`) - Model Context Protocol server for AI assistants like Claude
 
 ## Installation
 
 ```bash
 # Install the CLI
 go install github.com/grokify/gojira/cmd/gojira@latest
+
+# Install the MCP server (for AI assistants)
+go install github.com/grokify/gojira/cmd/gojira-mcp@latest
 
 # Use as a library
 go get github.com/grokify/gojira
@@ -74,7 +78,34 @@ gojira export --jql "project = FOO" --xlsx report.xlsx
 gojira search --jql "assignee = currentUser()" --table  # Human-readable
 gojira search --jql "project = FOO" --json              # Machine-readable (default)
 gojira search --jql "project = FOO" --toon              # Token-optimized for LLMs
+
+# Create issues from YAML files
+gojira create -f story.yaml
+gojira create -f story.yaml --dry-run  # Preview without creating
 ```
+
+### MCP Server (for AI Assistants)
+
+The MCP server enables AI assistants like Claude to interact with Jira:
+
+```json
+{
+  "mcpServers": {
+    "jira": {
+      "command": "gojira-mcp",
+      "env": {
+        "JIRA_BASE_URL": "https://company.atlassian.net",
+        "JIRA_USERNAME": "user@example.com",
+        "JIRA_API_TOKEN": "your-api-token"
+      }
+    }
+  }
+}
+```
+
+Available tools: `jira_get_issue`, `jira_search`, `jira_create_issue`, `jira_update_issue`, `jira_add_comment`, `jira_get_transitions`, `jira_transition_issue`, `jira_get_comments`, `jira_get_projects`
+
+See [MCP Server documentation](https://grokify.github.io/gojira/mcp/) for details.
 
 ### Library Usage
 
@@ -123,6 +154,8 @@ query := jql.String() // "project = 'FOO' AND status IN ('Open', 'In Progress')"
 |---------|-------------|--------------|
 | `gojira` | JQL builder, config, constants | None (lightweight) |
 | `gojira/rest` | REST API client | go-jira SDK |
+| `gojira/core` | Shared types for issue creation | yaml.v3 |
+| `gojira/mcpserver` | MCP server implementation | JSON-RPC |
 | `gojira/xml` | XML export parser | None |
 | `gojira/web` | URL helpers | None |
 
@@ -131,6 +164,7 @@ query := jql.String() // "project = 'FOO' AND status IN ('Open', 'In Progress')"
 Full documentation is available at **[grokify.github.io/gojira](https://grokify.github.io/gojira/)**:
 
 - [CLI Reference](https://grokify.github.io/gojira/cli/) - All commands and flags
+- [MCP Server](https://grokify.github.io/gojira/mcp/) - Setup for AI assistants
 - [SDK Guide](https://grokify.github.io/gojira/sdk/) - Using GoJira as a library
 - [AI Agents Guide](https://grokify.github.io/gojira/guides/ai-agents/) - Integration with LLMs
 - [JQL Examples](https://grokify.github.io/gojira/guides/jql-examples/) - Common query patterns

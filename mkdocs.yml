@@ -48,12 +48,15 @@ nav:
   - CLI Reference:
       - Overview: cli/index.md
       - Authentication: cli/authentication.md
+      - create: cli/create.md
       - search: cli/search.md
       - get: cli/get.md
       - patch: cli/patch.md
       - export: cli/export.md
       - fields: cli/fields.md
       - stats: cli/stats.md
+  - MCP Server:
+      - Overview: mcp/index.md
   - SDK Guide:
       - Overview: sdk/index.md
       - Client: sdk/client.md
@@ -63,6 +66,7 @@ nav:
       - AI Agents: guides/ai-agents.md
       - JQL Examples: guides/jql-examples.md
   - Releases:
+      - v0.30.0: releases/v0.30.0.md
       - v0.29.0: releases/v0.29.0.md
       - v0.28.0: releases/v0.28.0.md
 
