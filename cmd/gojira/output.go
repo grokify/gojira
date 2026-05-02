@@ -11,6 +11,7 @@ import (
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/gojira/rest"
 	"github.com/olekukonko/tablewriter"
+	"github.com/spf13/cobra"
 )
 
 // OutputFormat represents the output format type.
@@ -202,4 +203,12 @@ func truncateString(s string, maxLen int) string {
 		return s[:maxLen]
 	}
 	return s[:maxLen-3] + "..."
+}
+
+// outputResult writes any JSON-serializable result to stdout.
+// Used for commands that return non-Issue results like create, update, etc.
+func outputResult(_ *cobra.Command, result any) error {
+	enc := json.NewEncoder(os.Stdout)
+	enc.SetIndent("", "  ")
+	return enc.Encode(result)
 }
