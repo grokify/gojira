@@ -7,6 +7,31 @@
   "maintainers": ["grokify", "johncwang@gmail.com"],
   "releases": [
     {
+      "version": "v0.30.0",
+      "date": "2026-05-02",
+      "highlights": [
+        { "description": "MCP server for AI assistant integration (Claude, etc.)" },
+        { "description": "CLI `create` command for YAML-based issue creation" }
+      ],
+      "added": [
+        { "description": "`gojira-mcp` MCP server with 9 tools for AI assistants", "commit": "5b76f18" },
+        { "description": "`jira_get_issue`, `jira_search`, `jira_create_issue`, `jira_update_issue` MCP tools", "commit": "5b76f18" },
+        { "description": "`jira_add_comment`, `jira_get_transitions`, `jira_transition_issue`, `jira_get_comments`, `jira_get_projects` MCP tools", "commit": "5b76f18" },
+        { "description": "`gojira create` CLI command for creating issues from YAML files", "commit": "f9eb4a5" },
+        { "description": "Support for `customfield_*` fields in YAML issue creation", "commit": "f9eb4a5" },
+        { "description": "`--dry-run` flag for validating issue creation without API call", "commit": "f9eb4a5" },
+        { "description": "`core` package with shared types for CLI and MCP server", "commit": "47016a0" }
+      ],
+      "changed": [
+        { "description": "Migrated from `golang.org/x/exp/slices` to stdlib `slices` package", "commit": "b377158" }
+      ],
+      "documentation": [
+        { "description": "MCP server setup and tool reference documentation", "commit": "0886b98" },
+        { "description": "CLI `create` command documentation with YAML examples", "commit": "0886b98" },
+        { "description": "v0.30.0 release notes", "commit": "0886b98" }
+      ]
+    },
+    {
       "version": "v0.29.0",
       "date": "2026-04-11",
       "highlights": [
