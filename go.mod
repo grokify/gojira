@@ -6,13 +6,14 @@ require (
 	github.com/andygrunwald/go-jira v1.17.0
 	github.com/grokify/goauth v0.23.29
 	github.com/grokify/gocharts/v2 v2.27.0
-	github.com/grokify/mogo v0.74.2
+	github.com/grokify/mogo v0.74.3
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/olekukonko/errors v1.3.0
 	github.com/olekukonko/tablewriter v1.1.4
 	github.com/spf13/cobra v1.10.2
 	github.com/toon-format/toon-go v0.0.0-20251202084852-7ca0e27c4e8c
 	golang.org/x/exp v0.0.0-20260410095643-746e56fc9e2f
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
@@ -33,14 +34,14 @@ require (
 	github.com/google/go-querystring v1.2.0 // indirect
 	github.com/google/s2a-go v0.1.9 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/googleapis/enterprise-certificate-proxy v0.3.14 // indirect
-	github.com/googleapis/gax-go/v2 v2.21.0 // indirect
+	github.com/googleapis/enterprise-certificate-proxy v0.3.15 // indirect
+	github.com/googleapis/gax-go/v2 v2.22.0 // indirect
 	github.com/grokify/base36 v1.0.5 // indirect
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
-	github.com/mattn/go-isatty v0.0.21 // indirect
+	github.com/mattn/go-isatty v0.0.22 // indirect
 	github.com/mattn/go-runewidth v0.0.23 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
@@ -69,8 +70,8 @@ require (
 	golang.org/x/sys v0.43.0 // indirect
 	golang.org/x/text v0.36.0 // indirect
 	gonum.org/v1/gonum v0.17.0 // indirect
-	google.golang.org/api v0.275.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20260406210006-6f92a3bedf2d // indirect
+	google.golang.org/api v0.277.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20260427160629-7cedc36a6bc4 // indirect
 	google.golang.org/grpc v1.80.0 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 )
