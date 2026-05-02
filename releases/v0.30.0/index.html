@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://grokify.github.io/gojira/releases/v0.29.0/">
+        <link rel="canonical" href="https://grokify.github.io/gojira/releases/v0.30.0/">
       
       
-        <link rel="prev" href="../v0.30.0/">
+        <link rel="prev" href="../../guides/jql-examples/">
       
       
-        <link rel="next" href="../v0.28.0/">
+        <link rel="next" href="../v0.29.0/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>v0.29.0 - GoJira</title>
+        <title>v0.30.0 - GoJira</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#v0290" class="md-skip">
+        <a href="#v0300" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              v0.29.0
+              v0.30.0
             
           </span>
         </div>
@@ -346,7 +346,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../v0.30.0/" class="md-tabs__link">
+        <a href="./" class="md-tabs__link">
           
   
   
@@ -1151,29 +1151,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../v0.30.0/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    v0.30.0
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -1191,7 +1168,7 @@
   
   
   <span class="md-ellipsis">
-    v0.29.0
+    v0.30.0
     
   </span>
   
@@ -1204,7 +1181,7 @@
   
   
   <span class="md-ellipsis">
-    v0.29.0
+    v0.30.0
     
   </span>
   
@@ -1236,30 +1213,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#breaking-changes" class="md-nav__link">
-    <span class="md-ellipsis">
-      Breaking Changes
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Breaking Changes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#package-imports-changed" class="md-nav__link">
-    <span class="md-ellipsis">
-      Package Imports Changed
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#new-features" class="md-nav__link">
     <span class="md-ellipsis">
       New Features
@@ -1270,16 +1223,71 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#gojira-cli" class="md-nav__link">
+  <a href="#mcp-server-for-ai-assistants" class="md-nav__link">
     <span class="md-ellipsis">
-      gojira CLI
+      MCP Server for AI Assistants
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="gojira CLI">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cli-create-command" class="md-nav__link">
+    <span class="md-ellipsis">
+      CLI Create Command
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#core-package" class="md-nav__link">
+    <span class="md-ellipsis">
+      Core Package
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Changes">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#refactoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      Refactoring
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dependencies
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#installation" class="md-nav__link">
     <span class="md-ellipsis">
       Installation
@@ -1287,102 +1295,11 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#commands" class="md-nav__link">
-    <span class="md-ellipsis">
-      Commands
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#output-formats" class="md-nav__link">
-    <span class="md-ellipsis">
-      Output Formats
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      Examples
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#stats-command" class="md-nav__link">
-    <span class="md-ellipsis">
-      stats Command
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#patch-command" class="md-nav__link">
-    <span class="md-ellipsis">
-      patch Command
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#export-command" class="md-nav__link">
-    <span class="md-ellipsis">
-      export Command
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#fields-command" class="md-nav__link">
-    <span class="md-ellipsis">
-      fields Command
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
       
         <li class="md-nav__item">
-  <a href="#documentation" class="md-nav__link">
+  <a href="#full-changelog" class="md-nav__link">
     <span class="md-ellipsis">
-      Documentation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tests" class="md-nav__link">
-    <span class="md-ellipsis">
-      Tests
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#commits" class="md-nav__link">
-    <span class="md-ellipsis">
-      Commits
+      Full Changelog
     </span>
   </a>
   
@@ -1392,6 +1309,29 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../v0.29.0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    v0.29.0
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -1463,30 +1403,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#breaking-changes" class="md-nav__link">
-    <span class="md-ellipsis">
-      Breaking Changes
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Breaking Changes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#package-imports-changed" class="md-nav__link">
-    <span class="md-ellipsis">
-      Package Imports Changed
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#new-features" class="md-nav__link">
     <span class="md-ellipsis">
       New Features
@@ -1497,16 +1413,71 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#gojira-cli" class="md-nav__link">
+  <a href="#mcp-server-for-ai-assistants" class="md-nav__link">
     <span class="md-ellipsis">
-      gojira CLI
+      MCP Server for AI Assistants
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="gojira CLI">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cli-create-command" class="md-nav__link">
+    <span class="md-ellipsis">
+      CLI Create Command
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#core-package" class="md-nav__link">
+    <span class="md-ellipsis">
+      Core Package
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Changes">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#refactoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      Refactoring
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dependencies
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#installation" class="md-nav__link">
     <span class="md-ellipsis">
       Installation
@@ -1514,102 +1485,11 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#commands" class="md-nav__link">
-    <span class="md-ellipsis">
-      Commands
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#output-formats" class="md-nav__link">
-    <span class="md-ellipsis">
-      Output Formats
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      Examples
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#stats-command" class="md-nav__link">
-    <span class="md-ellipsis">
-      stats Command
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#patch-command" class="md-nav__link">
-    <span class="md-ellipsis">
-      patch Command
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#export-command" class="md-nav__link">
-    <span class="md-ellipsis">
-      export Command
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#fields-command" class="md-nav__link">
-    <span class="md-ellipsis">
-      fields Command
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
       
         <li class="md-nav__item">
-  <a href="#documentation" class="md-nav__link">
+  <a href="#full-changelog" class="md-nav__link">
     <span class="md-ellipsis">
-      Documentation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tests" class="md-nav__link">
-    <span class="md-ellipsis">
-      Tests
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#commits" class="md-nav__link">
-    <span class="md-ellipsis">
-      Commits
+      Full Changelog
     </span>
   </a>
   
@@ -1634,234 +1514,80 @@
   
 
 
-<h1 id="v0290">v0.29.0<a class="headerlink" href="#v0290" title="Permanent link">&para;</a></h1>
-<p><strong>Release Date:</strong> 2026-04-11</p>
-<p>This is a major release introducing the <code>gojira</code> CLI, package refactoring for a cleaner API, comprehensive documentation, and test coverage.</p>
+<h1 id="v0300">v0.30.0<a class="headerlink" href="#v0300" title="Permanent link">&para;</a></h1>
+<p>Released: 2026-05-02</p>
 <h2 id="highlights">Highlights<a class="headerlink" href="#highlights" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>New <code>gojira</code> CLI</strong> with search, get, patch, export, fields, and stats commands</li>
-<li><strong>Package refactoring</strong> for cleaner imports: <code>jirarest</code> → <code>rest</code>, <code>jiraxml</code> → <code>xml</code>, <code>jiraweb</code> → <code>web</code></li>
-<li><strong>MkDocs documentation site</strong> with Material theme at <a href="https://grokify.github.io/gojira/">grokify.github.io/gojira</a></li>
-</ul>
-<h2 id="breaking-changes">Breaking Changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h2>
-<h3 id="package-imports-changed">Package Imports Changed<a class="headerlink" href="#package-imports-changed" title="Permanent link">&para;</a></h3>
-<p>The package structure has been simplified for a cleaner API:</p>
-<table>
-<thead>
-<tr>
-<th>Before</th>
-<th>After</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>github.com/grokify/gojira/jirarest</code></td>
-<td><code>github.com/grokify/gojira/rest</code></td>
-</tr>
-<tr>
-<td><code>github.com/grokify/gojira/jiraxml</code></td>
-<td><code>github.com/grokify/gojira/xml</code></td>
-</tr>
-<tr>
-<td><code>github.com/grokify/gojira/jiraweb</code></td>
-<td><code>github.com/grokify/gojira/web</code></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Migration:</strong> Update your import statements:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// Before</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="s">&quot;github.com/grokify/gojira/jirarest&quot;</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1">// After</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">import</span><span class="w"> </span><span class="s">&quot;github.com/grokify/gojira/rest&quot;</span>
-</code></pre></div>
+<p>This release introduces an <strong>MCP server</strong> for AI assistant integration and a new <strong>create command</strong> for creating Jira issues from YAML files.</p>
 <h2 id="new-features">New Features<a class="headerlink" href="#new-features" title="Permanent link">&para;</a></h2>
-<h3 id="gojira-cli">gojira CLI<a class="headerlink" href="#gojira-cli" title="Permanent link">&para;</a></h3>
-<p>A new command-line interface optimized for both AI agents and humans.</p>
-<h4 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>go<span class="w"> </span>install<span class="w"> </span>github.com/grokify/gojira/cmd/gojira@latest
+<h3 id="mcp-server-for-ai-assistants">MCP Server for AI Assistants<a class="headerlink" href="#mcp-server-for-ai-assistants" title="Permanent link">&para;</a></h3>
+<p>GoJira now includes an MCP (Model Context Protocol) server that enables AI assistants like Claude to interact with Jira directly.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>go<span class="w"> </span>install<span class="w"> </span>github.com/grokify/gojira/cmd/gojira-mcp@latest
 </code></pre></div>
-<h4 id="commands">Commands<a class="headerlink" href="#commands" title="Permanent link">&para;</a></h4>
-<table>
-<thead>
-<tr>
-<th>Command</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>search</code></td>
-<td>Search issues with JQL</td>
-</tr>
-<tr>
-<td><code>get</code></td>
-<td>Get one or more issues by key</td>
-</tr>
-<tr>
-<td><code>patch</code></td>
-<td>Update issue fields and labels</td>
-</tr>
-<tr>
-<td><code>export</code></td>
-<td>Export issues to JSON or XLSX</td>
-</tr>
-<tr>
-<td><code>fields</code></td>
-<td>List and filter custom fields</td>
-</tr>
-<tr>
-<td><code>stats</code></td>
-<td>Show issue statistics grouped by field</td>
-</tr>
-</tbody>
-</table>
-<h4 id="output-formats">Output Formats<a class="headerlink" href="#output-formats" title="Permanent link">&para;</a></h4>
+<p>The MCP server provides 9 tools:</p>
 <ul>
-<li><strong>JSON</strong> (default) - Machine-readable for scripting</li>
-<li><strong>Table</strong> - Human-readable ASCII tables</li>
-<li><strong>TOON</strong> - Token-Optimized Object Notation for LLMs (~8x more efficient)</li>
+<li><code>jira_get_issue</code> - Get issue by key</li>
+<li><code>jira_search</code> - Search with JQL</li>
+<li><code>jira_create_issue</code> - Create new issues</li>
+<li><code>jira_update_issue</code> - Update issue fields</li>
+<li><code>jira_add_comment</code> - Add comments</li>
+<li><code>jira_get_transitions</code> - Get available transitions</li>
+<li><code>jira_transition_issue</code> - Change issue status</li>
+<li><code>jira_get_comments</code> - Get issue comments</li>
+<li><code>jira_get_projects</code> - List projects</li>
 </ul>
-<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Set authentication</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">JIRA_URL</span><span class="o">=</span>https://your-instance.atlassian.net
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">JIRA_USER</span><span class="o">=</span>your-email@example.com
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">JIRA_TOKEN</span><span class="o">=</span>your-api-token
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c1"># Search issues</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>gojira<span class="w"> </span>search<span class="w"> </span>--jql<span class="w"> </span><span class="s2">&quot;project = FOO AND status = Open&quot;</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="c1"># Get issue details</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>gojira<span class="w"> </span>get<span class="w"> </span>ISSUE-123
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="c1"># Show statistics</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>gojira<span class="w"> </span>stats<span class="w"> </span>--jql<span class="w"> </span><span class="s2">&quot;project = FOO&quot;</span><span class="w"> </span>--by<span class="w"> </span>status<span class="w"> </span>--format<span class="w"> </span>table
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="c1"># Update an issue</span>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>gojira<span class="w"> </span>patch<span class="w"> </span>ISSUE-123<span class="w"> </span>--set<span class="w"> </span><span class="nv">priority</span><span class="o">=</span>High<span class="w"> </span>--add-label<span class="w"> </span>urgent
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="c1"># Export to Excel</span>
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>gojira<span class="w"> </span><span class="nb">export</span><span class="w"> </span>--jql<span class="w"> </span><span class="s2">&quot;project = FOO&quot;</span><span class="w"> </span>--xlsx<span class="w"> </span>report.xlsx
+<p>See <a href="../../mcp/">MCP Server documentation</a> for setup instructions.</p>
+<h3 id="cli-create-command">CLI Create Command<a class="headerlink" href="#cli-create-command" title="Permanent link">&para;</a></h3>
+<p>Create Jira issues from YAML files with full support for custom fields:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>gojira<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>story.yaml
 </code></pre></div>
-<h3 id="stats-command">stats Command<a class="headerlink" href="#stats-command" title="Permanent link">&para;</a></h3>
-<p>Aggregate issue counts by any field with multiple output formats.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Count by status (table output)</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>gojira<span class="w"> </span>stats<span class="w"> </span>--jql<span class="w"> </span><span class="s2">&quot;project = FOO&quot;</span><span class="w"> </span>--by<span class="w"> </span>status<span class="w"> </span>--format<span class="w"> </span>table
+<p>Example YAML:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">project</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PROJ</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Story</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nt">summary</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Add user authentication</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="no">Implement OAuth2 login flow.</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="nt">labels</span><span class="p">:</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auth</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mvp</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="nt">customfield_12345</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">  </span><span class="no">Given A, When B, Then C</span>
+</code></pre></div>
+<p>Features:</p>
+<ul>
+<li>All standard Jira fields supported</li>
+<li>Custom fields via <code>customfield_*</code> keys</li>
+<li><code>--dry-run</code> flag for validation</li>
+<li><code>--project</code>, <code>--parent</code>, <code>--type</code> override flags</li>
+</ul>
+<p>See <a href="../../cli/create/">create command documentation</a> for details.</p>
+<h3 id="core-package">Core Package<a class="headerlink" href="#core-package" title="Permanent link">&para;</a></h3>
+<p>New <code>core</code> package with shared types and functions for issue creation, used by both CLI and MCP server.</p>
+<h2 id="changes">Changes<a class="headerlink" href="#changes" title="Permanent link">&para;</a></h2>
+<h3 id="refactoring">Refactoring<a class="headerlink" href="#refactoring" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Migrated from <code>golang.org/x/exp/slices</code> to standard library <code>slices</code> package (Go 1.21+)</li>
+</ul>
+<h3 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Added <code>gopkg.in/yaml.v3</code> for YAML parsing</li>
+<li>Updated indirect dependencies</li>
+</ul>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># CLI</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>go<span class="w"> </span>install<span class="w"> </span>github.com/grokify/gojira/cmd/gojira@latest
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Output:</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># VALUE          COUNT      %</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1"># Open              45   30.0%</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1"># In Progress       30   20.0%</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c1"># Done              75   50.0%</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="c1"># ------         ------  ------</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="c1"># TOTAL            150  100.0%</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="c1"># Count by custom field (TOON output for LLMs)</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>gojira<span class="w"> </span>stats<span class="w"> </span>--jql<span class="w"> </span><span class="s2">&quot;project = FOO&quot;</span><span class="w"> </span>--by<span class="w"> </span>customfield_10001<span class="w"> </span>--format<span class="w"> </span>toon
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># MCP Server</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>go<span class="w"> </span>install<span class="w"> </span>github.com/grokify/gojira/cmd/gojira-mcp@latest
 </code></pre></div>
-<p>Supported grouping fields:</p>
+<h2 id="full-changelog">Full Changelog<a class="headerlink" href="#full-changelog" title="Permanent link">&para;</a></h2>
 <ul>
-<li><code>status</code>, <code>type</code>, <code>priority</code>, <code>assignee</code>, <code>project</code>, <code>resolution</code></li>
-<li>Any custom field: <code>customfield_XXXXX</code></li>
+<li>feat(mcp): add MCP server for Claude Code integration</li>
+<li>feat(core): add shared create issue logic</li>
+<li>feat(cli): add create command for YAML-based issue creation</li>
+<li>refactor: migrate from golang.org/x/exp/slices to stdlib slices</li>
+<li>chore(deps): add yaml.v3 and update dependencies</li>
+<li>chore: add gojira-mcp binary to gitignore</li>
 </ul>
-<h3 id="patch-command">patch Command<a class="headerlink" href="#patch-command" title="Permanent link">&para;</a></h3>
-<p>Update issue fields with dry-run support.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Set fields</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>gojira<span class="w"> </span>patch<span class="w"> </span>ISSUE-123<span class="w"> </span>--set<span class="w"> </span><span class="nv">summary</span><span class="o">=</span><span class="s2">&quot;New title&quot;</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">priority</span><span class="o">=</span>High
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Manage labels</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>gojira<span class="w"> </span>patch<span class="w"> </span>ISSUE-123<span class="w"> </span>--add-label<span class="w"> </span>reviewed<span class="w"> </span>--remove-label<span class="w"> </span>needs-review
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># Preview changes without executing</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>gojira<span class="w"> </span>patch<span class="w"> </span>ISSUE-123<span class="w"> </span>--set<span class="w"> </span><span class="nv">summary</span><span class="o">=</span><span class="s2">&quot;Test&quot;</span><span class="w"> </span>--dry-run
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="c1"># Complex updates via JSON</span>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>gojira<span class="w"> </span>patch<span class="w"> </span>ISSUE-123<span class="w"> </span>--json<span class="w"> </span><span class="s1">&#39;{&quot;fields&quot;:{&quot;assignee&quot;:{&quot;name&quot;:&quot;jdoe&quot;}}}&#39;</span>
-</code></pre></div>
-<h3 id="export-command">export Command<a class="headerlink" href="#export-command" title="Permanent link">&para;</a></h3>
-<p>Export issues to JSON or XLSX with parent issue support.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Export to JSON</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>gojira<span class="w"> </span><span class="nb">export</span><span class="w"> </span>--jql<span class="w"> </span><span class="s2">&quot;project = FOO&quot;</span><span class="w"> </span>--json<span class="w"> </span>issues.json
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Export to Excel with parents</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>gojira<span class="w"> </span><span class="nb">export</span><span class="w"> </span>--jql<span class="w"> </span><span class="s2">&quot;project = FOO&quot;</span><span class="w"> </span>--include-parents<span class="w"> </span>--xlsx<span class="w"> </span>report.xlsx
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1"># Convert existing JSON to XLSX</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>gojira<span class="w"> </span><span class="nb">export</span><span class="w"> </span>--from-json<span class="w"> </span>issues.json<span class="w"> </span>--xlsx<span class="w"> </span>report.xlsx
-</code></pre></div>
-<h3 id="fields-command">fields Command<a class="headerlink" href="#fields-command" title="Permanent link">&para;</a></h3>
-<p>Discover and filter custom fields.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># List all custom fields</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>gojira<span class="w"> </span>fields<span class="w"> </span>--custom-only
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># Find by name</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>gojira<span class="w"> </span>fields<span class="w"> </span>--name<span class="w"> </span><span class="s2">&quot;Epic&quot;</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1"># Get Epic Link field specifically</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>gojira<span class="w"> </span>fields<span class="w"> </span>--epic-link
-</code></pre></div>
-<h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h2>
-<p>New MkDocs documentation site with:</p>
-<ul>
-<li><strong>CLI Reference</strong> - Complete command documentation with examples</li>
-<li><strong>SDK Guide</strong> - Client creation, issue operations, JQL builder</li>
-<li><strong>AI Agents Guide</strong> - Best practices for LLM integration</li>
-<li><strong>JQL Examples</strong> - Common query patterns</li>
-</ul>
-<p>Visit: <a href="https://grokify.github.io/gojira/">grokify.github.io/gojira</a></p>
-<h2 id="tests">Tests<a class="headerlink" href="#tests" title="Permanent link">&para;</a></h2>
-<p>Added comprehensive tests for the <code>rest</code> package:</p>
-<ul>
-<li>Unit tests for <code>IssueMore</code>, <code>IssueService</code></li>
-<li>Integration tests (require <code>JIRA_*</code> environment variables)</li>
-</ul>
-<h2 id="commits">Commits<a class="headerlink" href="#commits" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Type</th>
-<th>Description</th>
-<th>Commit</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Breaking</td>
-<td>Package imports changed</td>
-<td><a href="https://github.com/grokify/gojira/commit/5fcf3ed"><code>5fcf3ed</code></a></td>
-</tr>
-<tr>
-<td>Added</td>
-<td><code>gojira</code> CLI</td>
-<td><a href="https://github.com/grokify/gojira/commit/10b40a2"><code>10b40a2</code></a></td>
-</tr>
-<tr>
-<td>Added</td>
-<td><code>stats</code> command</td>
-<td><a href="https://github.com/grokify/gojira/commit/a910dee"><code>a910dee</code></a></td>
-</tr>
-<tr>
-<td>Added</td>
-<td><code>patch</code>, <code>export</code>, <code>fields</code> commands</td>
-<td><a href="https://github.com/grokify/gojira/commit/910e502"><code>910e502</code></a></td>
-</tr>
-<tr>
-<td>Docs</td>
-<td>MkDocs documentation site</td>
-<td><a href="https://github.com/grokify/gojira/commit/c9b2902"><code>c9b2902</code></a></td>
-</tr>
-<tr>
-<td>Docs</td>
-<td>README updates</td>
-<td><a href="https://github.com/grokify/gojira/commit/5b7c648"><code>5b7c648</code></a></td>
-</tr>
-<tr>
-<td>Tests</td>
-<td>Unit and integration tests</td>
-<td><a href="https://github.com/grokify/gojira/commit/12bf737"><code>12bf737</code></a></td>
-</tr>
-</tbody>
-</table>
 
 
 

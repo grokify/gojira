@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://grokify.github.io/gojira/releases/v0.29.0/">
+        <link rel="canonical" href="https://grokify.github.io/gojira/cli/create/">
       
       
-        <link rel="prev" href="../v0.30.0/">
+        <link rel="prev" href="../authentication/">
       
       
-        <link rel="next" href="../v0.28.0/">
+        <link rel="next" href="../search/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>v0.29.0 - GoJira</title>
+        <title>create - GoJira</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#v0290" class="md-skip">
+        <a href="#create" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              v0.29.0
+              create
             
           </span>
         </div>
@@ -260,11 +260,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../cli/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
   
@@ -340,13 +342,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../v0.30.0/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../releases/v0.30.0/" class="md-tabs__link">
           
   
   
@@ -527,28 +527,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -561,7 +564,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             CLI Reference
@@ -575,7 +578,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cli/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   
@@ -598,7 +601,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cli/authentication/" class="md-nav__link">
+      <a href="../authentication/" class="md-nav__link">
         
   
   
@@ -618,10 +621,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../cli/create/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    create
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -632,6 +657,146 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      Flags
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#yaml-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      YAML Format
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="YAML Format">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#standard-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      Standard Fields
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#custom-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      Custom Fields
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-story" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Story
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#full-example-with-custom-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      Full Example with Custom Fields
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dry-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dry Run
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#override-project-or-parent" class="md-nav__link">
+    <span class="md-ellipsis">
+      Override Project or Parent
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#json-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      JSON Output
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multiline-strings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multiline Strings
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -644,7 +809,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cli/search/" class="md-nav__link">
+      <a href="../search/" class="md-nav__link">
         
   
   
@@ -667,7 +832,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cli/get/" class="md-nav__link">
+      <a href="../get/" class="md-nav__link">
         
   
   
@@ -690,7 +855,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cli/patch/" class="md-nav__link">
+      <a href="../patch/" class="md-nav__link">
         
   
   
@@ -713,7 +878,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cli/export/" class="md-nav__link">
+      <a href="../export/" class="md-nav__link">
         
   
   
@@ -736,7 +901,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cli/fields/" class="md-nav__link">
+      <a href="../fields/" class="md-nav__link">
         
   
   
@@ -759,7 +924,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cli/stats/" class="md-nav__link">
+      <a href="../stats/" class="md-nav__link">
         
   
   
@@ -1103,31 +1268,28 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
         
           
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
             
   
   
@@ -1140,7 +1302,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             Releases
@@ -1154,7 +1316,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../v0.30.0/" class="md-nav__link">
+      <a href="../../releases/v0.30.0/" class="md-nav__link">
         
   
   
@@ -1174,32 +1336,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    v0.29.0
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../releases/v0.29.0/" class="md-nav__link">
         
   
   
@@ -1210,188 +1350,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#highlights" class="md-nav__link">
-    <span class="md-ellipsis">
-      Highlights
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#breaking-changes" class="md-nav__link">
-    <span class="md-ellipsis">
-      Breaking Changes
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Breaking Changes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#package-imports-changed" class="md-nav__link">
-    <span class="md-ellipsis">
-      Package Imports Changed
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#new-features" class="md-nav__link">
-    <span class="md-ellipsis">
-      New Features
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="New Features">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#gojira-cli" class="md-nav__link">
-    <span class="md-ellipsis">
-      gojira CLI
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="gojira CLI">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Installation
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#commands" class="md-nav__link">
-    <span class="md-ellipsis">
-      Commands
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#output-formats" class="md-nav__link">
-    <span class="md-ellipsis">
-      Output Formats
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      Examples
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#stats-command" class="md-nav__link">
-    <span class="md-ellipsis">
-      stats Command
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#patch-command" class="md-nav__link">
-    <span class="md-ellipsis">
-      patch Command
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#export-command" class="md-nav__link">
-    <span class="md-ellipsis">
-      export Command
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#fields-command" class="md-nav__link">
-    <span class="md-ellipsis">
-      fields Command
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#documentation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Documentation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tests" class="md-nav__link">
-    <span class="md-ellipsis">
-      Tests
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#commits" class="md-nav__link">
-    <span class="md-ellipsis">
-      Commits
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1404,7 +1362,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../v0.28.0/" class="md-nav__link">
+      <a href="../../releases/v0.28.0/" class="md-nav__link">
         
   
   
@@ -1454,28 +1412,46 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#highlights" class="md-nav__link">
+  <a href="#usage" class="md-nav__link">
     <span class="md-ellipsis">
-      Highlights
+      Usage
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#breaking-changes" class="md-nav__link">
+  <a href="#flags" class="md-nav__link">
     <span class="md-ellipsis">
-      Breaking Changes
+      Flags
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Breaking Changes">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#yaml-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      YAML Format
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="YAML Format">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#package-imports-changed" class="md-nav__link">
+  <a href="#standard-fields" class="md-nav__link">
     <span class="md-ellipsis">
-      Package Imports Changed
+      Standard Fields
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#custom-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      Custom Fields
     </span>
   </a>
   
@@ -1487,129 +1463,69 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#new-features" class="md-nav__link">
-    <span class="md-ellipsis">
-      New Features
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="New Features">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#gojira-cli" class="md-nav__link">
-    <span class="md-ellipsis">
-      gojira CLI
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="gojira CLI">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Installation
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#commands" class="md-nav__link">
-    <span class="md-ellipsis">
-      Commands
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#output-formats" class="md-nav__link">
-    <span class="md-ellipsis">
-      Output Formats
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#examples" class="md-nav__link">
     <span class="md-ellipsis">
       Examples
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-story" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Story
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#full-example-with-custom-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      Full Example with Custom Fields
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dry-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dry Run
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#override-project-or-parent" class="md-nav__link">
+    <span class="md-ellipsis">
+      Override Project or Parent
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#json-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      JSON Output
+    </span>
+  </a>
+  
 </li>
         
       </ul>
     </nav>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#stats-command" class="md-nav__link">
-    <span class="md-ellipsis">
-      stats Command
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#patch-command" class="md-nav__link">
-    <span class="md-ellipsis">
-      patch Command
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#export-command" class="md-nav__link">
-    <span class="md-ellipsis">
-      export Command
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#fields-command" class="md-nav__link">
-    <span class="md-ellipsis">
-      fields Command
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
       
         <li class="md-nav__item">
-  <a href="#documentation" class="md-nav__link">
+  <a href="#multiline-strings" class="md-nav__link">
     <span class="md-ellipsis">
-      Documentation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tests" class="md-nav__link">
-    <span class="md-ellipsis">
-      Tests
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#commits" class="md-nav__link">
-    <span class="md-ellipsis">
-      Commits
+      Multiline Strings
     </span>
   </a>
   
@@ -1634,234 +1550,259 @@
   
 
 
-<h1 id="v0290">v0.29.0<a class="headerlink" href="#v0290" title="Permanent link">&para;</a></h1>
-<p><strong>Release Date:</strong> 2026-04-11</p>
-<p>This is a major release introducing the <code>gojira</code> CLI, package refactoring for a cleaner API, comprehensive documentation, and test coverage.</p>
-<h2 id="highlights">Highlights<a class="headerlink" href="#highlights" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>New <code>gojira</code> CLI</strong> with search, get, patch, export, fields, and stats commands</li>
-<li><strong>Package refactoring</strong> for cleaner imports: <code>jirarest</code> → <code>rest</code>, <code>jiraxml</code> → <code>xml</code>, <code>jiraweb</code> → <code>web</code></li>
-<li><strong>MkDocs documentation site</strong> with Material theme at <a href="https://grokify.github.io/gojira/">grokify.github.io/gojira</a></li>
-</ul>
-<h2 id="breaking-changes">Breaking Changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h2>
-<h3 id="package-imports-changed">Package Imports Changed<a class="headerlink" href="#package-imports-changed" title="Permanent link">&para;</a></h3>
-<p>The package structure has been simplified for a cleaner API:</p>
+<h1 id="create">create<a class="headerlink" href="#create" title="Permanent link">&para;</a></h1>
+<p>Create a Jira issue from a YAML file.</p>
+<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>gojira<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>&lt;file&gt;<span class="w"> </span><span class="o">[</span>flags<span class="o">]</span>
+</code></pre></div>
+<h2 id="flags">Flags<a class="headerlink" href="#flags" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Before</th>
-<th>After</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>github.com/grokify/gojira/jirarest</code></td>
-<td><code>github.com/grokify/gojira/rest</code></td>
-</tr>
-<tr>
-<td><code>github.com/grokify/gojira/jiraxml</code></td>
-<td><code>github.com/grokify/gojira/xml</code></td>
-</tr>
-<tr>
-<td><code>github.com/grokify/gojira/jiraweb</code></td>
-<td><code>github.com/grokify/gojira/web</code></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Migration:</strong> Update your import statements:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// Before</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="s">&quot;github.com/grokify/gojira/jirarest&quot;</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1">// After</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">import</span><span class="w"> </span><span class="s">&quot;github.com/grokify/gojira/rest&quot;</span>
-</code></pre></div>
-<h2 id="new-features">New Features<a class="headerlink" href="#new-features" title="Permanent link">&para;</a></h2>
-<h3 id="gojira-cli">gojira CLI<a class="headerlink" href="#gojira-cli" title="Permanent link">&para;</a></h3>
-<p>A new command-line interface optimized for both AI agents and humans.</p>
-<h4 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>go<span class="w"> </span>install<span class="w"> </span>github.com/grokify/gojira/cmd/gojira@latest
-</code></pre></div>
-<h4 id="commands">Commands<a class="headerlink" href="#commands" title="Permanent link">&para;</a></h4>
-<table>
-<thead>
-<tr>
-<th>Command</th>
+<th>Flag</th>
+<th>Short</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>search</code></td>
-<td>Search issues with JQL</td>
+<td><code>--file</code></td>
+<td><code>-f</code></td>
+<td>YAML file containing issue data (required)</td>
 </tr>
 <tr>
-<td><code>get</code></td>
-<td>Get one or more issues by key</td>
+<td><code>--dry-run</code></td>
+<td></td>
+<td>Validate and preview without creating</td>
 </tr>
 <tr>
-<td><code>patch</code></td>
-<td>Update issue fields and labels</td>
+<td><code>--project</code></td>
+<td></td>
+<td>Override project key from file</td>
 </tr>
 <tr>
-<td><code>export</code></td>
-<td>Export issues to JSON or XLSX</td>
+<td><code>--parent</code></td>
+<td></td>
+<td>Override parent issue key from file</td>
 </tr>
 <tr>
-<td><code>fields</code></td>
-<td>List and filter custom fields</td>
+<td><code>--type</code></td>
+<td></td>
+<td>Override issue type from file</td>
 </tr>
 <tr>
-<td><code>stats</code></td>
-<td>Show issue statistics grouped by field</td>
+<td><code>--json</code></td>
+<td><code>-j</code></td>
+<td>Output full result as JSON</td>
 </tr>
 </tbody>
 </table>
-<h4 id="output-formats">Output Formats<a class="headerlink" href="#output-formats" title="Permanent link">&para;</a></h4>
-<ul>
-<li><strong>JSON</strong> (default) - Machine-readable for scripting</li>
-<li><strong>Table</strong> - Human-readable ASCII tables</li>
-<li><strong>TOON</strong> - Token-Optimized Object Notation for LLMs (~8x more efficient)</li>
-</ul>
-<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Set authentication</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">JIRA_URL</span><span class="o">=</span>https://your-instance.atlassian.net
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">JIRA_USER</span><span class="o">=</span>your-email@example.com
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">JIRA_TOKEN</span><span class="o">=</span>your-api-token
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c1"># Search issues</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>gojira<span class="w"> </span>search<span class="w"> </span>--jql<span class="w"> </span><span class="s2">&quot;project = FOO AND status = Open&quot;</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="c1"># Get issue details</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>gojira<span class="w"> </span>get<span class="w"> </span>ISSUE-123
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="c1"># Show statistics</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>gojira<span class="w"> </span>stats<span class="w"> </span>--jql<span class="w"> </span><span class="s2">&quot;project = FOO&quot;</span><span class="w"> </span>--by<span class="w"> </span>status<span class="w"> </span>--format<span class="w"> </span>table
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="c1"># Update an issue</span>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>gojira<span class="w"> </span>patch<span class="w"> </span>ISSUE-123<span class="w"> </span>--set<span class="w"> </span><span class="nv">priority</span><span class="o">=</span>High<span class="w"> </span>--add-label<span class="w"> </span>urgent
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="c1"># Export to Excel</span>
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>gojira<span class="w"> </span><span class="nb">export</span><span class="w"> </span>--jql<span class="w"> </span><span class="s2">&quot;project = FOO&quot;</span><span class="w"> </span>--xlsx<span class="w"> </span>report.xlsx
-</code></pre></div>
-<h3 id="stats-command">stats Command<a class="headerlink" href="#stats-command" title="Permanent link">&para;</a></h3>
-<p>Aggregate issue counts by any field with multiple output formats.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Count by status (table output)</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>gojira<span class="w"> </span>stats<span class="w"> </span>--jql<span class="w"> </span><span class="s2">&quot;project = FOO&quot;</span><span class="w"> </span>--by<span class="w"> </span>status<span class="w"> </span>--format<span class="w"> </span>table
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Output:</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># VALUE          COUNT      %</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1"># Open              45   30.0%</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1"># In Progress       30   20.0%</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c1"># Done              75   50.0%</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="c1"># ------         ------  ------</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="c1"># TOTAL            150  100.0%</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="c1"># Count by custom field (TOON output for LLMs)</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>gojira<span class="w"> </span>stats<span class="w"> </span>--jql<span class="w"> </span><span class="s2">&quot;project = FOO&quot;</span><span class="w"> </span>--by<span class="w"> </span>customfield_10001<span class="w"> </span>--format<span class="w"> </span>toon
-</code></pre></div>
-<p>Supported grouping fields:</p>
-<ul>
-<li><code>status</code>, <code>type</code>, <code>priority</code>, <code>assignee</code>, <code>project</code>, <code>resolution</code></li>
-<li>Any custom field: <code>customfield_XXXXX</code></li>
-</ul>
-<h3 id="patch-command">patch Command<a class="headerlink" href="#patch-command" title="Permanent link">&para;</a></h3>
-<p>Update issue fields with dry-run support.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Set fields</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>gojira<span class="w"> </span>patch<span class="w"> </span>ISSUE-123<span class="w"> </span>--set<span class="w"> </span><span class="nv">summary</span><span class="o">=</span><span class="s2">&quot;New title&quot;</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">priority</span><span class="o">=</span>High
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Manage labels</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>gojira<span class="w"> </span>patch<span class="w"> </span>ISSUE-123<span class="w"> </span>--add-label<span class="w"> </span>reviewed<span class="w"> </span>--remove-label<span class="w"> </span>needs-review
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># Preview changes without executing</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>gojira<span class="w"> </span>patch<span class="w"> </span>ISSUE-123<span class="w"> </span>--set<span class="w"> </span><span class="nv">summary</span><span class="o">=</span><span class="s2">&quot;Test&quot;</span><span class="w"> </span>--dry-run
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="c1"># Complex updates via JSON</span>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>gojira<span class="w"> </span>patch<span class="w"> </span>ISSUE-123<span class="w"> </span>--json<span class="w"> </span><span class="s1">&#39;{&quot;fields&quot;:{&quot;assignee&quot;:{&quot;name&quot;:&quot;jdoe&quot;}}}&#39;</span>
-</code></pre></div>
-<h3 id="export-command">export Command<a class="headerlink" href="#export-command" title="Permanent link">&para;</a></h3>
-<p>Export issues to JSON or XLSX with parent issue support.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Export to JSON</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>gojira<span class="w"> </span><span class="nb">export</span><span class="w"> </span>--jql<span class="w"> </span><span class="s2">&quot;project = FOO&quot;</span><span class="w"> </span>--json<span class="w"> </span>issues.json
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Export to Excel with parents</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>gojira<span class="w"> </span><span class="nb">export</span><span class="w"> </span>--jql<span class="w"> </span><span class="s2">&quot;project = FOO&quot;</span><span class="w"> </span>--include-parents<span class="w"> </span>--xlsx<span class="w"> </span>report.xlsx
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1"># Convert existing JSON to XLSX</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>gojira<span class="w"> </span><span class="nb">export</span><span class="w"> </span>--from-json<span class="w"> </span>issues.json<span class="w"> </span>--xlsx<span class="w"> </span>report.xlsx
-</code></pre></div>
-<h3 id="fields-command">fields Command<a class="headerlink" href="#fields-command" title="Permanent link">&para;</a></h3>
-<p>Discover and filter custom fields.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># List all custom fields</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>gojira<span class="w"> </span>fields<span class="w"> </span>--custom-only
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># Find by name</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>gojira<span class="w"> </span>fields<span class="w"> </span>--name<span class="w"> </span><span class="s2">&quot;Epic&quot;</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1"># Get Epic Link field specifically</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>gojira<span class="w"> </span>fields<span class="w"> </span>--epic-link
-</code></pre></div>
-<h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h2>
-<p>New MkDocs documentation site with:</p>
-<ul>
-<li><strong>CLI Reference</strong> - Complete command documentation with examples</li>
-<li><strong>SDK Guide</strong> - Client creation, issue operations, JQL builder</li>
-<li><strong>AI Agents Guide</strong> - Best practices for LLM integration</li>
-<li><strong>JQL Examples</strong> - Common query patterns</li>
-</ul>
-<p>Visit: <a href="https://grokify.github.io/gojira/">grokify.github.io/gojira</a></p>
-<h2 id="tests">Tests<a class="headerlink" href="#tests" title="Permanent link">&para;</a></h2>
-<p>Added comprehensive tests for the <code>rest</code> package:</p>
-<ul>
-<li>Unit tests for <code>IssueMore</code>, <code>IssueService</code></li>
-<li>Integration tests (require <code>JIRA_*</code> environment variables)</li>
-</ul>
-<h2 id="commits">Commits<a class="headerlink" href="#commits" title="Permanent link">&para;</a></h2>
+<h2 id="yaml-format">YAML Format<a class="headerlink" href="#yaml-format" title="Permanent link">&para;</a></h2>
+<p>The YAML file supports all standard Jira fields plus custom fields.</p>
+<h3 id="standard-fields">Standard Fields<a class="headerlink" href="#standard-fields" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
-<th>Type</th>
+<th>Field</th>
+<th>Required</th>
 <th>Description</th>
-<th>Commit</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Breaking</td>
-<td>Package imports changed</td>
-<td><a href="https://github.com/grokify/gojira/commit/5fcf3ed"><code>5fcf3ed</code></a></td>
+<td><code>project</code></td>
+<td>Yes</td>
+<td>Project key (e.g., PROJ)</td>
 </tr>
 <tr>
-<td>Added</td>
-<td><code>gojira</code> CLI</td>
-<td><a href="https://github.com/grokify/gojira/commit/10b40a2"><code>10b40a2</code></a></td>
+<td><code>type</code></td>
+<td>Yes</td>
+<td>Issue type (Story, Bug, Task, Epic)</td>
 </tr>
 <tr>
-<td>Added</td>
-<td><code>stats</code> command</td>
-<td><a href="https://github.com/grokify/gojira/commit/a910dee"><code>a910dee</code></a></td>
+<td><code>summary</code></td>
+<td>Yes</td>
+<td>Issue title</td>
 </tr>
 <tr>
-<td>Added</td>
-<td><code>patch</code>, <code>export</code>, <code>fields</code> commands</td>
-<td><a href="https://github.com/grokify/gojira/commit/910e502"><code>910e502</code></a></td>
+<td><code>description</code></td>
+<td>No</td>
+<td>Issue description (supports Jira markdown)</td>
 </tr>
 <tr>
-<td>Docs</td>
-<td>MkDocs documentation site</td>
-<td><a href="https://github.com/grokify/gojira/commit/c9b2902"><code>c9b2902</code></a></td>
+<td><code>parent</code></td>
+<td>No</td>
+<td>Parent issue key for subtasks or stories under epics</td>
 </tr>
 <tr>
-<td>Docs</td>
-<td>README updates</td>
-<td><a href="https://github.com/grokify/gojira/commit/5b7c648"><code>5b7c648</code></a></td>
+<td><code>labels</code></td>
+<td>No</td>
+<td>List of labels</td>
 </tr>
 <tr>
-<td>Tests</td>
-<td>Unit and integration tests</td>
-<td><a href="https://github.com/grokify/gojira/commit/12bf737"><code>12bf737</code></a></td>
+<td><code>priority</code></td>
+<td>No</td>
+<td>Priority name (High, Medium, Low)</td>
+</tr>
+<tr>
+<td><code>assignee</code></td>
+<td>No</td>
+<td>Username or email</td>
+</tr>
+<tr>
+<td><code>reporter</code></td>
+<td>No</td>
+<td>Username or email</td>
+</tr>
+<tr>
+<td><code>components</code></td>
+<td>No</td>
+<td>List of component names</td>
+</tr>
+<tr>
+<td><code>fix_versions</code></td>
+<td>No</td>
+<td>List of fix version names</td>
 </tr>
 </tbody>
 </table>
+<h3 id="custom-fields">Custom Fields<a class="headerlink" href="#custom-fields" title="Permanent link">&para;</a></h3>
+<p>Any field starting with <code>customfield_</code> is passed directly to the Jira API:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">customfield_12345</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Value</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">custom</span><span class="nv"> </span><span class="s">field&quot;</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nt">customfield_10001</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Q2-2024&quot;</span>
+</code></pre></div>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
+<h3 id="basic-story">Basic Story<a class="headerlink" href="#basic-story" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">project</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PROJ</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Story</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nt">summary</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Add user authentication</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="no">Implement OAuth2 login flow for the application.</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="nt">labels</span><span class="p">:</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auth</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mvp</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>gojira<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>story.yaml
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="c1"># Output: Created PROJ-123</span>
+</code></pre></div>
+<h3 id="full-example-with-custom-fields">Full Example with Custom Fields<a class="headerlink" href="#full-example-with-custom-fields" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nt">project</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PROJ</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Story</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nt">summary</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Add user authentication via OAuth2</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span><span class="no">## Background</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span><span class="no">Users currently have no way to securely authenticate. We need to implement</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">  </span><span class="no">OAuth2 login flow to support SSO with corporate identity providers.</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">  </span><span class="no">## Requirements</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">  </span><span class="no">- Support Google and Microsoft identity providers</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">  </span><span class="no">- Store refresh tokens securely</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">  </span><span class="no">- Handle token expiration gracefully</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">  </span><span class="no">## Technical Notes</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">  </span><span class="no">Use the existing session middleware for token validation.</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="nt">parent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PROJ-100</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="nt">labels</span><span class="p">:</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auth</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mvp</span>
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">security</span>
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="nt">priority</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">High</span>
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="nt">assignee</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">john.doe</span>
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="nt">components</span><span class="p">:</span>
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">backend</span>
+<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">security</span>
+<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="nt">customfield_12345</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="w">  </span><span class="no">Given a user is on the login page</span>
+<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a><span class="w">  </span><span class="no">When they click &quot;Sign in with Google&quot;</span>
+<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a><span class="w">  </span><span class="no">Then they should be redirected to Google OAuth</span>
+<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="w">  </span><span class="no">And upon success, redirected back to the dashboard</span>
+<a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a><span class="nt">customfield_10001</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Q2-2024</span>
+</code></pre></div>
+<h3 id="dry-run">Dry Run<a class="headerlink" href="#dry-run" title="Permanent link">&para;</a></h3>
+<p>Preview what would be created without actually creating:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>gojira<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>story.yaml<span class="w"> </span>--dry-run
+</code></pre></div>
+<p>Output:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">{</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="nt">&quot;valid&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span><span class="nt">&quot;project&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PROJ&quot;</span><span class="p">,</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Story&quot;</span><span class="p">,</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span><span class="nt">&quot;summary&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Add user authentication via OAuth2&quot;</span><span class="p">,</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;## Background\n...&quot;</span><span class="p">,</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">  </span><span class="nt">&quot;parent&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PROJ-100&quot;</span><span class="p">,</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">  </span><span class="nt">&quot;labels&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;auth&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;mvp&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;security&quot;</span><span class="p">],</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">  </span><span class="nt">&quot;priority&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;High&quot;</span><span class="p">,</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">  </span><span class="nt">&quot;assignee&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;john.doe&quot;</span><span class="p">,</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">  </span><span class="nt">&quot;custom_fields&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">    </span><span class="nt">&quot;customfield_12345&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Given a user is on the login page...&quot;</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="override-project-or-parent">Override Project or Parent<a class="headerlink" href="#override-project-or-parent" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Create in a different project</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>gojira<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>story.yaml<span class="w"> </span>--project<span class="w"> </span>OTHER
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># Create under a different epic</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>gojira<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>story.yaml<span class="w"> </span>--parent<span class="w"> </span>EPIC-456
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1"># Override issue type</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>gojira<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>story.yaml<span class="w"> </span>--type<span class="w"> </span>Task
+</code></pre></div>
+<h3 id="json-output">JSON Output<a class="headerlink" href="#json-output" title="Permanent link">&para;</a></h3>
+<p>Get full response including issue ID and self URL:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>gojira<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>story.yaml<span class="w"> </span>--json
+</code></pre></div>
+<p>Output:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>Created PROJ-123
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>{
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>  &quot;key&quot;: &quot;PROJ-123&quot;,
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>  &quot;id&quot;: &quot;10001&quot;,
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>  &quot;self&quot;: &quot;https://company.atlassian.net/rest/api/2/issue/10001&quot;,
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>  &quot;summary&quot;: &quot;Add user authentication via OAuth2&quot;
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>}
+</code></pre></div>
+<h2 id="multiline-strings">Multiline Strings<a class="headerlink" href="#multiline-strings" title="Permanent link">&para;</a></h2>
+<p>Use YAML block scalars for multiline content:</p>
+<table>
+<thead>
+<tr>
+<th>Syntax</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>\|</code></td>
+<td>Preserves newlines (literal)</td>
+</tr>
+<tr>
+<td><code>&gt;</code></td>
+<td>Folds newlines to spaces</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Literal block - preserves newlines</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span><span class="no">Line 1</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span><span class="no">Line 2</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">  </span><span class="no">Line 4 after blank</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="c1"># Folded block - joins lines</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">  </span><span class="no">This becomes one long</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="w">  </span><span class="no">paragraph joined together.</span>
+</code></pre></div>
+<p>For markdown code blocks, use the literal style (<code>|</code>):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span><span class="no">## Example</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">  </span><span class="no">```go</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">  </span><span class="no">func main() {</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">      </span><span class="no">fmt.Println(&quot;Hello&quot;)</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">  </span><span class="no">}</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">  </span><span class="no">```</span>
+</code></pre></div>
 
 
 

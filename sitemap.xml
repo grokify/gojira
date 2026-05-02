@@ -2,78 +2,90 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://grokify.github.io/gojira/</loc>
-         <lastmod>2026-04-11</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/gojira/installation/</loc>
-         <lastmod>2026-04-11</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/gojira/quickstart/</loc>
-         <lastmod>2026-04-11</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/gojira/cli/</loc>
-         <lastmod>2026-04-11</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/gojira/cli/authentication/</loc>
-         <lastmod>2026-04-11</lastmod>
+         <lastmod>2026-05-02</lastmod>
+    </url>
+    <url>
+         <loc>https://grokify.github.io/gojira/cli/create/</loc>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/gojira/cli/export/</loc>
-         <lastmod>2026-04-11</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/gojira/cli/fields/</loc>
-         <lastmod>2026-04-11</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/gojira/cli/get/</loc>
-         <lastmod>2026-04-11</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/gojira/cli/patch/</loc>
-         <lastmod>2026-04-11</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/gojira/cli/search/</loc>
-         <lastmod>2026-04-11</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/gojira/cli/stats/</loc>
-         <lastmod>2026-04-11</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/gojira/guides/ai-agents/</loc>
-         <lastmod>2026-04-11</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/gojira/guides/jql-examples/</loc>
-         <lastmod>2026-04-11</lastmod>
+         <lastmod>2026-05-02</lastmod>
+    </url>
+    <url>
+         <loc>https://grokify.github.io/gojira/mcp/</loc>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/gojira/releases/v0.28.0/</loc>
-         <lastmod>2026-04-11</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/gojira/releases/v0.29.0/</loc>
-         <lastmod>2026-04-11</lastmod>
+         <lastmod>2026-05-02</lastmod>
+    </url>
+    <url>
+         <loc>https://grokify.github.io/gojira/releases/v0.30.0/</loc>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/gojira/sdk/</loc>
-         <lastmod>2026-04-11</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/gojira/sdk/client/</loc>
-         <lastmod>2026-04-11</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/gojira/sdk/issues/</loc>
-         <lastmod>2026-04-11</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/gojira/sdk/jql/</loc>
-         <lastmod>2026-04-11</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
 </urlset>
