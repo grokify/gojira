@@ -1,8 +1,9 @@
 package rest
 
 import (
+	"slices"
+
 	"github.com/grokify/mogo/errors/errorsutil"
-	"golang.org/x/exp/slices"
 )
 
 // RetrieveChildrenOfType retrieves all children of supplied parent types. If the child matches a base type,

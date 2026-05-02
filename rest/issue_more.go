@@ -3,6 +3,7 @@ package rest
 import (
 	"errors"
 	"os"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -16,7 +17,6 @@ import (
 	"github.com/grokify/mogo/time/duration"
 	"github.com/grokify/mogo/time/timeutil"
 	"github.com/grokify/mogo/type/slicesutil"
-	"golang.org/x/exp/slices"
 )
 
 type IssueMore struct {

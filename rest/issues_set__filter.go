@@ -2,13 +2,13 @@ package rest
 
 import (
 	"fmt"
+	"slices"
 	"sort"
 	"strings"
 
 	"github.com/grokify/gojira"
 	"github.com/grokify/mogo/pointer"
 	"github.com/grokify/mogo/type/slicesutil"
-	"golang.org/x/exp/slices"
 )
 
 func (set *IssuesSet) FilterByKeys(keys []string, errOnUnfound bool) (*IssuesSet, error) {
