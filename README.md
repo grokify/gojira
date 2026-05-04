@@ -26,7 +26,7 @@
  [loc-svg]: https://tokei.rs/b1/github/grokify/gojira
  [repo-url]: https://github.com/grokify/gojira
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
- [license-url]: https://github.com/grokify/gojira/blob/master/LICENSE
+ [license-url]: https://github.com/grokify/gojira/blob/main/LICENSE
 
 GoJira is a Go SDK and CLI for Jira that provides:
 
