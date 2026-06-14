@@ -54,19 +54,6 @@ func (ss *StatusCategoryConfig) MapMetaStageToStatuses() map[string][]string {
 	return out
 }
 
-/*
-func (ss *StatusConfig) DedupeMetaStageOrder() {
-	if ss.MetaStageOrder == nil {
-		ss.MetaStageOrder = []string{}
-		return
-	} else if len(ss.MetaStageOrder) == 0 || len(ss.MetaStageOrder) == 1 {
-		return
-	} else {
-		ss.MetaStageOrder = stringsutil.SliceCondenseSpace(ss.MetaStageOrder, true, false)
-	}
-}
-*/
-
 // MetaStage returns the metastatus for a status. If there is no metastatus, an empty string is returned.
 func (ss *StatusCategoryConfig) MetaStage(status string) string {
 	if cat, ok := ss.Map[status]; ok {
@@ -76,19 +63,8 @@ func (ss *StatusCategoryConfig) MetaStage(status string) string {
 	}
 }
 
-/*
-// MetaStageOrderMap returns a `map[string]uint` where the key is the meta status and the value is the index.
-func (ss *StatusConfig) MetaStageOrderMap() map[string]uint {
-	out := map[string]uint{}
-	for i, ms := range ss.MetaStageOrder {
-		out[ms] = uint(i)
-	}
-	return out
-}
-*/
-
 func (ss *StatusCategoryConfig) StatusesReadyForPlanning() []string {
-	if metaStageName := ss.StageConfig.ReadyforPlanningName(); metaStageName == "" {
+	if metaStageName := ss.StageConfig.ReadyForPlanningName(); metaStageName == "" {
 		return []string{}
 	} else {
 		return ss.StatusesForMetaStage(metaStageName)

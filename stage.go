@@ -53,7 +53,7 @@ func (ss *StageConfig) InPlanningName() string {
 	return buildMetaStageName(ss.MetaStageInPlanning, ss.MetaStagePrefixIn, ss.StageNamePlanning)
 }
 
-func (ss *StageConfig) ReadyforPlanningName() string {
+func (ss *StageConfig) ReadyForPlanningName() string {
 	return buildMetaStageName(ss.MetaStageReadyForPlanning, ss.MetaStagePrefixReadyFor, ss.StageNamePlanning)
 }
 
@@ -69,7 +69,7 @@ func (ss *StageConfig) InDevelopmentName() string {
 	return buildMetaStageName(ss.MetaStageInDevelopment, ss.MetaStagePrefixIn, ss.StageNameDevelopment)
 }
 
-func (ss *StageConfig) ReadyForDevlopmentName() string {
+func (ss *StageConfig) ReadyForDevelopmentName() string {
 	return buildMetaStageName(ss.MetaStageReadyForDevelopment, ss.MetaStagePrefixReadyFor, ss.StageNameDevelopment)
 }
 
@@ -119,11 +119,11 @@ func (ss *StageConfig) TrimSpaceNames() {
 
 func (ss *StageConfig) Order() []string {
 	return stringsutil.SliceCondenseSpace([]string{
-		ss.ReadyforPlanningName(),
+		ss.ReadyForPlanningName(),
 		ss.InPlanningName(),
 		ss.ReadyForDesignName(),
 		ss.InDesignName(),
-		ss.ReadyForDevlopmentName(),
+		ss.ReadyForDevelopmentName(),
 		ss.InDevelopmentName(),
 		ss.ReadyForTestingName(),
 		ss.InTestingName(),
