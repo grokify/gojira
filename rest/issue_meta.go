@@ -55,6 +55,7 @@ type IssueMeta struct {
 	AssigneeName     string
 	CreateTime       *time.Time
 	CreatorName      string
+	Description      string
 	EpicName         string
 	Key              string
 	KeyURL           string

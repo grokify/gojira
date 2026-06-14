@@ -338,6 +338,7 @@ func (im *IssueMore) Meta(serverURL string, additionalFieldNames []string) Issue
 		AssigneeName:     im.AssigneeName(),
 		CreateTime:       createdPtr,
 		CreatorName:      im.CreatorName(),
+		Description:      im.Description(),
 		EpicName:         im.EpicName(),
 		Key:              im.Key(),
 		KeyURL:           im.KeyURLWeb(serverURL),
