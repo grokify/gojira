@@ -96,4 +96,12 @@
          <loc>https://grokify.github.io/gojira/sdk/jql/</loc>
          <lastmod>2026-06-14</lastmod>
     </url>
+    <url>
+         <loc>https://grokify.github.io/gojira/specs/features/v1/PRD/</loc>
+         <lastmod>2026-06-14</lastmod>
+    </url>
+    <url>
+         <loc>https://grokify.github.io/gojira/specs/features/v1/TRD/</loc>
+         <lastmod>2026-06-14</lastmod>
+    </url>
 </urlset>
