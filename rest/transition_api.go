@@ -43,7 +43,7 @@ type TranstionFieldIDOrValue struct {
 	Value any `json:"value,omitempty"`
 }
 
-type TransitionsAPIReponse struct {
+type TransitionsAPIResponse struct {
 	Transitions []Transition `json:"transitions"`
 }
 
@@ -56,7 +56,7 @@ func (svc *IssueService) GetTransitions(ctx context.Context, id string, expandTr
 			Method: http.MethodGet,
 			URL:    fmt.Sprintf("/rest/api/2/issue/%s/transitions", id),
 			Query:  map[string][]string{"expand": {"transitions.fields"}}}
-		var result TransitionsAPIReponse
+		var result TransitionsAPIResponse
 		if resp, err := svc.Client.simpleClient.Do(ctx, sr); err != nil {
 			return nil, nil, err
 		} else if resp.StatusCode > 299 {
