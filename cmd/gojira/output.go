@@ -75,6 +75,13 @@ func writeIssuesJSON(issues rest.Issues, w io.Writer) error {
 	return enc.Encode(metas)
 }
 
+// WriteIssuesRaw outputs the full API JSON for issues (all fields from Jira API).
+func WriteIssuesRaw(issues rest.Issues) error {
+	enc := json.NewEncoder(os.Stdout)
+	enc.SetIndent("", "  ")
+	return enc.Encode(issues)
+}
+
 // writeIssuesTable outputs issues as an ASCII table.
 func writeIssuesTable(issues rest.Issues, w io.Writer) error {
 	tw := tablewriter.NewWriter(w)
@@ -143,20 +150,21 @@ func formatTOON(im rest.IssueMore) string {
 
 // IssueMeta represents simplified issue metadata for JSON output.
 type IssueMeta struct {
-	Key        string     `json:"key"`
-	Type       string     `json:"type"`
-	Status     string     `json:"status"`
-	Resolution string     `json:"resolution,omitempty"`
-	Summary    string     `json:"summary"`
-	Project    string     `json:"project"`
-	ProjectKey string     `json:"projectKey"`
-	Assignee   string     `json:"assignee,omitempty"`
-	Creator    string     `json:"creator,omitempty"`
-	Created    *time.Time `json:"created,omitempty"`
-	Updated    *time.Time `json:"updated,omitempty"`
-	ParentKey  string     `json:"parentKey,omitempty"`
-	EpicKey    string     `json:"epicKey,omitempty"`
-	Labels     []string   `json:"labels,omitempty"`
+	Key         string     `json:"key"`
+	Type        string     `json:"type"`
+	Status      string     `json:"status"`
+	Resolution  string     `json:"resolution,omitempty"`
+	Summary     string     `json:"summary"`
+	Description string     `json:"description,omitempty"`
+	Project     string     `json:"project"`
+	ProjectKey  string     `json:"projectKey"`
+	Assignee    string     `json:"assignee,omitempty"`
+	Creator     string     `json:"creator,omitempty"`
+	Created     *time.Time `json:"created,omitempty"`
+	Updated     *time.Time `json:"updated,omitempty"`
+	ParentKey   string     `json:"parentKey,omitempty"`
+	EpicKey     string     `json:"epicKey,omitempty"`
+	Labels      []string   `json:"labels,omitempty"`
 }
 
 // issuesToMetas converts Issues to a slice of IssueMeta.
@@ -165,18 +173,19 @@ func issuesToMetas(issues rest.Issues) []IssueMeta {
 	for _, iss := range issues {
 		im := rest.NewIssueMore(&iss)
 		meta := IssueMeta{
-			Key:        im.Key(),
-			Type:       im.Type(),
-			Status:     im.Status(),
-			Resolution: im.Resolution(),
-			Summary:    im.Summary(),
-			Project:    im.Project(),
-			ProjectKey: im.ProjectKey(),
-			Assignee:   im.AssigneeName(),
-			Creator:    im.CreatorName(),
-			ParentKey:  im.ParentKey(),
-			EpicKey:    im.EpicKey(),
-			Labels:     im.Labels(true),
+			Key:         im.Key(),
+			Type:        im.Type(),
+			Status:      im.Status(),
+			Resolution:  im.Resolution(),
+			Summary:     im.Summary(),
+			Description: im.Description(),
+			Project:     im.Project(),
+			ProjectKey:  im.ProjectKey(),
+			Assignee:    im.AssigneeName(),
+			Creator:     im.CreatorName(),
+			ParentKey:   im.ParentKey(),
+			EpicKey:     im.EpicKey(),
+			Labels:      im.Labels(true),
 		}
 
 		created := im.CreateTime()

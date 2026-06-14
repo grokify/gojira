@@ -12,6 +12,7 @@ import (
 var (
 	flagGetExpand bool
 	flagGetFields string
+	flagGetRaw    bool
 )
 
 var getCmd = &cobra.Command{
@@ -30,7 +31,10 @@ Examples:
   gojira get ISSUE-123 --expand
 
   # Output as table
-  gojira get ISSUE-123 --table`,
+  gojira get ISSUE-123 --table
+
+  # Output full API JSON (all fields)
+  gojira get ISSUE-123 --raw`,
 	Args: cobra.MinimumNArgs(1),
 	RunE: runGet,
 }
@@ -40,6 +44,7 @@ func init() {
 
 	getCmd.Flags().BoolVar(&flagGetExpand, "expand", false, "Expand changelog and other fields")
 	getCmd.Flags().StringVarP(&flagGetFields, "fields", "f", "", "Comma-separated list of fields to include")
+	getCmd.Flags().BoolVar(&flagGetRaw, "raw", false, "Output full API JSON instead of simplified metadata")
 }
 
 func runGet(cmd *cobra.Command, args []string) error {
@@ -81,6 +86,9 @@ func runGet(cmd *cobra.Command, args []string) error {
 	}
 
 	// Output results
+	if flagGetRaw {
+		return WriteIssuesRaw(issues)
+	}
 	cfg := NewOutputConfig(getOutputFormat())
 	return WriteIssues(issues, cfg)
 }
