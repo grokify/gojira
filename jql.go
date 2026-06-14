@@ -260,12 +260,22 @@ func (j JQL) QueryString() string {
 	return "jql=" + url.QueryEscape(j.String())
 }
 
+// quoteFieldIfNeeded wraps field names containing spaces in double quotes for JQL.
+func quoteFieldIfNeeded(field string) string {
+	if strings.Contains(field, " ") {
+		return `"` + field + `"`
+	}
+	return field
+}
+
 func inCondition(field string, values []string, exclude bool) string {
 	field = strings.TrimSpace(field)
 	values = stringsutil.SliceCondenseSpace(values, true, true)
 	if field == "" || len(values) == 0 {
 		return ""
-	} else if len(values) == 1 {
+	}
+	field = quoteFieldIfNeeded(field)
+	if len(values) == 1 {
 		operator := "="
 		if exclude {
 			operator = "!="
@@ -275,7 +285,6 @@ func inCondition(field string, values []string, exclude bool) string {
 			End:         "'",
 			SkipNesting: true,
 		}
-		// TODO: `field` should optionally quoted if there is a space.
 		return fmt.Sprintf("%s %s %s", field, operator, qtr.Quote(values[0]))
 	} else if len(values) > 1 {
 		operator := "IN"
