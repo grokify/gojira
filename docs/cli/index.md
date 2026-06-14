@@ -14,6 +14,7 @@ go install github.com/grokify/gojira/cmd/gojira@latest
 |---------|-------------|
 | [search](search.md) | Search issues with JQL |
 | [get](get.md) | Get one or more issues by key |
+| [comments](comments.md) | Get comments for an issue |
 | [patch](patch.md) | Update issue fields |
 | [export](export.md) | Export issues to JSON or XLSX |
 | [fields](fields.md) | List and filter custom fields |

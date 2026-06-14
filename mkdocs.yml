@@ -51,6 +51,7 @@ nav:
       - create: cli/create.md
       - search: cli/search.md
       - get: cli/get.md
+      - comments: cli/comments.md
       - patch: cli/patch.md
       - export: cli/export.md
       - fields: cli/fields.md

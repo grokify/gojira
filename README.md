@@ -65,6 +65,12 @@ gojira search --jql "project = FOO AND status = Open"
 # Get a specific issue
 gojira get ISSUE-123
 
+# Get issue with full API JSON (all fields)
+gojira get ISSUE-123 --raw
+
+# Get comments for an issue
+gojira comments ISSUE-123
+
 # Show statistics by field
 gojira stats --jql "project = FOO" --by status --format table
 

@@ -20,6 +20,7 @@ gojira get <issue-key> [issue-key...] [flags]
 |------|---------|-------------|
 | `--expand` | false | Expand changelog and other fields |
 | `--fields` | | Comma-separated list of fields to include |
+| `--raw` | false | Output full API JSON instead of simplified metadata |
 
 Plus [global flags](index.md#global-flags).
 
@@ -52,9 +53,43 @@ gojira get FOO-123 FOO-456 --json
 gojira get FOO-123 --expand
 ```
 
+### Full API JSON
+
+```bash
+# Output complete API response (all fields)
+gojira get FOO-123 --raw
+```
+
+The `--raw` flag outputs the full `jira.Issue` JSON from the API instead of the simplified metadata format. Use this when you need access to all fields including custom fields, comments, or other data not included in the default output.
+
 ## Output
 
-### JSON Format
+### JSON Format (Default)
+
+The default output is a simplified metadata format:
+
+```json
+[
+  {
+    "key": "FOO-123",
+    "type": "Bug",
+    "status": "Open",
+    "summary": "Fix login bug",
+    "description": "Users cannot log in when...",
+    "project": "Foo Project",
+    "projectKey": "FOO",
+    "assignee": "John Doe",
+    "creator": "Jane Smith",
+    "created": "2024-01-15T10:30:00Z",
+    "updated": "2024-01-16T14:20:00Z",
+    "labels": ["urgent", "backend"]
+  }
+]
+```
+
+### Raw JSON Format (`--raw`)
+
+The `--raw` flag outputs the complete API response:
 
 ```json
 [
@@ -62,18 +97,11 @@ gojira get FOO-123 --expand
     "key": "FOO-123",
     "fields": {
       "summary": "Fix login bug",
-      "status": {
-        "name": "Open"
-      },
-      "issuetype": {
-        "name": "Bug"
-      },
-      "priority": {
-        "name": "High"
-      },
-      "assignee": {
-        "displayName": "John Doe"
-      },
+      "description": "Users cannot log in when...",
+      "status": { "name": "Open" },
+      "issuetype": { "name": "Bug" },
+      "priority": { "name": "High" },
+      "assignee": { "displayName": "John Doe" },
       "created": "2024-01-15T10:30:00.000+0000",
       "updated": "2024-01-16T14:20:00.000+0000"
     }
