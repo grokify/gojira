@@ -59,25 +59,11 @@ func (svc *IssueService) Issue(ctx context.Context, issueIDOrKey string, opts *G
 	} else {
 		return iss, nil
 	}
-	/*
-		jql := gojira.JQL{IssuesIncl: [][]string{{key}}}
-		if key == "" {
-			return nil, errors.New("issue key is required")
-		} else if iss, err := svc.SearchIssues(jql.String(), false); err != nil {
-			return nil, err
-		} else if len(iss) == 0 {
-			return nil, fmt.Errorf("key not found (%s)", key)
-		} else if len(iss) > 1 {
-			return nil, fmt.Errorf("too many issues (%d) found for (%s)", len(iss), key)
-		} else {
-			return &iss[0], nil
-		}
-	*/
 }
 
 // Issues returns a list of issues given a set of keys. If no keys are provided,
-// an empty slice is returned.
-// TODO: opts parameter is currently unused; consider adding support for expand options.
+// an empty slice is returned. The opts parameter is reserved for future use and
+// currently has no effect on the search query.
 func (svc *IssueService) Issues(ctx context.Context, keys []string, _ *GetQueryOptions) (Issues, error) {
 	keys = stringsutil.SliceCondenseSpace(keys, true, true)
 	if len(keys) == 0 {

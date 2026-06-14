@@ -105,13 +105,3 @@ func (im *IssueMeta) KeyLinkMarkdown() string {
 		return markdown.Linkify(im.KeyURL, im.Key)
 	}
 }
-
-/*
-keyURL := BuildJiraIssueURL(baseURL, key)
-keyDisplay = markdown.Linkify(keyURL, key)
-
-if len(epicKeyDisplay) > 0 {
-	epicKeyURL := BuildJiraIssueURL(baseURL, im.EpicKey())
-	epicKeyDisplay = markdown.Linkify(epicKeyURL, im.EpicKey())
-}
-*/
