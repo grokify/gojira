@@ -7,6 +7,35 @@
   "maintainers": ["grokify", "johncwang@gmail.com"],
   "releases": [
     {
+      "version": "v0.31.0",
+      "date": "2026-06-14",
+      "highlights": [
+        { "description": "CLI `comments` command for retrieving issue comment threads" },
+        { "description": "Description field included in JSON output by default" },
+        { "description": "`--raw` flag for full API JSON output" }
+      ],
+      "added": [
+        { "description": "`gojira comments` CLI command for retrieving issue comments", "commit": "e7f12c4" },
+        { "description": "`--raw` flag on `get` command for full API JSON output", "commit": "7301e9e" },
+        { "description": "`Description` field in `IssueMeta` for JSON output", "commit": "fe28172" },
+        { "description": "`rest.IssueOutput` type for unified issue representation", "commit": "91a00fc" },
+        { "description": "`rest.CommentResult` type for comment output", "commit": "91a00fc" },
+        { "description": "`rest.CommentsResponse` type for comments API response", "commit": "91a00fc" },
+        { "description": "`rest.ToIssueOutput()`, `rest.ToIssueOutputs()` converter functions", "commit": "91a00fc" },
+        { "description": "`rest.ToCommentResult()`, `rest.ToCommentResults()` converter functions", "commit": "91a00fc" },
+        { "description": "`rest.Client.GetComments()` method for fetching issue comments", "commit": "4e9759d" }
+      ],
+      "changed": [
+        { "description": "MCP server now uses shared converters from `rest` package", "commit": "5f7af61" },
+        { "description": "Eliminated ~150 lines of duplicated code between CLI and MCP", "commit": "5f7af61" }
+      ],
+      "documentation": [
+        { "description": "CLI `comments` command documentation", "commit": "5329c4a" },
+        { "description": "Updated `get` command documentation with `--raw` flag", "commit": "5329c4a" },
+        { "description": "v0.31.0 release notes", "commit": "019922a" }
+      ]
+    },
+    {
       "version": "v0.30.0",
       "date": "2026-05-02",
       "highlights": [
