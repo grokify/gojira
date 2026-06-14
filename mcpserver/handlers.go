@@ -3,7 +3,6 @@ package mcpserver
 import (
 	"context"
 	"fmt"
-	"time"
 
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/gojira/core"
@@ -36,66 +35,6 @@ func (s *Server) CallTool(ctx context.Context, name string, args map[string]any)
 	}
 }
 
-// IssueResult is a simplified issue representation for tool output.
-type IssueResult struct {
-	Key          string         `json:"key"`
-	Summary      string         `json:"summary"`
-	Description  string         `json:"description,omitempty"`
-	Status       string         `json:"status"`
-	Type         string         `json:"type"`
-	Priority     string         `json:"priority,omitempty"`
-	Assignee     string         `json:"assignee,omitempty"`
-	Reporter     string         `json:"reporter,omitempty"`
-	Labels       []string       `json:"labels,omitempty"`
-	Created      string         `json:"created,omitempty"`
-	Updated      string         `json:"updated,omitempty"`
-	Project      string         `json:"project,omitempty"`
-	Parent       string         `json:"parent,omitempty"`
-	CustomFields map[string]any `json:"custom_fields,omitempty"`
-}
-
-func issueToResult(issue *jira.Issue) IssueResult {
-	result := IssueResult{
-		Key:    issue.Key,
-		Labels: issue.Fields.Labels,
-	}
-
-	if issue.Fields != nil {
-		result.Summary = issue.Fields.Summary
-		result.Description = issue.Fields.Description
-
-		if issue.Fields.Status != nil {
-			result.Status = issue.Fields.Status.Name
-		}
-		if issue.Fields.Type.Name != "" {
-			result.Type = issue.Fields.Type.Name
-		}
-		if issue.Fields.Priority != nil {
-			result.Priority = issue.Fields.Priority.Name
-		}
-		if issue.Fields.Assignee != nil {
-			result.Assignee = issue.Fields.Assignee.DisplayName
-		}
-		if issue.Fields.Reporter != nil {
-			result.Reporter = issue.Fields.Reporter.DisplayName
-		}
-		if issue.Fields.Project.Key != "" {
-			result.Project = issue.Fields.Project.Key
-		}
-		if issue.Fields.Parent != nil {
-			result.Parent = issue.Fields.Parent.Key
-		}
-		if !time.Time(issue.Fields.Created).IsZero() {
-			result.Created = time.Time(issue.Fields.Created).Format("2006-01-02T15:04:05Z")
-		}
-		if !time.Time(issue.Fields.Updated).IsZero() {
-			result.Updated = time.Time(issue.Fields.Updated).Format("2006-01-02T15:04:05Z")
-		}
-	}
-
-	return result
-}
-
 func (s *Server) handleGetIssue(ctx context.Context, args map[string]any) (any, error) {
 	key, ok := args["key"].(string)
 	if !ok || key == "" {
@@ -114,7 +53,7 @@ func (s *Server) handleGetIssue(ctx context.Context, args map[string]any) (any, 
 		return nil, fmt.Errorf("get issue %s: %w", key, err)
 	}
 
-	return issueToResult(issue), nil
+	return rest.ToIssueOutput(issue), nil
 }
 
 func (s *Server) handleSearch(ctx context.Context, args map[string]any) (any, error) {
@@ -142,10 +81,7 @@ func (s *Server) handleSearch(ctx context.Context, args map[string]any) (any, er
 		issues = issues[:maxResults]
 	}
 
-	results := make([]IssueResult, 0, len(issues))
-	for _, issue := range issues {
-		results = append(results, issueToResult(&issue))
-	}
+	results := rest.ToIssueOutputs(issues)
 
 	return map[string]any{
 		"total":  len(results),
@@ -325,52 +261,18 @@ func (s *Server) handleGetComments(ctx context.Context, args map[string]any) (an
 		return nil, fmt.Errorf("key is required")
 	}
 
-	// Get issue with comments expanded
-	issue, _, err := s.client.JiraClient.Issue.GetWithContext(ctx, key, &jira.GetQueryOptions{
-		Expand: "renderedFields",
-	})
-	if err != nil {
-		return nil, fmt.Errorf("get issue %s: %w", key, err)
-	}
-
-	if issue.Fields.Comments == nil {
-		return map[string]any{
-			"key":      key,
-			"total":    0,
-			"comments": []any{},
-		}, nil
-	}
-
 	maxResults := 50
 	if mr, ok := args["max_results"].(float64); ok {
 		maxResults = int(mr)
 	}
 
-	comments := issue.Fields.Comments.Comments
-	if len(comments) > maxResults {
-		comments = comments[:maxResults]
+	// Use shared GetComments method
+	response, err := s.client.GetComments(ctx, key, maxResults)
+	if err != nil {
+		return nil, err
 	}
 
-	results := make([]map[string]any, 0, len(comments))
-	for _, c := range comments {
-		author := ""
-		if c.Author.DisplayName != "" {
-			author = c.Author.DisplayName
-		}
-		results = append(results, map[string]any{
-			"id":      c.ID,
-			"author":  author,
-			"body":    c.Body,
-			"created": c.Created,
-			"updated": c.Updated,
-		})
-	}
-
-	return map[string]any{
-		"key":      key,
-		"total":    len(results),
-		"comments": results,
-	}, nil
+	return response, nil
 }
 
 func (s *Server) handleGetProjects(ctx context.Context, _ map[string]any) (any, error) {
