@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://grokify.github.io/gojira/cli/get/">
+        <link rel="canonical" href="https://grokify.github.io/gojira/cli/comments/">
       
       
-        <link rel="prev" href="../search/">
+        <link rel="prev" href="../get/">
       
       
-        <link rel="next" href="../comments/">
+        <link rel="next" href="../patch/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>get - GoJira</title>
+        <title>comments - GoJira</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#get" class="md-skip">
+        <a href="#comments" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              get
+              comments
             
           </span>
         </div>
@@ -667,6 +667,29 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../get/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    get
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -684,7 +707,7 @@
   
   
   <span class="md-ellipsis">
-    get
+    comments
     
   </span>
   
@@ -697,7 +720,7 @@
   
   
   <span class="md-ellipsis">
-    get
+    comments
     
   </span>
   
@@ -757,36 +780,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#single-issue" class="md-nav__link">
+  <a href="#basic-usage" class="md-nav__link">
     <span class="md-ellipsis">
-      Single Issue
+      Basic Usage
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#multiple-issues" class="md-nav__link">
+  <a href="#scripting" class="md-nav__link">
     <span class="md-ellipsis">
-      Multiple Issues
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#with-changelog" class="md-nav__link">
-    <span class="md-ellipsis">
-      With Changelog
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#full-api-json" class="md-nav__link">
-    <span class="md-ellipsis">
-      Full API JSON
+      Scripting
     </span>
   </a>
   
@@ -808,27 +813,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#json-format-default" class="md-nav__link">
+  <a href="#json-format" class="md-nav__link">
     <span class="md-ellipsis">
-      JSON Format (Default)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#raw-json-format-raw" class="md-nav__link">
-    <span class="md-ellipsis">
-      Raw JSON Format (--raw)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#table-format" class="md-nav__link">
-    <span class="md-ellipsis">
-      Table Format
+      JSON Format
     </span>
   </a>
   
@@ -850,9 +837,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#scripting" class="md-nav__link">
+  <a href="#review-discussion-history" class="md-nav__link">
     <span class="md-ellipsis">
-      Scripting
+      Review Discussion History
     </span>
   </a>
   
@@ -867,6 +854,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#integration-with-other-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration with Other Tools
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -876,29 +872,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../comments/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    comments
-    
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -1528,36 +1501,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#single-issue" class="md-nav__link">
+  <a href="#basic-usage" class="md-nav__link">
     <span class="md-ellipsis">
-      Single Issue
+      Basic Usage
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#multiple-issues" class="md-nav__link">
+  <a href="#scripting" class="md-nav__link">
     <span class="md-ellipsis">
-      Multiple Issues
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#with-changelog" class="md-nav__link">
-    <span class="md-ellipsis">
-      With Changelog
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#full-api-json" class="md-nav__link">
-    <span class="md-ellipsis">
-      Full API JSON
+      Scripting
     </span>
   </a>
   
@@ -1579,27 +1534,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#json-format-default" class="md-nav__link">
+  <a href="#json-format" class="md-nav__link">
     <span class="md-ellipsis">
-      JSON Format (Default)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#raw-json-format-raw" class="md-nav__link">
-    <span class="md-ellipsis">
-      Raw JSON Format (--raw)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#table-format" class="md-nav__link">
-    <span class="md-ellipsis">
-      Table Format
+      JSON Format
     </span>
   </a>
   
@@ -1621,9 +1558,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#scripting" class="md-nav__link">
+  <a href="#review-discussion-history" class="md-nav__link">
     <span class="md-ellipsis">
-      Scripting
+      Review Discussion History
     </span>
   </a>
   
@@ -1633,6 +1570,15 @@
   <a href="#ai-agent-workflows" class="md-nav__link">
     <span class="md-ellipsis">
       AI Agent Workflows
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integration-with-other-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration with Other Tools
     </span>
   </a>
   
@@ -1662,10 +1608,10 @@
   
 
 
-<h1 id="get">get<a class="headerlink" href="#get" title="Permanent link">&para;</a></h1>
-<p>Get one or more Jira issues by their keys.</p>
+<h1 id="comments">comments<a class="headerlink" href="#comments" title="Permanent link">&para;</a></h1>
+<p>Get comments for a Jira issue.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>gojira<span class="w"> </span>get<span class="w"> </span>&lt;issue-key&gt;<span class="w"> </span><span class="o">[</span>issue-key...<span class="o">]</span><span class="w"> </span><span class="o">[</span>flags<span class="o">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>gojira<span class="w"> </span>comments<span class="w"> </span>&lt;issue-key&gt;<span class="w"> </span><span class="o">[</span>flags<span class="o">]</span>
 </code></pre></div>
 <h2 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h2>
 <table>
@@ -1678,7 +1624,7 @@
 <tbody>
 <tr>
 <td><code>issue-key</code></td>
-<td>One or more Jira issue keys (e.g., <code>FOO-123</code>)</td>
+<td>The Jira issue key (e.g., <code>FOO-123</code>)</td>
 </tr>
 </tbody>
 </table>
@@ -1693,103 +1639,69 @@
 </thead>
 <tbody>
 <tr>
-<td><code>--expand</code></td>
-<td>false</td>
-<td>Expand changelog and other fields</td>
-</tr>
-<tr>
-<td><code>--fields</code></td>
-<td></td>
-<td>Comma-separated list of fields to include</td>
-</tr>
-<tr>
-<td><code>--raw</code></td>
-<td>false</td>
-<td>Output full API JSON instead of simplified metadata</td>
+<td><code>--max</code></td>
+<td>50</td>
+<td>Maximum number of comments to return</td>
 </tr>
 </tbody>
 </table>
 <p>Plus <a href="../#global-flags">global flags</a>.</p>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
-<h3 id="single-issue">Single Issue<a class="headerlink" href="#single-issue" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Get a single issue</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>gojira<span class="w"> </span>get<span class="w"> </span>FOO-123
+<h3 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Get comments for an issue</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>gojira<span class="w"> </span>comments<span class="w"> </span>FOO-123
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Human-readable output</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>gojira<span class="w"> </span>get<span class="w"> </span>FOO-123<span class="w"> </span>--table
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Limit to 10 most recent comments</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>gojira<span class="w"> </span>comments<span class="w"> </span>FOO-123<span class="w"> </span>--max<span class="w"> </span><span class="m">10</span>
 </code></pre></div>
-<h3 id="multiple-issues">Multiple Issues<a class="headerlink" href="#multiple-issues" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Get multiple issues</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>gojira<span class="w"> </span>get<span class="w"> </span>FOO-123<span class="w"> </span>FOO-456<span class="w"> </span>FOO-789
+<h3 id="scripting">Scripting<a class="headerlink" href="#scripting" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Get comment count</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>gojira<span class="w"> </span>comments<span class="w"> </span>FOO-123<span class="w"> </span>-q<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.total&#39;</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Output as JSON array</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>gojira<span class="w"> </span>get<span class="w"> </span>FOO-123<span class="w"> </span>FOO-456<span class="w"> </span>--json
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Get latest comment body</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>gojira<span class="w"> </span>comments<span class="w"> </span>FOO-123<span class="w"> </span>--max<span class="w"> </span><span class="m">1</span><span class="w"> </span>-q<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.comments[0].body&#39;</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># List all comment authors</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>gojira<span class="w"> </span>comments<span class="w"> </span>FOO-123<span class="w"> </span>-q<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.comments[].author&#39;</span>
 </code></pre></div>
-<h3 id="with-changelog">With Changelog<a class="headerlink" href="#with-changelog" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Include issue history</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>gojira<span class="w"> </span>get<span class="w"> </span>FOO-123<span class="w"> </span>--expand
-</code></pre></div>
-<h3 id="full-api-json">Full API JSON<a class="headerlink" href="#full-api-json" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Output complete API response (all fields)</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>gojira<span class="w"> </span>get<span class="w"> </span>FOO-123<span class="w"> </span>--raw
-</code></pre></div>
-<p>The <code>--raw</code> flag outputs the full <code>jira.Issue</code> JSON from the API instead of the simplified metadata format. Use this when you need access to all fields including custom fields, comments, or other data not included in the default output.</p>
 <h2 id="output">Output<a class="headerlink" href="#output" title="Permanent link">&para;</a></h2>
-<h3 id="json-format-default">JSON Format (Default)<a class="headerlink" href="#json-format-default" title="Permanent link">&para;</a></h3>
-<p>The default output is a simplified metadata format:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">[</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="p">{</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FOO-123&quot;</span><span class="p">,</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Bug&quot;</span><span class="p">,</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Open&quot;</span><span class="p">,</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="nt">&quot;summary&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Fix login bug&quot;</span><span class="p">,</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Users cannot log in when...&quot;</span><span class="p">,</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">    </span><span class="nt">&quot;project&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Foo Project&quot;</span><span class="p">,</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span><span class="nt">&quot;projectKey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FOO&quot;</span><span class="p">,</span>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">    </span><span class="nt">&quot;assignee&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;John Doe&quot;</span><span class="p">,</span>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">    </span><span class="nt">&quot;creator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Jane Smith&quot;</span><span class="p">,</span>
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">    </span><span class="nt">&quot;created&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-15T10:30:00Z&quot;</span><span class="p">,</span>
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">    </span><span class="nt">&quot;updated&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-16T14:20:00Z&quot;</span><span class="p">,</span>
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">    </span><span class="nt">&quot;labels&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;urgent&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;backend&quot;</span><span class="p">]</span>
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="p">]</span>
-</code></pre></div>
-<h3 id="raw-json-format-raw">Raw JSON Format (<code>--raw</code>)<a class="headerlink" href="#raw-json-format-raw" title="Permanent link">&para;</a></h3>
-<p>The <code>--raw</code> flag outputs the complete API response:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">[</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="p">{</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FOO-123&quot;</span><span class="p">,</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="nt">&quot;fields&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">      </span><span class="nt">&quot;summary&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Fix login bug&quot;</span><span class="p">,</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Users cannot log in when...&quot;</span><span class="p">,</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">      </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Open&quot;</span><span class="w"> </span><span class="p">},</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">      </span><span class="nt">&quot;issuetype&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Bug&quot;</span><span class="w"> </span><span class="p">},</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">      </span><span class="nt">&quot;priority&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;High&quot;</span><span class="w"> </span><span class="p">},</span>
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">      </span><span class="nt">&quot;assignee&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;displayName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;John Doe&quot;</span><span class="w"> </span><span class="p">},</span>
-<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">      </span><span class="nt">&quot;created&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-15T10:30:00.000+0000&quot;</span><span class="p">,</span>
-<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">      </span><span class="nt">&quot;updated&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-16T14:20:00.000+0000&quot;</span>
-<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="p">]</span>
-</code></pre></div>
-<h3 id="table-format">Table Format<a class="headerlink" href="#table-format" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>KEY        TYPE    STATUS    PRIORITY    ASSIGNEE     SUMMARY
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>FOO-123    Bug     Open      High        John Doe     Fix login bug
+<h3 id="json-format">JSON Format<a class="headerlink" href="#json-format" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">{</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FOO-123&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="nt">&quot;total&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="nt">&quot;comments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;10001&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">      </span><span class="nt">&quot;author&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;John Doe&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">      </span><span class="nt">&quot;body&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;I&#39;ve started working on this issue.&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">      </span><span class="nt">&quot;created&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-15T10:30:00.000+0000&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">      </span><span class="nt">&quot;updated&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-15T10:30:00.000+0000&quot;</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;10002&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">      </span><span class="nt">&quot;author&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Jane Smith&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">      </span><span class="nt">&quot;body&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Please check the latest commit.&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">      </span><span class="nt">&quot;created&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-16T14:20:00.000+0000&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">      </span><span class="nt">&quot;updated&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-16T14:25:00.000+0000&quot;</span>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">  </span><span class="p">]</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="p">}</span>
 </code></pre></div>
 <h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
-<h3 id="scripting">Scripting<a class="headerlink" href="#scripting" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Get issue and extract status</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nv">STATUS</span><span class="o">=</span><span class="k">$(</span>gojira<span class="w"> </span>get<span class="w"> </span>FOO-123<span class="w"> </span>-q<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.[0].fields.status.name&#39;</span><span class="k">)</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Issue status: </span><span class="nv">$STATUS</span><span class="s2">&quot;</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="c1"># Check if issue is closed</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span><span class="k">$(</span>gojira<span class="w"> </span>get<span class="w"> </span>FOO-123<span class="w"> </span>-q<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.[0].fields.status.name&#39;</span><span class="k">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;Closed&quot;</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Issue is closed&quot;</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="k">fi</span>
+<h3 id="review-discussion-history">Review Discussion History<a class="headerlink" href="#review-discussion-history" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Get full comment thread for context</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>gojira<span class="w"> </span>comments<span class="w"> </span>FOO-123
 </code></pre></div>
 <h3 id="ai-agent-workflows">AI Agent Workflows<a class="headerlink" href="#ai-agent-workflows" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Get issue details for LLM context</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>gojira<span class="w"> </span>get<span class="w"> </span>FOO-123<span class="w"> </span>--toon
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Get recent discussion for LLM context</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>gojira<span class="w"> </span>comments<span class="w"> </span>FOO-123<span class="w"> </span>--max<span class="w"> </span><span class="m">5</span><span class="w"> </span>-q
+</code></pre></div>
+<h3 id="integration-with-other-tools">Integration with Other Tools<a class="headerlink" href="#integration-with-other-tools" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Export comments to a file</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>gojira<span class="w"> </span>comments<span class="w"> </span>FOO-123<span class="w"> </span>&gt;<span class="w"> </span>comments.json
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># Combine with issue details</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;{&quot;issue&quot;:&#39;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>gojira<span class="w"> </span>get<span class="w"> </span>FOO-123<span class="w"> </span>-q<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;,&quot;comments&quot;:&#39;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>gojira<span class="w"> </span>comments<span class="w"> </span>FOO-123<span class="w"> </span>-q<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;}&#39;</span>
 </code></pre></div>
 
 
