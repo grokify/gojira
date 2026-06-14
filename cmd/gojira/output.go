@@ -6,7 +6,6 @@ import (
 	"io"
 	"os"
 	"strings"
-	"time"
 
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/grokify/gojira/rest"
@@ -67,12 +66,12 @@ func WriteIssue(issue *jira.Issue, cfg *OutputConfig) error {
 	return WriteIssues(issues, cfg)
 }
 
-// writeIssuesJSON outputs issues as JSON.
+// writeIssuesJSON outputs issues as JSON using the shared IssueOutput type.
 func writeIssuesJSON(issues rest.Issues, w io.Writer) error {
-	metas := issuesToMetas(issues)
+	outputs := rest.ToIssueOutputs(issues)
 	enc := json.NewEncoder(w)
 	enc.SetIndent("", "  ")
-	return enc.Encode(metas)
+	return enc.Encode(outputs)
 }
 
 // WriteIssuesRaw outputs the full API JSON for issues (all fields from Jira API).
@@ -146,61 +145,6 @@ func formatTOON(im rest.IssueMore) string {
 	}
 
 	return strings.Join(parts, "|")
-}
-
-// IssueMeta represents simplified issue metadata for JSON output.
-type IssueMeta struct {
-	Key         string     `json:"key"`
-	Type        string     `json:"type"`
-	Status      string     `json:"status"`
-	Resolution  string     `json:"resolution,omitempty"`
-	Summary     string     `json:"summary"`
-	Description string     `json:"description,omitempty"`
-	Project     string     `json:"project"`
-	ProjectKey  string     `json:"projectKey"`
-	Assignee    string     `json:"assignee,omitempty"`
-	Creator     string     `json:"creator,omitempty"`
-	Created     *time.Time `json:"created,omitempty"`
-	Updated     *time.Time `json:"updated,omitempty"`
-	ParentKey   string     `json:"parentKey,omitempty"`
-	EpicKey     string     `json:"epicKey,omitempty"`
-	Labels      []string   `json:"labels,omitempty"`
-}
-
-// issuesToMetas converts Issues to a slice of IssueMeta.
-func issuesToMetas(issues rest.Issues) []IssueMeta {
-	metas := make([]IssueMeta, 0, len(issues))
-	for _, iss := range issues {
-		im := rest.NewIssueMore(&iss)
-		meta := IssueMeta{
-			Key:         im.Key(),
-			Type:        im.Type(),
-			Status:      im.Status(),
-			Resolution:  im.Resolution(),
-			Summary:     im.Summary(),
-			Description: im.Description(),
-			Project:     im.Project(),
-			ProjectKey:  im.ProjectKey(),
-			Assignee:    im.AssigneeName(),
-			Creator:     im.CreatorName(),
-			ParentKey:   im.ParentKey(),
-			EpicKey:     im.EpicKey(),
-			Labels:      im.Labels(true),
-		}
-
-		created := im.CreateTime()
-		if !created.IsZero() {
-			meta.Created = &created
-		}
-
-		updated := im.UpdateTime()
-		if !updated.IsZero() {
-			meta.Updated = &updated
-		}
-
-		metas = append(metas, meta)
-	}
-	return metas
 }
 
 // truncateString truncates a string to maxLen and adds ellipsis if needed.
