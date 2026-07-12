@@ -46,8 +46,9 @@
       ],
       "documentation": [
         { "description": "v1.0 PRD and TRD specifications", "commit": "4120fe5" },
-        { "description": "Updated `fields` command documentation with new flags", "commit": "7ec862a" },
-        { "description": "v0.32.0 release notes", "commit": "" }
+        { "description": "Updated `fields` command documentation with new flags", "commit": "2d351cb" },
+        { "description": "SDK documentation for custom field and createmeta APIs", "commit": "606519b" },
+        { "description": "v0.32.0 release notes", "commit": "e66ce71" }
       ]
     },
     {
