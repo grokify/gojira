@@ -1,6 +1,9 @@
 package rest
 
 import (
+	"errors"
+	"fmt"
+
 	"github.com/grokify/gocharts/v2/data/histogram"
 	"github.com/grokify/mogo/pointer"
 	"github.com/grokify/mogo/time/timeutil"
@@ -46,6 +49,42 @@ func (set *IssuesSet) CountsByCustomFieldValues(customField string) (map[string]
 			return out, err
 		}
 		out[cfInfo.Value]++
+	}
+	return out, nil
+}
+
+// CountsByCustomFieldName resolves a custom field by display name using the CustomFieldSet,
+// handling the common case where multiple field IDs share the same name. For each issue,
+// it checks all matching field IDs and uses the first populated value it finds.
+// If onlyPopulated is true, issues with no populated matching field are skipped.
+func (set *IssuesSet) CountsByCustomFieldName(fieldName string, cfSet *CustomFieldSet, onlyPopulated bool) (map[string]uint, error) {
+	if cfSet == nil {
+		return nil, errors.New("CustomFieldSet is required for name-based lookup")
+	}
+	ids := cfSet.NameToIDs(fieldName)
+	if len(ids) == 0 {
+		return nil, fmt.Errorf("no custom field found with name %q", fieldName)
+	}
+
+	out := map[string]uint{}
+	for _, iss := range set.Items {
+		iss := iss
+		im := NewIssueMore(&iss)
+		// Try each matching field ID, use the first populated value
+		value := ""
+		for _, id := range ids {
+			if v := im.CustomFieldStringOrDefault(id, ""); v != "" {
+				value = v
+				break
+			}
+		}
+		if value == "" && onlyPopulated {
+			continue
+		}
+		if value == "" {
+			value = "(empty)"
+		}
+		out[value]++
 	}
 	return out, nil
 }
