@@ -7,6 +7,50 @@
   "maintainers": ["grokify", "johncwang@gmail.com"],
   "releases": [
     {
+      "version": "v0.32.0",
+      "date": "2026-07-12",
+      "highlights": [
+        { "description": "Duplicate custom field name handling with `GetCustomFieldsByName()` and `DuplicateNames()`" },
+        { "description": "Project-based field filtering via createmeta API" },
+        { "description": "CLI `--project`, `--issue-type`, `--show-duplicates` flags for fields command" }
+      ],
+      "breaking": [
+        { "description": "`TransitionsAPIReponse` renamed to `TransitionsAPIResponse` (typo fix)", "commit": "2ffff0f" },
+        { "description": "`ReadyforPlanningName` renamed to `ReadyForPlanningName` (typo fix)", "commit": "7671087" },
+        { "description": "`ReadyForDevlopmentName` renamed to `ReadyForDevelopmentName` (typo fix)", "commit": "7671087" }
+      ],
+      "added": [
+        { "description": "`CustomFields.MapNameToIDs()`, `MapIDToName()`, `DuplicateNames()` helper methods", "commit": "7de5a10" },
+        { "description": "`CustomFieldSet.NameToIDs()`, `NameToFields()` for name-based lookups", "commit": "f232a80" },
+        { "description": "`CustomFieldSet.IssueCustomFieldsByName()`, `IssueCustomFieldsByNamePopulated()` for value extraction", "commit": "f232a80" },
+        { "description": "`IssueCustomFieldValue` type for resolved field values with metadata", "commit": "f232a80" },
+        { "description": "`IssuesSet.CountsByCustomFieldName()` for name-based field counting", "commit": "109858b" },
+        { "description": "`CustomFieldService.GetCustomFieldsByName()` returns all fields matching a name", "commit": "dadf93e" },
+        { "description": "`CustomFieldService.GetCustomFieldByID()` returns field with exact ID", "commit": "dadf93e" },
+        { "description": "`CustomFieldService.GetCustomFieldsForProject()` returns fields available in a project", "commit": "dadf93e" },
+        { "description": "`CreateMetaService` for Jira createmeta API integration", "commit": "b36eaf6" },
+        { "description": "`CreateMetaService.GetIssueTypes()`, `GetFields()`, `GetAllFieldsForProject()` methods", "commit": "b36eaf6" },
+        { "description": "`CreateMetaIssueType`, `CreateMetaField`, `CreateMetaFields` types", "commit": "b36eaf6" },
+        { "description": "`Client.CreateMetaAPI` for project-based field discovery", "commit": "b36eaf6" },
+        { "description": "`--project` flag on `fields` command for project-based filtering", "commit": "7ec862a" },
+        { "description": "`--issue-type` flag on `fields` command (requires `--project`)", "commit": "7ec862a" },
+        { "description": "`--show-duplicates` flag on `fields` command to detect ambiguous field names", "commit": "7ec862a" }
+      ],
+      "fixed": [
+        { "description": "JQL builder now quotes field names containing spaces", "commit": "509ba97" }
+      ],
+      "changed": [
+        { "description": "Improved `GetCustomField()` error messages to distinguish 'not found' vs 'multiple found'", "commit": "dadf93e" },
+        { "description": "Consolidated CLI `IssueMeta` with shared `rest.IssueOutput` type", "commit": "6fafd94" },
+        { "description": "Removed commented-out code from `constants_urls.go`, `issue_service.go`, `issue_meta.go`", "commit": "17022dd" }
+      ],
+      "documentation": [
+        { "description": "v1.0 PRD and TRD specifications", "commit": "4120fe5" },
+        { "description": "Updated `fields` command documentation with new flags", "commit": "7ec862a" },
+        { "description": "v0.32.0 release notes", "commit": "" }
+      ]
+    },
+    {
       "version": "v0.31.0",
       "date": "2026-06-14",
       "highlights": [
