@@ -25,6 +25,7 @@ type Client struct {
 	simpleClient   *httpsimple.Client
 	Logger         *slog.Logger
 	BacklogAPI     *BacklogService
+	CreateMetaAPI  *CreateMetaService
 	CustomFieldAPI *CustomFieldService
 	IssueAPI       *IssueService
 	CustomFieldSet *CustomFieldSet
@@ -162,10 +163,11 @@ func JiraClientBasicAuthGoauth(creds *goauth.CredentialsBasicAuth) (*jira.Client
 	return JiraClientBasicAuth(creds.ServerURL, creds.Username, creds.Password)
 }
 
-// Inflate initializes the client's service APIs (BacklogAPI, CustomFieldAPI, IssueAPI).
+// Inflate initializes the client's service APIs (BacklogAPI, CreateMetaAPI, CustomFieldAPI, IssueAPI).
 // If addCustomFieldSet is true, custom fields are loaded from the Jira server.
 func (c *Client) Inflate(addCustomFieldSet bool) error {
 	c.BacklogAPI = NewBacklogService(c)
+	c.CreateMetaAPI = NewCreateMetaService(c)
 	c.CustomFieldAPI = NewCustomFieldService(c)
 	c.IssueAPI = NewIssueService(c)
 	if addCustomFieldSet {

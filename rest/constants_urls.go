@@ -4,6 +4,7 @@ const (
 	APIV2URLListCustomFields = `/rest/api/2/field`
 	APIV3URLIssue            = `/rest/api/3/issue` // /rest/api/3/issue/{issueIdOrKey}
 	APIV3URLSearchJQL        = `/rest/api/3/search/jql`
+	APIV3URLCreateMeta       = `/rest/api/3/issue/createmeta` // /rest/api/3/issue/createmeta/{projectKey}/issuetypes
 
 	StatusDone         = "Done"
 	StatusOpen         = "Open"
