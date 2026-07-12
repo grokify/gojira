@@ -50,6 +50,88 @@ func (set *CustomFieldSet) IDToName(id string) (string, error) {
 	}
 }
 
+// NameToIDs returns all custom field IDs (e.g. "customfield_12345") that match
+// the given display name. This handles the common Jira situation where multiple
+// custom fields share the same name (e.g. from copied schemes or reinstalled apps).
+// The match is case-insensitive.
+func (set *CustomFieldSet) NameToIDs(name string) []string {
+	if set == nil || set.Data == nil {
+		return nil
+	}
+	lower := strings.ToLower(strings.TrimSpace(name))
+	var ids []string
+	for id, cf := range set.Data {
+		if strings.ToLower(cf.Name) == lower {
+			ids = append(ids, id)
+		}
+	}
+	return ids
+}
+
+// NameToFields returns all CustomField entries that match the given display name.
+// Case-insensitive.
+func (set *CustomFieldSet) NameToFields(name string) []CustomField {
+	if set == nil || set.Data == nil {
+		return nil
+	}
+	lower := strings.ToLower(strings.TrimSpace(name))
+	var fields []CustomField
+	for _, cf := range set.Data {
+		if strings.ToLower(cf.Name) == lower {
+			fields = append(fields, cf)
+		}
+	}
+	return fields
+}
+
+// IssueCustomFieldValue holds a resolved custom field value from an issue, including
+// the field metadata and the extracted value.
+type IssueCustomFieldValue struct {
+	FieldID   string      `json:"field_id"`   // e.g. "customfield_13665"
+	FieldName string      `json:"field_name"` // e.g. "Module"
+	Value     string      `json:"value"`      // extracted string value
+	Populated bool        `json:"populated"`  // true if value is non-empty
+	Field     CustomField `json:"field"`      // full field metadata
+}
+
+// IssueCustomFieldsByName looks up all custom fields matching `name` in the set,
+// then extracts their values from the given issue. Returns one entry per matching
+// field ID, regardless of whether it's populated on the issue.
+func (set *CustomFieldSet) IssueCustomFieldsByName(iss *jira.Issue, name string) []IssueCustomFieldValue {
+	fields := set.NameToFields(name)
+	if len(fields) == 0 {
+		return nil
+	}
+
+	im := NewIssueMore(iss)
+	results := make([]IssueCustomFieldValue, 0, len(fields))
+	for _, cf := range fields {
+		val := im.CustomFieldStringOrDefault(cf.ID, "")
+		results = append(results, IssueCustomFieldValue{
+			FieldID:   cf.ID,
+			FieldName: cf.Name,
+			Value:     val,
+			Populated: val != "",
+			Field:     cf,
+		})
+	}
+	return results
+}
+
+// IssueCustomFieldsByNamePopulated is like IssueCustomFieldsByName but only returns
+// fields that have a non-empty value on the issue. This is the recommended way to
+// resolve ambiguous field names — the populated one is typically the active one.
+func (set *CustomFieldSet) IssueCustomFieldsByNamePopulated(iss *jira.Issue, name string) []IssueCustomFieldValue {
+	all := set.IssueCustomFieldsByName(iss, name)
+	populated := make([]IssueCustomFieldValue, 0, len(all))
+	for _, v := range all {
+		if v.Populated {
+			populated = append(populated, v)
+		}
+	}
+	return populated
+}
+
 // CreateFuncIssueToMap creates a function to use with `IssuesSet.HistogramMapFunc`.
 func (set *CustomFieldSet) CreateFuncIssueToMap(fieldsWithDefaults map[string]string, useCustomFieldDisplayNames bool) FuncIssueToMap {
 	return func(iss *jira.Issue) (map[string]string, error) {
