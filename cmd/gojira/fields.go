@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -38,7 +39,16 @@ Examples:
   gojira fields --json
 
   # Get Epic Link field specifically
-  gojira fields --epic-link`,
+  gojira fields --epic-link
+
+  # List fields available in project ABC
+  gojira fields --project ABC
+
+  # List fields for specific issue type in project
+  gojira fields --project ABC --issue-type 10001
+
+  # Show fields that have duplicate names
+  gojira fields --show-duplicates`,
 	RunE: runFields,
 }
 
@@ -50,6 +60,9 @@ var (
 	fieldsEpicLink    bool
 	fieldsOutputJSON  bool
 	fieldsOutputTable bool
+	fieldsProject     string
+	fieldsIssueType   string
+	fieldsShowDupes   bool
 )
 
 func init() {
@@ -62,6 +75,9 @@ func init() {
 	fieldsCmd.Flags().BoolVar(&fieldsEpicLink, "epic-link", false, "Show Epic Link field")
 	fieldsCmd.Flags().BoolVar(&fieldsOutputJSON, "json", false, "Output as JSON")
 	fieldsCmd.Flags().BoolVar(&fieldsOutputTable, "table", true, "Output as table (default)")
+	fieldsCmd.Flags().StringVar(&fieldsProject, "project", "", "Filter by project key (shows only fields available in project)")
+	fieldsCmd.Flags().StringVar(&fieldsIssueType, "issue-type", "", "Filter by issue type ID (requires --project)")
+	fieldsCmd.Flags().BoolVar(&fieldsShowDupes, "show-duplicates", false, "Show only fields with duplicate names")
 }
 
 func runFields(cmd *cobra.Command, args []string) error {
@@ -70,19 +86,55 @@ func runFields(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("authentication failed: %w", err)
 	}
 
+	// Validate flag combinations
+	if fieldsIssueType != "" && fieldsProject == "" {
+		return fmt.Errorf("--issue-type requires --project")
+	}
+
 	// Special case: get Epic Link field
 	if fieldsEpicLink {
 		return showEpicLinkField(client)
 	}
 
-	// Get all fields
-	fields, err := client.CustomFieldAPI.GetCustomFields()
-	if err != nil {
-		return fmt.Errorf("failed to get fields: %w", err)
+	var fields rest.CustomFields
+
+	// Get fields based on project filtering
+	if fieldsProject != "" {
+		ctx := context.Background()
+		if fieldsIssueType != "" {
+			// Get fields for specific issue type
+			metaFields, err := client.CreateMetaAPI.GetFields(ctx, fieldsProject, fieldsIssueType)
+			if err != nil {
+				return fmt.Errorf("failed to get fields for project %q, issue type %q: %w", fieldsProject, fieldsIssueType, err)
+			}
+			// Get full metadata for the custom fields
+			allFields, err := client.CustomFieldAPI.GetCustomFields()
+			if err != nil {
+				return fmt.Errorf("failed to get custom fields: %w", err)
+			}
+			fields = allFields.FilterByIDs(metaFields.CustomOnly().Keys()...)
+		} else {
+			// Get all fields for project
+			fields, err = client.CustomFieldAPI.GetCustomFieldsForProject(ctx, fieldsProject)
+			if err != nil {
+				return fmt.Errorf("failed to get fields for project %q: %w", fieldsProject, err)
+			}
+		}
+	} else {
+		// Get all fields
+		fields, err = client.CustomFieldAPI.GetCustomFields()
+		if err != nil {
+			return fmt.Errorf("failed to get fields: %w", err)
+		}
 	}
 
 	// Apply filters
 	fields = applyFieldFilters(fields)
+
+	// Filter to only show duplicates if requested
+	if fieldsShowDupes {
+		fields = filterDuplicateNames(fields)
+	}
 
 	if len(fields) == 0 {
 		fmt.Fprintln(os.Stderr, "No fields found matching criteria")
@@ -178,4 +230,13 @@ func outputFieldsJSON(fields rest.CustomFields) error {
 
 func outputFieldsTable(fields rest.CustomFields) error {
 	return fields.WriteTable(os.Stdout)
+}
+
+// filterDuplicateNames returns only fields whose names appear more than once.
+func filterDuplicateNames(fields rest.CustomFields) rest.CustomFields {
+	dupeNames := fields.DuplicateNames()
+	if len(dupeNames) == 0 {
+		return rest.CustomFields{}
+	}
+	return fields.FilterByNames(dupeNames...)
 }
