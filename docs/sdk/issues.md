@@ -117,8 +117,12 @@ byStatus := issuesSet.CountsByStatus()     // map[string]uint
 byType := issuesSet.CountsByType(true, true)
 byProject := issuesSet.CountsByProject()
 
-// Count by custom field
+// Count by custom field ID
 byCF, err := issuesSet.CountsByCustomFieldValues("customfield_10001")
+
+// Count by custom field name (handles duplicate field names)
+// Requires a CustomFieldSet for name resolution
+byName, err := issuesSet.CountsByCustomFieldName("Module", client.CustomFieldSet, true)
 ```
 
 ### Filtering

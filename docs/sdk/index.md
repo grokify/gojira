@@ -55,7 +55,8 @@ func main() {
 The `rest.Client` is your entry point to the API. It provides access to service APIs:
 
 - `client.IssueAPI` - Issue operations (search, get, update)
-- `client.CustomFieldAPI` - Custom field operations
+- `client.CustomFieldAPI` - Custom field operations (including duplicate name handling)
+- `client.CreateMetaAPI` - Project-based field discovery
 - `client.BacklogAPI` - Backlog operations
 
 See [Client](client.md) for details.
