@@ -94,6 +94,43 @@ func (cfs CustomFields) FilterByNames(names ...string) CustomFields {
 	return filtered
 }
 
+// MapNameToIDs returns a map of field name to slice of IDs. This handles the case
+// where multiple custom fields share the same display name (e.g. from copied schemes
+// or reinstalled apps).
+func (cfs CustomFields) MapNameToIDs() map[string][]string {
+	result := make(map[string][]string)
+	for _, cf := range cfs {
+		result[cf.Name] = append(result[cf.Name], cf.ID)
+	}
+	return result
+}
+
+// MapIDToName returns a map of field ID to name.
+func (cfs CustomFields) MapIDToName() map[string]string {
+	result := make(map[string]string, len(cfs))
+	for _, cf := range cfs {
+		result[cf.ID] = cf.Name
+	}
+	return result
+}
+
+// DuplicateNames returns names that appear more than once in the custom fields list.
+// This is useful for identifying fields that may cause ambiguity when querying by name.
+func (cfs CustomFields) DuplicateNames() []string {
+	nameCount := make(map[string]int)
+	for _, cf := range cfs {
+		nameCount[cf.Name]++
+	}
+	var duplicates []string
+	for name, count := range nameCount {
+		if count > 1 {
+			duplicates = append(duplicates, name)
+		}
+	}
+	sort.Strings(duplicates)
+	return duplicates
+}
+
 func (cfs CustomFields) Table(name string) table.Table {
 	if strings.TrimSpace(name) == "" {
 		name = "Custom Fields"
