@@ -19,6 +19,9 @@ gojira fields [flags]
 | `--epic-link` | Show Epic Link field |
 | `--json` | Output as JSON |
 | `--table` | Output as table (default) |
+| `--project` | Filter by project key (shows only fields available in project) |
+| `--issue-type` | Filter by issue type ID (requires `--project`) |
+| `--show-duplicates` | Show only fields with duplicate names |
 
 Plus [global flags](index.md#global-flags).
 
@@ -68,6 +71,29 @@ Find the Epic Link field (useful for linking issues to epics):
 ```bash
 gojira fields --epic-link
 ```
+
+### Filter by Project
+
+Show only fields available in a specific project:
+
+```bash
+# Fields available in project ABC
+gojira fields --project ABC
+
+# Fields for a specific issue type in project
+gojira fields --project ABC --issue-type 10001
+```
+
+### Find Duplicate Field Names
+
+Identify fields that share the same display name (common when copying schemes or reinstalling apps):
+
+```bash
+# Show only fields with duplicate names
+gojira fields --show-duplicates
+```
+
+This helps identify ambiguous field names that may cause issues when querying by name.
 
 ## Output
 
